@@ -1,4 +1,5 @@
 global entrypoint  ; the entry point symbol defined in kernel.ld
+extern kernelEntry
 
 ; Values for the multiboot header
 MULTIBOOT_MAGIC        equ 0x1BADB002
@@ -26,6 +27,10 @@ dd MULTIBOOT_CHECKSUM
 entrypoint:
 	; code starts executing here
 	cli  ; disable hardware interrupts
+	mov esp, stack_top;
+	mov ebp, stack_top;
+	push ebx; We pass the multiboot info to the kernel
+	call kernelEntry;Here we call the kernel
 
 	; TODO :
 	; - Initialize the stack pointer and EBP (both to the same value)
@@ -42,3 +47,9 @@ entrypoint:
 ; TODO : declare a .stack section for the kernel. It should at least be 1MB long. Given this stack
 ; area won't be initialized, the nobits keyword should be added when declaring the section.
 ; ...
+section .stack nobits
+
+align 4
+stack_bottom:
+resb 1048576 ; 1 Mb
+stack_top:
