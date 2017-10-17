@@ -63,7 +63,7 @@ void gdt_init() {
 	gdtTable[2] = gdt_make_data_segment(0,ADDRESSABLE_SPACE,DPL_KERNEL);
 
 	gdt_ptr.base = (uint32_t) &gdtTable;
-	gdt_ptr.limit = sizeof(*gdtTable)*3;
+	gdt_ptr.limit = sizeof(gdtTable);
 	// TODO: setup gdt_ptr so it points to the GDT and ensure it has the right limit.
 
     // Load the GDT
