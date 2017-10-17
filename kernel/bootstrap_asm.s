@@ -48,8 +48,5 @@ entrypoint:
 ; area won't be initialized, the nobits keyword should be added when declaring the section.
 ; ...
 section .stack nobits
-
-align 4
-stack_bottom:
 resb 1048576 ; 1 Mb
 stack_top:

@@ -3,6 +3,7 @@
 #include "x86.h"
 
 // TODO: declare the GDT table
+static gdt_entry_t gdtTable[3];
 
 // Pointeur sur la table GDT
 static gdt_ptr_t   gdt_ptr;
@@ -39,7 +40,7 @@ static gdt_entry_t build_entry(uint32_t base, uint32_t limit, uint8_t type, uint
 // Create a NULL "segment".
 static gdt_entry_t gdt_make_null_segment() {
 	gdt_entry_t entry;
-	memset(&entry, 0, sizeof(gdt_entry_t));
+	memset(&entry, 0, (uint) sizeof(gdt_entry_t));
 	return entry;
 }
 
@@ -57,10 +58,14 @@ static gdt_entry_t gdt_make_data_segment(uint32_t base, uint32_t limit, uint8_t 
 void gdt_init() {
 	// TODO: initialize 3 segment descriptors: NULL, code segment, data segment.
 	// Code and data segments must have a privilege level of 0.
+	gdtTable[0] = gdt_make_null_segment();
+	gdtTable[1] = gdt_make_code_segment(0,ADDRESSABLE_SPACE,DPL_KERNEL);
+	gdtTable[2] = gdt_make_data_segment(0,ADDRESSABLE_SPACE,DPL_KERNEL);
 
+	gdt_ptr.base = (uint32_t) &gdtTable;
+	gdt_ptr.limit = sizeof(*gdtTable)*3;
 	// TODO: setup gdt_ptr so it points to the GDT and ensure it has the right limit.
 
     // Load the GDT
     gdt_load(&gdt_ptr);
 }
-

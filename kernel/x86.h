@@ -1,6 +1,9 @@
 #ifndef _X86_H_
 #define _X86_H_
 
+//sizes
+#define ADDRESSABLE_SPACE 0xFFFFF
+
 // Privilege levels
 #define DPL_USER    0x3
 #define DPL_KERNEL  0x0

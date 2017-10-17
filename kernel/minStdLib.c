@@ -20,5 +20,12 @@ void *memcpy(void *dst, void *src, uint count){
 }
 
 int strncmp(const char *p, const char *q, uint n){
+	for (uint i = 0; i < n; i++) {
+		if (p[i] < q[i]) {
+			return -1;
+		}else if (p[i] > q[i]){
+			return 1;
+		}
+	}
 	return 0;
 }
