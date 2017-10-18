@@ -13,7 +13,7 @@ void display_init(){
 }
 
 void display_clear(){
-	memset((void*) VGA_MEMORY,0,DISPLAY_SIZE_BYTES);
+	memset(VGA_MEMORY,0,DISPLAY_SIZE_BYTES);
 }
 
 void set_colors(uint8_t colors){
@@ -33,7 +33,7 @@ void printChar(char toPrint){
 	}
 
 	uint16_t position_1d = convert_2d_position(cursor);
-	void* address = (void*)VGA_MEMORY + (position_1d * 2);
+	void* address = VGA_MEMORY + (position_1d * 2);
 	memset(address, toPrint, 1); // first the character
 	memset(address + 1, color, 1); //then the color
 	setCursorPosition(convert_1d_position(convert_2d_position(cursor) + 1));
@@ -49,11 +49,15 @@ void printString(char* toPrint){
 
 void setCursorPosition(cursor_position_t position){
 	currentPosition = position;
+	draw_cursor();
+}
+
+void draw_cursor(){
 	uint16_t position_1d = convert_2d_position(currentPosition);
-	outb(CURSOR_CMD_ADDRESS, 0xE);
-	outb(CURSOR_DATA_ADDRESS, (uint8_t) ((position_1d >> 8) & 0xFF));
-	outb(CURSOR_CMD_ADDRESS, 0xF);
-	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d & 0xFF));
+	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB first
+	outb(CURSOR_DATA_ADDRESS, (position_1d >> 8));
+	outb(CURSOR_CMD_ADDRESS, 0xF); //LSB last
+	outb(CURSOR_DATA_ADDRESS, (position_1d & 0xFF));
 }
 
 cursor_position_t getCursorPosition(){
@@ -76,6 +80,6 @@ cursor_position_t convert_1d_position(uint16_t position_1d){
 }
 
 void scroll_screen(){
-	memcpy((void*) VGA_MEMORY, (void*) VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
-	//memset((void*) VGA_MEMORY + DISPLAY_WIDTH * (DISPLAY_HEIGHT-1),0,DISPLAY_WIDTH);
+	memcpy(VGA_MEMORY, VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
+	memset(VGA_MEMORY + DISPLAY_WIDTH * (DISPLAY_HEIGHT-1) * 2, 0, DISPLAY_WIDTH * 2);
 }

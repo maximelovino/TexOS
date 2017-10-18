@@ -5,16 +5,16 @@ global inw;
 
 outb:
 	enter 0,0;
-	mov dx,[ebp+8]; Here we have the port
-	mov eax,[ebp+12]; Here is the data
+	mov dx,word[ebp+8]; Here we have the port
+	mov al,byte[ebp+12]; Here is the data
 	out dx,al;
 	leave;
 	ret;
 
 outw:
 	enter 0,0
-	mov dx,[ebp+8]; Here we have the port
-	mov eax,[ebp+12]; Here is the data
+	mov dx,word[ebp+8]; Here we have the port
+	mov ax,word[ebp+12]; Here is the data
 	out dx,ax;
 	leave;
 	ret;
@@ -22,7 +22,7 @@ outw:
 inb:
 	enter 0,0;
 	mov eax,0;
-	mov dx,[ebp+8]; The port
+	mov dx,word[ebp+8]; The port
 	in al,dx;
 	leave;
 	ret;
@@ -30,7 +30,7 @@ inb:
 inw:
 	enter 0,0;
 	mov eax,0;
-	mov dx,[ebp+8]; The port
+	mov dx,word[ebp+8]; The port
 	in ax,dx;
 	leave;
 	ret;

@@ -4,7 +4,7 @@
 #include "minStdLib.h"
 
 #ifndef VGA_MEMORY
-#define VGA_MEMORY 0xB8000
+#define VGA_MEMORY (void*) 0xB8000
 #endif
 
 #ifndef CURSOR_CMD_ADDRESS
@@ -46,6 +46,7 @@ void printString(char* toPrint);
 void setCursorPosition(cursor_position_t position);
 cursor_position_t getCursorPosition();
 void display_print(char* format, ...);
+void draw_cursor();
 
 uint16_t convert_2d_position(cursor_position_t cursor);
 cursor_position_t convert_1d_position(uint16_t position_1d);
