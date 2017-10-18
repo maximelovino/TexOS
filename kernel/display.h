@@ -19,6 +19,14 @@
 #define DISPLAY_SIZE_BYTES 4000
 #endif
 
+#ifndef DISPLAY_WIDTH
+#define DISPLAY_WIDTH 80
+#endif
+
+#ifndef DISPLAY_HEIGHT
+#define DISPLAY_HEIGHT 25
+#endif
+
 typedef struct cursor_position_st {
 	uint8_t x;
 	uint8_t y;

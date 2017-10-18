@@ -1,6 +1,7 @@
 #include "display.h"
 
 static uint8_t color = 0x0F;
+static cursor_position_t currentPosition;
 //TODO Store cursor position here
 
 void display_init(){
@@ -24,33 +25,39 @@ uint8_t get_colors(){
 }
 
 void printChar(char toPrint){
-	//TODO if we are writing on an outside cursor, we scroll the screen and move the cursor at the begininng of last line
 	cursor_position_t cursor = getCursorPosition();
+	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
+		scroll_screen();
+		cursor.y--;
+		setCursorPosition(cursor);
+	}
+
 	uint16_t position_1d = convert_2d_position(cursor);
 	void* address = (void*)VGA_MEMORY + (position_1d * 2);
 	memset(address, toPrint, 1); // first the character
 	memset(address + 1, color, 1); //then the color
-	//SHOULD WE MOVE THE CURSOR?
-	//TODO if we write on the last cell of the screen, we move the cursor outside
+	setCursorPosition(convert_1d_position(convert_2d_position(cursor) + 1));
 }
 
 void printString(char* toPrint){
 	int i = 0;
-	while (toPrint[i] ) {
+	while (toPrint[i]) {
 		printChar(toPrint[i]);
+		i++;
 	}
 }
 
 void setCursorPosition(cursor_position_t position){
-
+	currentPosition = position;
+	uint16_t position_1d = convert_2d_position(currentPosition);
+	outb(CURSOR_CMD_ADDRESS,0xE);
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d >> 8));
+	outb(CURSOR_CMD_ADDRESS, 0xF);
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d & 0xFF));
 }
 
 cursor_position_t getCursorPosition(){
-	cursor_position_t position;
-	position.x = 0;
-	position.y = 0;
-
-	return position;
+	return currentPosition;
 }
 
 void display_print(char* format, ...){
@@ -58,13 +65,16 @@ void display_print(char* format, ...){
 }
 
 uint16_t convert_2d_position(cursor_position_t cursor){
-	return 0;
+	return cursor.y * DISPLAY_WIDTH + cursor.x;
 }
 
 cursor_position_t convert_1d_position(uint16_t position_1d){
-
+	cursor_position_t position;
+	position.x = position_1d % DISPLAY_WIDTH;
+	position.y = position_1d / DISPLAY_HEIGHT;
+	return position;
 }
 
 void scroll_screen(){
-
+	memcpy((void*) VGA_MEMORY, (void*) VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
 }

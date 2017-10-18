@@ -3,6 +3,7 @@
 #include "multiboot.h"
 #include "minStdLib.h"
 #include "gdt.h"
+#include "display.h"
 
 void kernelEntry(multiboot_info_t* multibootInfos);
 
