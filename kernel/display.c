@@ -50,8 +50,8 @@ void printString(char* toPrint){
 void setCursorPosition(cursor_position_t position){
 	currentPosition = position;
 	uint16_t position_1d = convert_2d_position(currentPosition);
-	outb(CURSOR_CMD_ADDRESS,0xE);
-	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d >> 8));
+	outb(CURSOR_CMD_ADDRESS, 0xE);
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) ((position_1d >> 8) & 0xFF));
 	outb(CURSOR_CMD_ADDRESS, 0xF);
 	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d & 0xFF));
 }
@@ -71,10 +71,11 @@ uint16_t convert_2d_position(cursor_position_t cursor){
 cursor_position_t convert_1d_position(uint16_t position_1d){
 	cursor_position_t position;
 	position.x = position_1d % DISPLAY_WIDTH;
-	position.y = position_1d / DISPLAY_HEIGHT;
+	position.y = position_1d / DISPLAY_WIDTH;
 	return position;
 }
 
 void scroll_screen(){
 	memcpy((void*) VGA_MEMORY, (void*) VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
+	//memset((void*) VGA_MEMORY + DISPLAY_WIDTH * (DISPLAY_HEIGHT-1),0,DISPLAY_WIDTH);
 }
