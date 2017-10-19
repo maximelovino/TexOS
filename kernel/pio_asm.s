@@ -4,7 +4,7 @@ global inb;
 global inw;
 
 outb:
-	enter 0,0;
+	enter 0,0
 	mov dx,word[ebp+8]; Here we have the port
 	mov al,byte[ebp+12]; Here is the data
 	out dx,al;

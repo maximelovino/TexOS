@@ -48,8 +48,10 @@ cursor_position_t getCursorPosition();
 void display_print(char* format, ...);
 void draw_cursor();
 
-uint16_t convert_2d_position(cursor_position_t cursor);
-cursor_position_t convert_1d_position(uint16_t position_1d);
+ushort convert_2d_position(cursor_position_t cursor);
+cursor_position_t convert_1d_position(ushort position_1d);
+
+void display_cursor();
 
 void scroll_screen();
 

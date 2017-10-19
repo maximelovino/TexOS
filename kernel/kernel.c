@@ -5,7 +5,7 @@ void kernelEntry(multiboot_info_t* multibootInfos){
 	display_init();
 
 	for (int i = 0; i < 1999; i++) {
-		printString("A");
+		printString("ABCDEFGHIJK");
 	}
 
 	for (int i = 0; i < 1e8; i++) {

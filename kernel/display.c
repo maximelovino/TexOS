@@ -13,7 +13,15 @@ void display_init(){
 }
 
 void display_clear(){
-	memset(VGA_MEMORY,0,DISPLAY_SIZE_BYTES);
+	for (int i = 0; i < DISPLAY_SIZE_BYTES; i++) {
+		if ((int)i % 2 == 1) {
+			//odd bytes are color
+			memset(VGA_MEMORY + i, color, 1);
+		}else{
+			//even bytes are null chars
+			memset(VGA_MEMORY + i, 0, 1);
+		}
+	}
 }
 
 void set_colors(uint8_t colors){
@@ -36,7 +44,7 @@ void printChar(char toPrint){
 	void* address = VGA_MEMORY + (position_1d * 2);
 	memset(address, toPrint, 1); // first the character
 	memset(address + 1, color, 1); //then the color
-	setCursorPosition(convert_1d_position(convert_2d_position(cursor) + 1));
+	setCursorPosition(convert_1d_position(position_1d + 1));
 }
 
 void printString(char* toPrint){
@@ -53,11 +61,14 @@ void setCursorPosition(cursor_position_t position){
 }
 
 void draw_cursor(){
-	uint16_t position_1d = convert_2d_position(currentPosition);
-	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB first
-	outb(CURSOR_DATA_ADDRESS, (position_1d >> 8));
-	outb(CURSOR_CMD_ADDRESS, 0xF); //LSB last
-	outb(CURSOR_DATA_ADDRESS, (position_1d & 0xFF));
+	ushort position_1d = convert_2d_position(currentPosition);
+
+	outb(CURSOR_CMD_ADDRESS, 0xF); //LSB
+	outb(CURSOR_DATA_ADDRESS, (uint8_t)(position_1d & 0xFF));
+
+	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB
+	outb(CURSOR_DATA_ADDRESS, (uint8_t)(position_1d >> 8) & 0xFF);
+	display_cursor();
 }
 
 cursor_position_t getCursorPosition(){
@@ -68,11 +79,19 @@ void display_print(char* format, ...){
 
 }
 
-uint16_t convert_2d_position(cursor_position_t cursor){
+void display_cursor(){
+	outb(CURSOR_CMD_ADDRESS, 0xA);
+	outb(CURSOR_DATA_ADDRESS,0xE);
+
+	outb(CURSOR_CMD_ADDRESS, 0xB);
+	outb(CURSOR_DATA_ADDRESS,0x1f);
+}
+
+ushort convert_2d_position(cursor_position_t cursor){
 	return cursor.y * DISPLAY_WIDTH + cursor.x;
 }
 
-cursor_position_t convert_1d_position(uint16_t position_1d){
+cursor_position_t convert_1d_position(ushort position_1d){
 	cursor_position_t position;
 	position.x = position_1d % DISPLAY_WIDTH;
 	position.y = position_1d / DISPLAY_WIDTH;
@@ -81,5 +100,6 @@ cursor_position_t convert_1d_position(uint16_t position_1d){
 
 void scroll_screen(){
 	memcpy(VGA_MEMORY, VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
+	//TODO here we have the same problem with the cursor, we should do a function to clear screen between two bounds
 	memset(VGA_MEMORY + DISPLAY_WIDTH * (DISPLAY_HEIGHT-1) * 2, 0, DISPLAY_WIDTH * 2);
 }
