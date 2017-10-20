@@ -47,7 +47,7 @@ void setCursorPosition(cursor_position_t position);
 cursor_position_t getCursorPosition();
 void display_print(char* format, ...);
 void draw_cursor();
-
+void display_clear_zone(cursor_position_t start_coordinate, int count);
 ushort convert_2d_position(cursor_position_t cursor);
 cursor_position_t convert_1d_position(ushort position_1d);
 

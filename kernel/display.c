@@ -13,13 +13,22 @@ void display_init(){
 }
 
 void display_clear(){
-	for (int i = 0; i < DISPLAY_SIZE_BYTES; i++) {
-		if ((int)i % 2 == 1) {
-			//odd bytes are color
-			memset(VGA_MEMORY + i, color, 1);
-		}else{
+	cursor_position_t start;
+	start.x = 0;
+	start.y = 0;
+	display_clear_zone(start, DISPLAY_SIZE_BYTES);
+}
+
+void display_clear_zone(cursor_position_t start_coordinate, int count){
+	//TODO do function to get memory address of coordinate on VRAM
+	int start_position = (int)VGA_MEMORY + convert_2d_position(start_coordinate) * 2;
+
+	for (int i = 0; i < count; i++) {
+		if (i % 2 == 0) {
 			//even bytes are null chars
-			memset(VGA_MEMORY + i, 0, 1);
+			memset((void*)(start_position + i), 0, 1);
+		}else{
+			memset((void*)(start_position + i), color, 1);
 		}
 	}
 }
@@ -100,6 +109,9 @@ cursor_position_t convert_1d_position(ushort position_1d){
 
 void scroll_screen(){
 	memcpy(VGA_MEMORY, VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
-	//TODO here we have the same problem with the cursor, we should do a function to clear screen between two bounds
-	memset(VGA_MEMORY + DISPLAY_WIDTH * (DISPLAY_HEIGHT-1) * 2, 0, DISPLAY_WIDTH * 2);
+	// We clear from start of last line for a whole line
+	cursor_position_t start_clear;
+	start_clear.x = 0;
+	start_clear.y = DISPLAY_HEIGHT - 1;
+	display_clear_zone(start_clear, DISPLAY_WIDTH * 2);
 }

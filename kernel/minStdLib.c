@@ -1,6 +1,7 @@
 #include "minStdLib.h"
 
 void *memset(void *dst, int value, uint count){
+	//TODO actually this writes an int, so 4 bytes, so this should be used to clear screen
 	if (count) {
 		char* d = dst;
 		do {
