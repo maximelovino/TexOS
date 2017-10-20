@@ -23,11 +23,17 @@ void display_clear(){
 void shift_cursor(int x_shift, int y_shift){
 	currentPosition.x += x_shift;
 	currentPosition.y += y_shift;
-	draw_cursor();
+	setCursorPosition(currentPosition);
 }
 
 void increment_cursor(){
 	//TODO
+}
+
+void carriage_return(){
+	currentPosition.x = 0;
+	currentPosition.y++;
+	setCursorPosition(currentPosition);
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count){
@@ -55,12 +61,16 @@ uint8_t get_colors(){
 
 void printChar(char toPrint){
 	//TODO do for char '\n' and '\t'
+	//TODO BE CAREFUL WHEN SHIFTING CURSOR FOR '\n' because we could go too far outside the screen, so -1 would not be enough
+	//TODO CHECK THIS, WHEN WE '\n' from last line it doesn't work
+	if (toPrint == '\n') {
+		carriage_return();
+		return;
+	}
 	cursor_position_t cursor = getCursorPosition();
 	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
 		shift_cursor(0, -1);
-		cursor.y--;
-		setCursorPosition(cursor);
 	}
 
 	uint16_t position_1d = convert_2d_position(cursor);
@@ -80,10 +90,10 @@ void printString(char* toPrint){
 
 void setCursorPosition(cursor_position_t position){
 	currentPosition = position;
-	draw_cursor();
+	write_cursor_to_memory();
 }
 
-void draw_cursor(){
+void write_cursor_to_memory(){
 	ushort position_1d = convert_2d_position(currentPosition);
 
 	outb(CURSOR_CMD_ADDRESS, 0xF); //LSB
@@ -101,16 +111,28 @@ void itoa(int value, int base, char* buffer){
 	//TODO do it with base HEX as well
 	//TODO temporary hack => do it better later
 	buffer[0] = 0; //This is the null terminator
-	int cnt = 1;
-	while(value){
-		char rem = value % 10;
-		char tempBuffer[100];
-		memcpy(tempBuffer, buffer, cnt);
-		memcpy(&buffer[1], tempBuffer, cnt);
-		buffer[0] = ZERO_CHAR_VALUE + rem;
-		value /= 10;
-		cnt++;
+	int current = 0;
+	if (value == 0) {
+		buffer[0] = ZERO_CHAR_VALUE;
+		return;
 	}
+	while(value){
+		char rem = value % base;
+		char toAppend;
+		if (rem >= 10) {
+			toAppend = 'A' + rem - 10;
+		}else{
+			toAppend = ZERO_CHAR_VALUE + rem;
+		}
+		buffer[current] = toAppend;
+		value /= base;
+		current++;
+	}
+	char tempBuffer[100];
+	for (int i = 0; i < current; i++) {
+		tempBuffer[i] = buffer[current - i - 1];
+	}
+	memcpy(buffer, tempBuffer, current);
 }
 
 void display_print(char* format, ...){
@@ -125,11 +147,21 @@ void display_print(char* format, ...){
 			printString(buffer);
 			nextParamShift++;
 			currentChar++;
-		}else if(strncmp(currentChar, "%s", 2) == 0){
+		}else if(strncmp(currentChar, "%x", 2) == 0){
+			int* hexValue = (void*)&format + nextParamShift * 4;
+			char hexBuffer[100] = {0};
+			itoa(*hexValue, 16, hexBuffer);
+			printString("0x");
+			printString(hexBuffer);
+			nextParamShift++;
 			currentChar++;
-		}else if (strncmp(currentChar, "%x", 2) == 0) {
+		}else if (strncmp(currentChar, "%s", 2) == 0) {
+			char** string = (void*) &format + nextParamShift * 4;
+			printString(*string);
 			currentChar++;
 		}else if (strncmp(currentChar, "%c", 2) == 0){
+			char* character = (void*) &format + nextParamShift * 4;
+			printChar(*character);
 			currentChar++;
 		}else{
 			printChar(*currentChar);
