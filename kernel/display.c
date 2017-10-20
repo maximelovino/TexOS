@@ -21,10 +21,13 @@ void display_clear(){
 }
 
 void shift_cursor(int x_shift, int y_shift){
-	cursor_position_t newPos;
-	newPos.x = currentPosition.x + x_shift;
-	newPos.y = currentPosition.y - y_shift;
-	setCursorPosition(newPos);
+	currentPosition.x += x_shift;
+	currentPosition.y += y_shift;
+	draw_cursor();
+}
+
+void increment_cursor(){
+	//TODO
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count){
@@ -56,6 +59,8 @@ void printChar(char toPrint){
 	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
 		shift_cursor(0, -1);
+		cursor.y--;
+		setCursorPosition(cursor);
 	}
 
 	uint16_t position_1d = convert_2d_position(cursor);
@@ -92,9 +97,20 @@ cursor_position_t getCursorPosition(){
 	return currentPosition;
 }
 
-char* itoa(int value, int base){
-	static char buffer[100];
-	return buffer;
+void itoa(int value, int base, char* buffer){
+	//TODO do it with base HEX as well
+	//TODO temporary hack => do it better later
+	buffer[0] = 0; //This is the null terminator
+	int cnt = 1;
+	while(value){
+		char rem = value % 10;
+		char tempBuffer[100];
+		memcpy(tempBuffer, buffer, cnt);
+		memcpy(&buffer[1], tempBuffer, cnt);
+		buffer[0] = ZERO_CHAR_VALUE + rem;
+		value /= 10;
+		cnt++;
+	}
 }
 
 void display_print(char* format, ...){
@@ -104,7 +120,9 @@ void display_print(char* format, ...){
 	while (*currentChar) {
 		if (strncmp(currentChar, "%d", 2) == 0) {
 			int* value = (void*)&format + nextParamShift * 4;
-			printString(itoa(*value, 10));
+			char buffer[100] = {0};
+			itoa(*value, 10, buffer);
+			printString(buffer);
 			nextParamShift++;
 			currentChar++;
 		}else if(strncmp(currentChar, "%s", 2) == 0){
