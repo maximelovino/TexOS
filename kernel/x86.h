@@ -3,6 +3,7 @@
 
 //sizes
 #define ADDRESSABLE_SPACE 0xFFFFF
+#define STACK_JUMP 4
 
 // Privilege levels
 #define DPL_USER    0x3

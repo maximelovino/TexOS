@@ -1,10 +1,15 @@
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 #include "../common/types.h"
+#include "x86.h"
 #include "minStdLib.h"
+#include "vga_colors.h"
 
-//TODO constants for color
 //TODO functions to set color BG and FG separately
+
+#ifndef TAB_SIZE
+#define TAB_SIZE 4
+#endif
 
 #ifndef ZERO_CHAR_VALUE
 #define ZERO_CHAR_VALUE 48

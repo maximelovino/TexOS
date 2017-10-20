@@ -1,6 +1,6 @@
 #include "display.h"
 
-static uint8_t color = 0x0F;
+static uint8_t color = (COLOR_BLACK << 4) | COLOR_WHITE;
 static cursor_position_t currentPosition;
 //TODO Store cursor position here
 
@@ -23,11 +23,11 @@ void display_clear(){
 void shift_cursor(int x_shift, int y_shift){
 	currentPosition.x += x_shift;
 	currentPosition.y += y_shift;
-	setCursorPosition(currentPosition);
+	write_cursor_to_memory();
 }
 
 void increment_cursor(){
-	//TODO
+	setCursorPosition(convert_1d_position((convert_2d_position(getCursorPosition()) + 1)));
 }
 
 void carriage_return(){
@@ -63,21 +63,29 @@ void printChar(char toPrint){
 	//TODO do for char '\n' and '\t'
 	//TODO BE CAREFUL WHEN SHIFTING CURSOR FOR '\n' because we could go too far outside the screen, so -1 would not be enough
 	//TODO CHECK THIS, WHEN WE '\n' from last line it doesn't work
-	if (toPrint == '\n') {
-		carriage_return();
-		return;
-	}
+	//TODO SHIFT CURSOR STILL NOT WORKING
 	cursor_position_t cursor = getCursorPosition();
 	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
 		shift_cursor(0, -1);
+		cursor = getCursorPosition();
+	}
+	if (toPrint == '\n') {
+		carriage_return();
+		return;
+	}
+	if (toPrint == '\t') {
+		for (char i = 0; i < TAB_SIZE; i++) {
+			printChar(' ');
+		}
+		return;
 	}
 
 	uint16_t position_1d = convert_2d_position(cursor);
 	void* address = VGA_MEMORY + (position_1d * 2);
 	memset(address, toPrint, 1); // first the character
 	memset(address + 1, color, 1); //then the color
-	setCursorPosition(convert_1d_position(position_1d + 1));
+	increment_cursor();
 }
 
 void printString(char* toPrint){
@@ -136,19 +144,18 @@ void itoa(int value, int base, char* buffer){
 }
 
 void display_print(char* format, ...){
-	//TODO you have to find it in the stack
 	char* currentChar = format;
 	int nextParamShift = 1;
 	while (*currentChar) {
 		if (strncmp(currentChar, "%d", 2) == 0) {
-			int* value = (void*)&format + nextParamShift * 4;
+			int* value = (void*)&format + nextParamShift * STACK_JUMP;
 			char buffer[100] = {0};
 			itoa(*value, 10, buffer);
 			printString(buffer);
 			nextParamShift++;
 			currentChar++;
 		}else if(strncmp(currentChar, "%x", 2) == 0){
-			int* hexValue = (void*)&format + nextParamShift * 4;
+			int* hexValue = (void*)&format + nextParamShift * STACK_JUMP;
 			char hexBuffer[100] = {0};
 			itoa(*hexValue, 16, hexBuffer);
 			printString("0x");
@@ -156,12 +163,14 @@ void display_print(char* format, ...){
 			nextParamShift++;
 			currentChar++;
 		}else if (strncmp(currentChar, "%s", 2) == 0) {
-			char** string = (void*) &format + nextParamShift * 4;
+			char** string = (void*) &format + nextParamShift * STACK_JUMP;
 			printString(*string);
+			nextParamShift++;
 			currentChar++;
 		}else if (strncmp(currentChar, "%c", 2) == 0){
-			char* character = (void*) &format + nextParamShift * 4;
+			char* character = (void*) &format + nextParamShift * STACK_JUMP;
 			printChar(*character);
+			nextParamShift++;
 			currentChar++;
 		}else{
 			printChar(*currentChar);
