@@ -10,6 +10,7 @@ void display_init(){
 	newPos.y = 0;
 	display_clear();
 	setCursorPosition(newPos);
+	enable_cursor();
 }
 
 void display_clear(){
@@ -17,6 +18,13 @@ void display_clear(){
 	start.x = 0;
 	start.y = 0;
 	display_clear_zone(start, DISPLAY_SIZE_BYTES);
+}
+
+void shift_cursor(int x_shift, int y_shift){
+	cursor_position_t newPos;
+	newPos.x = currentPosition.x + x_shift;
+	newPos.y = currentPosition.y - y_shift;
+	setCursorPosition(newPos);
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count){
@@ -28,6 +36,7 @@ void display_clear_zone(cursor_position_t start_coordinate, int count){
 			//even bytes are null chars
 			memset((void*)(start_position + i), 0, 1);
 		}else{
+			//odd bytes are color
 			memset((void*)(start_position + i), color, 1);
 		}
 	}
@@ -42,11 +51,11 @@ uint8_t get_colors(){
 }
 
 void printChar(char toPrint){
+	//TODO do for char '\n' and '\t'
 	cursor_position_t cursor = getCursorPosition();
 	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
-		cursor.y--;
-		setCursorPosition(cursor);
+		shift_cursor(0, -1);
 	}
 
 	uint16_t position_1d = convert_2d_position(cursor);
@@ -77,18 +86,42 @@ void draw_cursor(){
 
 	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB
 	outb(CURSOR_DATA_ADDRESS, (uint8_t)(position_1d >> 8) & 0xFF);
-	display_cursor();
 }
 
 cursor_position_t getCursorPosition(){
 	return currentPosition;
 }
 
-void display_print(char* format, ...){
-
+char* itoa(int value, int base){
+	static char buffer[100];
+	return buffer;
 }
 
-void display_cursor(){
+void display_print(char* format, ...){
+	//TODO you have to find it in the stack
+	char* currentChar = format;
+	int nextParamShift = 1;
+	while (*currentChar) {
+		if (strncmp(currentChar, "%d", 2) == 0) {
+			int* value = (void*)&format + nextParamShift * 4;
+			printString(itoa(*value, 10));
+			nextParamShift++;
+			currentChar++;
+		}else if(strncmp(currentChar, "%s", 2) == 0){
+			currentChar++;
+		}else if (strncmp(currentChar, "%x", 2) == 0) {
+			currentChar++;
+		}else if (strncmp(currentChar, "%c", 2) == 0){
+			currentChar++;
+		}else{
+			printChar(*currentChar);
+		}
+		currentChar++;
+	}
+}
+
+void enable_cursor(){
+	//TODO this should take into account the current register value and only change bit 5
 	outb(CURSOR_CMD_ADDRESS, 0xA);
 	outb(CURSOR_DATA_ADDRESS,0xE);
 

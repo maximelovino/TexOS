@@ -3,6 +3,13 @@
 #include "../common/types.h"
 #include "minStdLib.h"
 
+//TODO constants for color
+//TODO functions to set color BG and FG separately
+
+#ifndef ZERO_CHAR_VALUE
+#define ZERO_CHAR_VALUE 48
+#endif
+
 #ifndef VGA_MEMORY
 #define VGA_MEMORY (void*) 0xB8000
 #endif
@@ -37,6 +44,8 @@ extern void outw(uint16_t port, uint16_t data);
 extern uint8_t inb(uint16_t port);
 extern uint16_t inw(uint16_t port);
 
+//TODO enableCursor and disableCursor
+
 void display_init();
 void display_clear();
 void set_colors(uint8_t colors);
@@ -50,8 +59,9 @@ void draw_cursor();
 void display_clear_zone(cursor_position_t start_coordinate, int count);
 ushort convert_2d_position(cursor_position_t cursor);
 cursor_position_t convert_1d_position(ushort position_1d);
+char* itoa(int value, int base);
 
-void display_cursor();
+void enable_cursor();
 
 void scroll_screen();
 
