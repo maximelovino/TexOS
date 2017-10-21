@@ -4,12 +4,12 @@
 #include "../common/types.h"
 #include "../common/const.h"
 
-#ifndef CURSOR_LOOK_START
-#define CURSOR_LOOK_START 0b0
+#ifndef CURSOR_FAT_LOOK_START
+#define CURSOR_FAT_LOOK_START 0b0
 #endif
 
-#ifndef CURSOR_LOOK_END
-#define CURSOR_LOOK_END 0b11111
+#ifndef CURSOR_FAT_LOOK_END
+#define CURSOR_FAT_LOOK_END 0b11111
 #endif
 
 #ifndef CURSOR_END_REGISTER
@@ -41,6 +41,8 @@ typedef struct cursor_position_st {
 void shift_cursor(int x_shift, int y_shift);
 
 void increment_cursor();
+
+void set_cursor_to_origin();
 
 void enable_cursor();
 

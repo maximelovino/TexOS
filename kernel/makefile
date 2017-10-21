@@ -17,7 +17,15 @@ STAGE2=boot/grub/stage2_eltorito
 
 $(shell mkdir -p $(BUILD_FOLDER))
 
-.PHONY=run
+.PHONY=run test
+
+test: clean makedir debug_run
+
+makedir:
+	$(shell mkdir -p $(BUILD_FOLDER))
+	
+debug_run: COMPILE_FLAGS += -DTEST
+debug_run: run
 
 run:$(KERNEL_ISO)
 	qemu-system-i386 -cdrom $(KERNEL_ISO)

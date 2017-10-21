@@ -4,10 +4,10 @@ static cursor_position_t current_position;
 
 void set_cursor_default_look() {
 	outb(CURSOR_CMD_ADDRESS, CURSOR_START_REGISTER);
-	outb(CURSOR_DATA_ADDRESS, CURSOR_LOOK_START);
+	outb(CURSOR_DATA_ADDRESS, CURSOR_FAT_LOOK_START);
 
 	outb(CURSOR_CMD_ADDRESS, CURSOR_END_REGISTER);
-	outb(CURSOR_DATA_ADDRESS, CURSOR_LOOK_END);
+	outb(CURSOR_DATA_ADDRESS, CURSOR_FAT_LOOK_END);
 }
 
 void shift_cursor(int x_shift, int y_shift) {
@@ -18,6 +18,12 @@ void shift_cursor(int x_shift, int y_shift) {
 
 void increment_cursor() {
 	set_cursor_position(convert_1d_to_2d_position((convert_2d_to_1d_position(get_cursor_position()) + 1)));
+}
+
+void set_cursor_to_origin() {
+	current_position.x = 0;
+	current_position.y = 0;
+	write_cursor_to_memory();
 }
 
 void carriage_return() {

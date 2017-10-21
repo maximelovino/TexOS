@@ -3,11 +3,8 @@
 static uint8_t current_color = (COLOR_BLACK << 4) | COLOR_WHITE;
 
 void display_init() {
-	cursor_position_t newPos;
-	newPos.x = 0;
-	newPos.y = 0;
 	display_clear();
-	set_cursor_position(newPos);
+	set_cursor_to_origin();
 	set_cursor_default_look();
 	enable_cursor();
 }
