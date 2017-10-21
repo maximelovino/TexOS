@@ -5,7 +5,7 @@ COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -f elf32
 ASM_OBJECTS=bootstrap_asm.o gdt_asm.o pio_asm.o
-C_OBJECTS=kernel.o minStdLib.o gdt.o display.o
+C_OBJECTS=kernel.o minStdLib.o gdt.o display.o cursor.o
 BUILD_FOLDER=../build/
 ASM_OBJECTS_FILES=$(addprefix $(BUILD_FOLDER),$(ASM_OBJECTS))
 C_OBJECTS_FILES=$(addprefix $(BUILD_FOLDER),$(C_OBJECTS))
@@ -40,6 +40,9 @@ $(BUILD_FOLDER)gdt_asm.o:gdt_asm.s
 	$(NASM) $< -o $@
 
 $(BUILD_FOLDER)display.o: display.c display.h
+	$(COMPILE) $< -o $@
+
+$(BUILD_FOLDER)cursor.o: cursor.c cursor.h
 	$(COMPILE) $< -o $@
 
 $(BUILD_FOLDER)gdt.o:gdt.c gdt.h

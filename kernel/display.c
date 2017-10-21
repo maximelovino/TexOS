@@ -1,122 +1,82 @@
 #include "display.h"
 
-static uint8_t color = (COLOR_BLACK << 4) | COLOR_WHITE;
-static cursor_position_t currentPosition;
-//TODO Store cursor position here
+static uint8_t current_color = (COLOR_BLACK << 4) | COLOR_WHITE;
 
-void display_init(){
+void display_init() {
 	cursor_position_t newPos;
 	newPos.x = 0;
 	newPos.y = 0;
 	display_clear();
-	setCursorPosition(newPos);
+	set_cursor_position(newPos);
+	set_cursor_default_look();
 	enable_cursor();
 }
 
-void display_clear(){
+void display_clear() {
 	cursor_position_t start;
 	start.x = 0;
 	start.y = 0;
 	display_clear_zone(start, DISPLAY_SIZE_BYTES);
 }
 
-void shift_cursor(int x_shift, int y_shift){
-	currentPosition.x += x_shift;
-	currentPosition.y += y_shift;
-	write_cursor_to_memory();
-}
-
-void increment_cursor(){
-	setCursorPosition(convert_1d_position((convert_2d_position(getCursorPosition()) + 1)));
-}
-
-void carriage_return(){
-	currentPosition.x = 0;
-	currentPosition.y++;
-	setCursorPosition(currentPosition);
-}
-
-void display_clear_zone(cursor_position_t start_coordinate, int count){
+void display_clear_zone(cursor_position_t start_coordinate, int count) {
+	//TODO we should decide if we always clear white on black or not
 	//TODO do function to get memory address of coordinate on VRAM
-	int start_position = (int)VGA_MEMORY + convert_2d_position(start_coordinate) * 2;
+	int start_position = (int) VGA_MEMORY + convert_2d_to_1d_position(start_coordinate) * 2;
 
 	for (int i = 0; i < count; i++) {
 		if (i % 2 == 0) {
 			//even bytes are null chars
-			memset((void*)(start_position + i), 0, 1);
-		}else{
-			//odd bytes are color
-			memset((void*)(start_position + i), color, 1);
+			memset((void*) (start_position + i), 0, 1);
+		} else {
+			//odd bytes are current_color
+			memset((void*) (start_position + i), current_color, 1);
 		}
 	}
 }
 
-void set_colors(uint8_t colors){
-	color = colors;
+void set_colors(uint8_t colors) {
+	current_color = colors;
 }
 
-uint8_t get_colors(){
-	return color;
+uint8_t get_colors() {
+	return current_color;
 }
 
-void printChar(char toPrint){
-	//TODO do for char '\n' and '\t'
-	//TODO BE CAREFUL WHEN SHIFTING CURSOR FOR '\n' because we could go too far outside the screen, so -1 would not be enough
-	//TODO CHECK THIS, WHEN WE '\n' from last line it doesn't work
-	//TODO SHIFT CURSOR STILL NOT WORKING
-	cursor_position_t cursor = getCursorPosition();
-	if (convert_2d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
+void print_char(char to_print) {
+	cursor_position_t cursor = get_cursor_position();
+	if (convert_2d_to_1d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
 		shift_cursor(0, -1);
-		cursor = getCursorPosition();
+		cursor = get_cursor_position();
 	}
-	if (toPrint == '\n') {
+	if (to_print == '\n') {
 		carriage_return();
 		return;
 	}
-	if (toPrint == '\t') {
+	if (to_print == '\t') {
 		for (char i = 0; i < TAB_SIZE; i++) {
-			printChar(' ');
+			print_char(' ');
 		}
 		return;
 	}
 
-	uint16_t position_1d = convert_2d_position(cursor);
+	uint16_t position_1d = convert_2d_to_1d_position(cursor);
 	void* address = VGA_MEMORY + (position_1d * 2);
-	memset(address, toPrint, 1); // first the character
-	memset(address + 1, color, 1); //then the color
+	memset(address, to_print, 1); // first the character
+	memset(address + 1, current_color, 1); //then the current_color
 	increment_cursor();
 }
 
-void printString(char* toPrint){
+void print_string(char* to_print) {
 	int i = 0;
-	while (toPrint[i]) {
-		printChar(toPrint[i]);
+	while (to_print[i]) {
+		print_char(to_print[i]);
 		i++;
 	}
 }
 
-void setCursorPosition(cursor_position_t position){
-	currentPosition = position;
-	write_cursor_to_memory();
-}
-
-void write_cursor_to_memory(){
-	ushort position_1d = convert_2d_position(currentPosition);
-
-	outb(CURSOR_CMD_ADDRESS, 0xF); //LSB
-	outb(CURSOR_DATA_ADDRESS, (uint8_t)(position_1d & 0xFF));
-
-	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB
-	outb(CURSOR_DATA_ADDRESS, (uint8_t)(position_1d >> 8) & 0xFF);
-}
-
-cursor_position_t getCursorPosition(){
-	return currentPosition;
-}
-
-void itoa(int value, int base, char* buffer){
-	//TODO do it with base HEX as well
+void itoa(int value, int base, char* buffer) {
 	//TODO temporary hack => do it better later
 	buffer[0] = 0; //This is the null terminator
 	int current = 0;
@@ -124,12 +84,12 @@ void itoa(int value, int base, char* buffer){
 		buffer[0] = ZERO_CHAR_VALUE;
 		return;
 	}
-	while(value){
+	while (value) {
 		char rem = value % base;
 		char toAppend;
 		if (rem >= 10) {
 			toAppend = 'A' + rem - 10;
-		}else{
+		} else {
 			toAppend = ZERO_CHAR_VALUE + rem;
 		}
 		buffer[current] = toAppend;
@@ -143,67 +103,55 @@ void itoa(int value, int base, char* buffer){
 	memcpy(buffer, tempBuffer, current);
 }
 
-void display_print(char* format, ...){
+void display_printf(char* format, ...) {
 	char* currentChar = format;
 	int nextParamShift = 1;
 	while (*currentChar) {
 		if (strncmp(currentChar, "%d", 2) == 0) {
-			int* value = (void*)&format + nextParamShift * STACK_JUMP;
+			int* value = (void*) &format + nextParamShift * STACK_JUMP;
 			char buffer[100] = {0};
 			itoa(*value, 10, buffer);
-			printString(buffer);
+			print_string(buffer);
 			nextParamShift++;
 			currentChar++;
-		}else if(strncmp(currentChar, "%x", 2) == 0){
-			int* hexValue = (void*)&format + nextParamShift * STACK_JUMP;
+		} else if (strncmp(currentChar, "%x", 2) == 0) {
+			int* hexValue = (void*) &format + nextParamShift * STACK_JUMP;
 			char hexBuffer[100] = {0};
 			itoa(*hexValue, 16, hexBuffer);
-			printString("0x");
-			printString(hexBuffer);
+			print_string("0x");
+			print_string(hexBuffer);
 			nextParamShift++;
 			currentChar++;
-		}else if (strncmp(currentChar, "%s", 2) == 0) {
+		} else if (strncmp(currentChar, "%s", 2) == 0) {
 			char** string = (void*) &format + nextParamShift * STACK_JUMP;
-			printString(*string);
+			print_string(*string);
 			nextParamShift++;
 			currentChar++;
-		}else if (strncmp(currentChar, "%c", 2) == 0){
+		} else if (strncmp(currentChar, "%c", 2) == 0) {
 			char* character = (void*) &format + nextParamShift * STACK_JUMP;
-			printChar(*character);
+			print_char(*character);
 			nextParamShift++;
 			currentChar++;
-		}else{
-			printChar(*currentChar);
+		} else {
+			print_char(*currentChar);
 		}
 		currentChar++;
 	}
 }
 
-void enable_cursor(){
-	//TODO this should take into account the current register value and only change bit 5
-	outb(CURSOR_CMD_ADDRESS, 0xA);
-	outb(CURSOR_DATA_ADDRESS,0xE);
-
-	outb(CURSOR_CMD_ADDRESS, 0xB);
-	outb(CURSOR_DATA_ADDRESS,0x1f);
-}
-
-ushort convert_2d_position(cursor_position_t cursor){
-	return cursor.y * DISPLAY_WIDTH + cursor.x;
-}
-
-cursor_position_t convert_1d_position(ushort position_1d){
-	cursor_position_t position;
-	position.x = position_1d % DISPLAY_WIDTH;
-	position.y = position_1d / DISPLAY_WIDTH;
-	return position;
-}
-
-void scroll_screen(){
-	memcpy(VGA_MEMORY, VGA_MEMORY  + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
+void scroll_screen() {
+	memcpy(VGA_MEMORY, VGA_MEMORY + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
 	// We clear from start of last line for a whole line
 	cursor_position_t start_clear;
 	start_clear.x = 0;
 	start_clear.y = DISPLAY_HEIGHT - 1;
 	display_clear_zone(start_clear, DISPLAY_WIDTH * 2);
+}
+
+void set_bg_color(uint8_t color) {
+	set_colors((current_color & 0x0F) | (color << 4 & 0xF0));
+}
+
+void set_fg_color(uint8_t color) {
+	set_colors((get_colors() & 0xF0) | (color & 0x0F));
 }
