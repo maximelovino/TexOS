@@ -21,16 +21,15 @@ void display_clear() {
 
 void display_clear_zone(cursor_position_t start_coordinate, int count) {
 	//TODO we should decide if we always clear white on black or not
-	//TODO do function to get memory address of coordinate on VRAM
-	int start_position = (int) VGA_MEMORY + convert_2d_to_1d_position(start_coordinate) * 2;
+	void* start_position = get_vram_pointer(start_coordinate);
 
 	for (int i = 0; i < count; i++) {
 		if (i % 2 == 0) {
 			//even bytes are null chars
-			memset((void*) (start_position + i), 0, 1);
+			memset((start_position + i), 0, 1);
 		} else {
 			//odd bytes are current_color
-			memset((void*) (start_position + i), current_color, 1);
+			memset((start_position + i), current_color, 1);
 		}
 	}
 }
@@ -61,8 +60,7 @@ void print_char(char to_print) {
 		return;
 	}
 
-	uint16_t position_1d = convert_2d_to_1d_position(cursor);
-	void* address = VGA_MEMORY + (position_1d * 2);
+	void* address = get_vram_pointer(cursor);
 	memset(address, to_print, 1); // first the character
 	memset(address + 1, current_color, 1); //then the current_color
 	increment_cursor();
@@ -76,14 +74,18 @@ void print_string(char* to_print) {
 	}
 }
 
-void itoa(int value, int base, char* buffer) {
+void itoa(int value, bool hex, char* buffer) {
 	//TODO temporary hack => do it better later
+
 	buffer[0] = 0; //This is the null terminator
 	int current = 0;
 	if (value == 0) {
 		buffer[0] = ZERO_CHAR_VALUE;
 		return;
 	}
+
+	int base = hex ? 16 : 10;
+
 	while (value) {
 		char rem = value % base;
 		char toAppend;
@@ -96,6 +98,7 @@ void itoa(int value, int base, char* buffer) {
 		value /= base;
 		current++;
 	}
+
 	char tempBuffer[100];
 	for (int i = 0; i < current; i++) {
 		tempBuffer[i] = buffer[current - i - 1];
@@ -110,14 +113,14 @@ void display_printf(char* format, ...) {
 		if (strncmp(currentChar, "%d", 2) == 0) {
 			int* value = (void*) &format + nextParamShift * STACK_JUMP;
 			char buffer[100] = {0};
-			itoa(*value, 10, buffer);
+			itoa(*value, false, buffer);
 			print_string(buffer);
 			nextParamShift++;
 			currentChar++;
 		} else if (strncmp(currentChar, "%x", 2) == 0) {
 			int* hexValue = (void*) &format + nextParamShift * STACK_JUMP;
 			char hexBuffer[100] = {0};
-			itoa(*hexValue, 16, hexBuffer);
+			itoa(*hexValue, true, hexBuffer);
 			print_string("0x");
 			print_string(hexBuffer);
 			nextParamShift++;
@@ -149,9 +152,13 @@ void scroll_screen() {
 }
 
 void set_bg_color(uint8_t color) {
-	set_colors((current_color & 0x0F) | (color << 4 & 0xF0));
+	set_colors((current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0));
 }
 
 void set_fg_color(uint8_t color) {
-	set_colors((get_colors() & 0xF0) | (color & 0x0F));
+	set_colors((get_colors() & (uint8_t) 0xF0) | (color & (uint8_t) 0x0F));
+}
+
+void* get_vram_pointer(cursor_position_t position) {
+	return VGA_MEMORY + convert_2d_to_1d_position(position) * 2;
 }

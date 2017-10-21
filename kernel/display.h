@@ -44,8 +44,10 @@ void print_string(char* to_print);
 
 void display_printf(char* format, ...);
 
-void itoa(int value, int base, char* buffer);
+void itoa(int value, bool hex, char* buffer);
 
 void scroll_screen();
+
+void* get_vram_pointer(cursor_position_t position);
 
 #endif /* end of include guard: _DISPLAY_H_ */
