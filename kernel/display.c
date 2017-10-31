@@ -35,6 +35,7 @@ void set_colors(uint8_t colors) {
 	current_color = colors;
 }
 
+//TODO separate this in two distinct functions
 uint8_t get_colors() {
 	return current_color;
 }

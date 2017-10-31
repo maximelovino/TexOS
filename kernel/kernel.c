@@ -14,7 +14,8 @@ void kernelEntry(multiboot_info_t* multibootInfos) {
 
 	}
 }
-
+//TODO add automated test verification
+#ifdef TEST
 void demo_mode() {
 	char* text = "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.";
 	char smiley_face = 1;
@@ -67,3 +68,4 @@ void sleep_for_demo() {
 
 	}
 }
+#endif

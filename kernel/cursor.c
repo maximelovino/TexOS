@@ -27,6 +27,7 @@ void set_cursor_to_origin() {
 }
 
 void carriage_return() {
+	//TODO perhaps use shift
 	current_position.x = 0;
 	current_position.y++;
 	set_cursor_position(current_position);

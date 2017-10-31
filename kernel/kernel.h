@@ -7,6 +7,8 @@
 
 void kernelEntry(multiboot_info_t* multibootInfos);
 
+void demo_mode();
+
 void sleep_for_cancel();
 
 void sleep_for_demo();
