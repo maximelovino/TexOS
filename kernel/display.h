@@ -12,10 +12,6 @@
 #define TAB_SIZE 4
 #endif
 
-#ifndef ZERO_CHAR_VALUE
-#define ZERO_CHAR_VALUE 48
-#endif
-
 #ifndef VGA_MEMORY
 #define VGA_MEMORY (void*) 0xB8000
 #endif

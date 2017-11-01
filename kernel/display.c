@@ -78,7 +78,7 @@ void itoa(int value, bool hex, char* buffer) {
 	buffer[0] = 0; //This is the null terminator
 	int current = 0;
 	if (value == 0) {
-		buffer[0] = ZERO_CHAR_VALUE;
+		buffer[0] = '0';
 		return;
 	}
 
@@ -86,13 +86,13 @@ void itoa(int value, bool hex, char* buffer) {
 
 	while (value) {
 		char rem = value % base;
-		char toAppend;
+		char to_append;
 		if (rem >= 10) {
-			toAppend = 'A' + rem - 10;
+			to_append = 'A' + rem - 10;
 		} else {
-			toAppend = ZERO_CHAR_VALUE + rem;
+			to_append = '0' + rem;
 		}
-		buffer[current] = toAppend;
+		buffer[current] = to_append;
 		value /= base;
 		current++;
 	}
@@ -105,38 +105,38 @@ void itoa(int value, bool hex, char* buffer) {
 }
 
 void display_printf(char* format, ...) {
-	char* currentChar = format;
-	int nextParamShift = 1;
-	while (*currentChar) {
-		if (strncmp(currentChar, "%d", 2) == 0) {
-			int* value = (void*) &format + nextParamShift * STACK_JUMP;
+	char* current_char = format;
+	int next_param_shift = 1;
+	while (*current_char) {
+		if (strncmp(current_char, "%d", 2) == 0) {
+			int* value = (void*) &format + next_param_shift * STACK_JUMP;
 			char buffer[100] = {0};
 			itoa(*value, false, buffer);
 			print_string(buffer);
-			nextParamShift++;
-			currentChar++;
-		} else if (strncmp(currentChar, "%x", 2) == 0) {
-			int* hexValue = (void*) &format + nextParamShift * STACK_JUMP;
+			next_param_shift++;
+			current_char++;
+		} else if (strncmp(current_char, "%x", 2) == 0) {
+			int* hexValue = (void*) &format + next_param_shift * STACK_JUMP;
 			char hexBuffer[100] = {0};
 			itoa(*hexValue, true, hexBuffer);
 			print_string("0x");
 			print_string(hexBuffer);
-			nextParamShift++;
-			currentChar++;
-		} else if (strncmp(currentChar, "%s", 2) == 0) {
-			char** string = (void*) &format + nextParamShift * STACK_JUMP;
+			next_param_shift++;
+			current_char++;
+		} else if (strncmp(current_char, "%s", 2) == 0) {
+			char** string = (void*) &format + next_param_shift * STACK_JUMP;
 			print_string(*string);
-			nextParamShift++;
-			currentChar++;
-		} else if (strncmp(currentChar, "%c", 2) == 0) {
-			char* character = (void*) &format + nextParamShift * STACK_JUMP;
+			next_param_shift++;
+			current_char++;
+		} else if (strncmp(current_char, "%c", 2) == 0) {
+			char* character = (void*) &format + next_param_shift * STACK_JUMP;
 			print_char(*character);
-			nextParamShift++;
-			currentChar++;
+			next_param_shift++;
+			current_char++;
 		} else {
-			print_char(*currentChar);
+			print_char(*current_char);
 		}
-		currentChar++;
+		current_char++;
 	}
 }
 
