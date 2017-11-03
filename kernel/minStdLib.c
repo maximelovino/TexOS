@@ -30,3 +30,35 @@ int strncmp(const char *p, const char *q, uint n){
 	}
 	return 0;
 }
+
+void itoa(int value, bool hex, char* buffer) {
+	//TODO temporary hack => do it better later
+
+	buffer[0] = 0; //This is the null terminator
+	int current = 0;
+	if (value == 0) {
+		buffer[0] = '0';
+		return;
+	}
+
+	int base = hex ? 16 : 10;
+
+	while (value) {
+		char rem = value % base;
+		char to_append;
+		if (rem >= 10) {
+			to_append = 'A' + rem - 10;
+		} else {
+			to_append = '0' + rem;
+		}
+		buffer[current] = to_append;
+		value /= base;
+		current++;
+	}
+
+	char tempBuffer[100];
+	for (int i = 0; i < current; i++) {
+		tempBuffer[i] = buffer[current - i - 1];
+	}
+	memcpy(buffer, tempBuffer, current);
+}

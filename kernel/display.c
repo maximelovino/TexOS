@@ -17,9 +17,9 @@ void display_clear() {
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count) {
-	//TODO we should decide if we always clear white on black or not
+	//TODO check that we didn't go further than the screen
 	void* start_position = get_vram_pointer(start_coordinate);
-
+	//TODO this is count in bytes for now, perhaps change it to pixels and change doc
 	for (int i = 0; i < count; i++) {
 		if (i % 2 == 0) {
 			//even bytes are null chars
@@ -35,9 +35,24 @@ void set_colors(uint8_t colors) {
 	current_color = colors;
 }
 
-//TODO separate this in two distinct functions
+void set_bg_color(uint8_t color) {
+	set_colors((current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0));
+}
+
+void set_fg_color(uint8_t color) {
+	set_colors((get_colors() & (uint8_t) 0xF0) | (color & (uint8_t) 0x0F));
+}
+
 uint8_t get_colors() {
 	return current_color;
+}
+
+uint8_t get_bg_color() {
+	return (get_colors() >> 4) & 0x0F;
+}
+
+uint8_t get_fg_color() {
+	return get_colors() & 0x0F;
 }
 
 void print_char(char to_print) {
@@ -70,38 +85,6 @@ void print_string(char* to_print) {
 		print_char(to_print[i]);
 		i++;
 	}
-}
-
-void itoa(int value, bool hex, char* buffer) {
-	//TODO temporary hack => do it better later
-
-	buffer[0] = 0; //This is the null terminator
-	int current = 0;
-	if (value == 0) {
-		buffer[0] = '0';
-		return;
-	}
-
-	int base = hex ? 16 : 10;
-
-	while (value) {
-		char rem = value % base;
-		char to_append;
-		if (rem >= 10) {
-			to_append = 'A' + rem - 10;
-		} else {
-			to_append = '0' + rem;
-		}
-		buffer[current] = to_append;
-		value /= base;
-		current++;
-	}
-
-	char tempBuffer[100];
-	for (int i = 0; i < current; i++) {
-		tempBuffer[i] = buffer[current - i - 1];
-	}
-	memcpy(buffer, tempBuffer, current);
 }
 
 void display_printf(char* format, ...) {
@@ -147,14 +130,6 @@ void scroll_screen() {
 	start_clear.x = 0;
 	start_clear.y = DISPLAY_HEIGHT - 1;
 	display_clear_zone(start_clear, DISPLAY_WIDTH * 2);
-}
-
-void set_bg_color(uint8_t color) {
-	set_colors((current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0));
-}
-
-void set_fg_color(uint8_t color) {
-	set_colors((get_colors() & (uint8_t) 0xF0) | (color & (uint8_t) 0x0F));
 }
 
 void* get_vram_pointer(cursor_position_t position) {
