@@ -15,7 +15,6 @@ void kernelEntry(multiboot_info_t* multibootInfos) {
 
 	}
 }
-//TODO add automated test verification
 #ifdef TEST
 void demo_mode() {
 	automated_tests();
@@ -42,7 +41,7 @@ void demo_mode() {
 	display_init();
 	for (int k = 0; k < 100; ++k) {
 		for (int i = 0; i < DISPLAY_WIDTH * DISPLAY_HEIGHT; ++i) {
-			display_printf("%d", (i + k) % 10);
+			display_printf("%d", (i + (i / DISPLAY_WIDTH) + k) % 10);
 		}
 	}
 	sleep_for_demo();

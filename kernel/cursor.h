@@ -37,9 +37,12 @@ typedef struct cursor_position_st {
 	uint8_t y;
 } cursor_position_t;
 
-//TODO specify end of line
 /**
  * A function to shift the cursor according to the two axis
+ *
+ * If we shift horizontally further than the end of the line, it's gonna continue on next line
+ * If we go further than the end of the screen, it's gonna be set to the first "outside of the screen" position
+ *
  * @param x_shift The shift on the x axis (horizontal shift)
  * @param y_shift The shift on the y axis (vertical shift)
  */
@@ -75,7 +78,6 @@ void set_cursor_default_look();
  * @param cursor The structure containing the 2D position of the cursor
  * @return The 1D value of the position
  */
-//TODO really ushort here?
 ushort convert_2d_to_1d_position(cursor_position_t cursor);
 
 /**
@@ -83,7 +85,6 @@ ushort convert_2d_to_1d_position(cursor_position_t cursor);
  * @param position_1d The 1D position of the cursor
  * @return A structure position containing the 2D position of the given 1D position
  */
-//TODO really ushort here?
 cursor_position_t convert_1d_to_2d_position(ushort position_1d);
 
 /**
@@ -97,11 +98,5 @@ void set_cursor_position(cursor_position_t position);
  * @return The current 2D cursor position
  */
 cursor_position_t get_cursor_position();
-
-/**
- * Function to write the current cursor value to memory
- */
-//TODO this could be static in C file
-void write_cursor_to_memory();
 
 #endif //_CURSOR_H_

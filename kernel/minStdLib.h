@@ -2,6 +2,9 @@
 #define _MIN_STD_LIB_H_
 #include "../common/types.h"
 
+#define MAX(a, b) (a < b ? b : a)
+#define MIN(a, b) (a < b ? a : b)
+
 /**
  * This function writes count bytes of value
  * (converted to an unsigned char) to the memory at dst.

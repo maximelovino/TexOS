@@ -17,10 +17,9 @@ void display_clear() {
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count) {
-	//TODO check that we didn't go further than the screen
 	void* start_position = get_vram_pointer(start_coordinate);
 
-	for (int i = 0; i < count; i++) {
+	for (int i = 0; i < count && ((start_position + 2 * i + 1) < (VGA_MEMORY + DISPLAY_SIZE_BYTES)); i++) {
 		//even bytes are null chars
 		memset((start_position + 2 * i), 0, 1);
 		//odd bytes are current_color
@@ -54,10 +53,7 @@ uint8_t get_fg_color() {
 
 void new_line() {
 	cursor_position_t pos = get_cursor_position();
-	cursor_position_t start_of_clear;
-	start_of_clear.y = pos.y;
-	start_of_clear.x = (uint8_t) (pos.x + 1);
-	display_clear_zone(start_of_clear, DISPLAY_WIDTH - start_of_clear.x);
+	display_clear_zone(pos, DISPLAY_WIDTH - pos.x);
 	shift_cursor(-1 * pos.x, 1);
 }
 
@@ -65,14 +61,15 @@ void print_char(char to_print) {
 	cursor_position_t cursor = get_cursor_position();
 	if (convert_2d_to_1d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
-		shift_cursor(0, -1);
-		cursor = get_cursor_position();
+		cursor.x = 0;
+		cursor.y = DISPLAY_HEIGHT - 1;
+		set_cursor_position(cursor);
 	}
 	if (to_print == '\n') {
 		new_line();
 		return;
 	}
-	//TODO what if end of line etc
+
 	if (to_print == '\t') {
 		for (char i = 0; i < TAB_SIZE; i++) {
 			print_char(' ');

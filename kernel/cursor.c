@@ -2,6 +2,11 @@
 
 static cursor_position_t current_position;
 
+/**
+ * Function to write the current cursor value to memory
+ */
+static void write_cursor_to_memory();
+
 void set_cursor_default_look() {
 	outb(CURSOR_CMD_ADDRESS, CURSOR_START_REGISTER);
 	outb(CURSOR_DATA_ADDRESS, CURSOR_FAT_LOOK_START);
@@ -11,11 +16,15 @@ void set_cursor_default_look() {
 }
 
 void shift_cursor(int x_shift, int y_shift) {
-	//TODO what if reach end of line...or end of screen, big reflexion to have
-	//Apparently, according to what happens in write_cursor, the end of line is managed there, because 1d
-	// But the current position in 2d would remain incorrect
 	current_position.x += x_shift;
+	current_position.x %= DISPLAY_WIDTH;
+	current_position.y += (current_position.x / DISPLAY_WIDTH);
 	current_position.y += y_shift;
+	if (current_position.y * current_position.x >= DISPLAY_WIDTH * DISPLAY_HEIGHT) {
+		//We set cursor to first outside of screen position if we go further than the screen
+		current_position.x = 0;
+		current_position.y = DISPLAY_HEIGHT;
+	}
 	write_cursor_to_memory();
 }
 
@@ -41,7 +50,7 @@ void write_cursor_to_memory() {
 	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d & 0xFF));
 
 	outb(CURSOR_CMD_ADDRESS, 0xE); //MSB
-	outb(CURSOR_DATA_ADDRESS, (uint8_t) (position_1d >> 8) & 0xFF);
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) ((position_1d >> 8) & 0xFF));
 }
 
 cursor_position_t get_cursor_position() {
@@ -50,16 +59,16 @@ cursor_position_t get_cursor_position() {
 
 void enable_cursor() {
 	outb(CURSOR_CMD_ADDRESS, CURSOR_START_REGISTER);
-	outb(CURSOR_DATA_ADDRESS, inb(CURSOR_DATA_ADDRESS) & (0 << 5));
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) (inb(CURSOR_DATA_ADDRESS) & (0 << 5)));
 }
 
 void disable_cursor() {
 	outb(CURSOR_CMD_ADDRESS, CURSOR_START_REGISTER);
-	outb(CURSOR_DATA_ADDRESS, inb(CURSOR_DATA_ADDRESS) | (1 << 5));
+	outb(CURSOR_DATA_ADDRESS, (uint8_t) (inb(CURSOR_DATA_ADDRESS) | (1 << 5)));
 }
 
 ushort convert_2d_to_1d_position(cursor_position_t cursor) {
-	return cursor.y * DISPLAY_WIDTH + cursor.x;
+	return (ushort) (cursor.y * DISPLAY_WIDTH + cursor.x);
 }
 
 cursor_position_t convert_1d_to_2d_position(ushort position_1d) {
