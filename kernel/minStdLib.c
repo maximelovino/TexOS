@@ -1,11 +1,11 @@
 #include "minStdLib.h"
 
 void *memset(void *dst, int value, uint count){
-	//TODO actually this writes an int, so 4 bytes, so this should be used to clear screen
+	unsigned char val = (unsigned char) value;
 	if (count) {
 		char* d = dst;
 		do {
-			*d++ = value;
+			*d++ = val;
 		} while(--count);
 	}
 	return dst;
@@ -32,10 +32,9 @@ int strncmp(const char *p, const char *q, uint n){
 }
 
 void itoa(int value, bool hex, char* buffer) {
-	//TODO temporary hack => do it better later
 
 	buffer[0] = 0; //This is the null terminator
-	int current = 0;
+	uint current = 0;
 	if (value == 0) {
 		buffer[0] = '0';
 		return;
@@ -44,12 +43,12 @@ void itoa(int value, bool hex, char* buffer) {
 	int base = hex ? 16 : 10;
 
 	while (value) {
-		char rem = value % base;
+		char rem = (char) (value % base);
 		char to_append;
 		if (rem >= 10) {
-			to_append = 'A' + rem - 10;
+			to_append = (char) ('A' + rem - 10);
 		} else {
-			to_append = '0' + rem;
+			to_append = (char) ('0' + rem);
 		}
 		buffer[current] = to_append;
 		value /= base;
@@ -61,4 +60,14 @@ void itoa(int value, bool hex, char* buffer) {
 		tempBuffer[i] = buffer[current - i - 1];
 	}
 	memcpy(buffer, tempBuffer, current);
+}
+
+int strlen(char* string) {
+	int i = 0;
+	char* str = string;
+	while (*str) {
+		i++;
+		str++;
+	}
+	return i;
 }

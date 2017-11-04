@@ -1,5 +1,6 @@
 #include "kernel.h"
 
+
 void kernelEntry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
@@ -44,8 +45,10 @@ void demo_mode() {
 	cursor_position_t new_position;
 	new_position.x = DISPLAY_WIDTH / 2;
 	new_position.y = DISPLAY_HEIGHT / 2;
+	char* christmasMessage = "WE WISH YOU A MERRY CHRISTMAS";
 	set_cursor_position(new_position);
-	display_printf("WE WISH YOU A MERRY CHRISTMAS");
+	shift_cursor(-1 * (strlen(christmasMessage) / 2), 0);
+	display_printf("%s",christmasMessage);
 	set_bg_color(COLOR_DARK_GRAY);
 	set_cursor_to_origin();
 	for (int l = 0; l < DISPLAY_HEIGHT * DISPLAY_WIDTH; ++l) {

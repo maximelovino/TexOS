@@ -48,11 +48,20 @@ uint8_t get_colors() {
 }
 
 uint8_t get_bg_color() {
-	return (get_colors() >> 4) & 0x0F;
+	return (uint8_t) ((get_colors() >> 4) & 0x0F);
 }
 
 uint8_t get_fg_color() {
-	return get_colors() & 0x0F;
+	return (uint8_t) (get_colors() & 0x0F);
+}
+
+void carriage_return() {
+	cursor_position_t pos = get_cursor_position();
+	cursor_position_t start_of_clear;
+	start_of_clear.y = pos.y;
+	start_of_clear.x = (uint8_t) (pos.x + 1);
+	display_clear_zone(start_of_clear, DISPLAY_WIDTH - start_of_clear.x);
+	shift_cursor(-1 * pos.x, 1);
 }
 
 void print_char(char to_print) {

@@ -11,6 +11,9 @@ void set_cursor_default_look() {
 }
 
 void shift_cursor(int x_shift, int y_shift) {
+	//TODO what if reach end of line...or end of screen, big reflexion to have
+	//Apparently, according to what happens in write_cursor, the end of line is managed there, because 1d
+	// But the current position in 2d would remain incorrect
 	current_position.x += x_shift;
 	current_position.y += y_shift;
 	write_cursor_to_memory();
@@ -24,13 +27,6 @@ void set_cursor_to_origin() {
 	current_position.x = 0;
 	current_position.y = 0;
 	write_cursor_to_memory();
-}
-
-void carriage_return() {
-	//TODO perhaps use shift
-	current_position.x = 0;
-	current_position.y++;
-	set_cursor_position(current_position);
 }
 
 void set_cursor_position(cursor_position_t position) {

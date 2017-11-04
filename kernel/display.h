@@ -119,4 +119,11 @@ void scroll_screen();
  */
 void* get_vram_pointer(cursor_position_t position);
 
+/**
+ * Function to do a carriage return of the cursor
+ * Clears remainder of current line and puts cursor in first col of next line
+ */
+void carriage_return();
+
+
 #endif /* end of include guard: _DISPLAY_H_ */
