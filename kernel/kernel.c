@@ -18,6 +18,9 @@ void kernelEntry(multiboot_info_t* multibootInfos) {
 //TODO add automated test verification
 #ifdef TEST
 void demo_mode() {
+	automated_tests();
+	sleep_for_demo();
+	display_init();
 	char* text = "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.";
 	char smiley_face = 1;
 	display_printf(
@@ -63,8 +66,42 @@ void demo_mode() {
 		print_char(0);
 	}
 	set_cursor_to_origin();
-	set_fg_color(COLOR_RED);
+	set_fg_color(COLOR_BLUE);
 	display_printf("If you watched until here, you should reconsider how you spend your time");
+}
+
+void automated_tests(){
+	int test_int_itoa = 12345;
+	char* test_string_itoa = "12345";
+	char buffer_itoa[100];
+	itoa(test_int_itoa,false,buffer_itoa);
+	display_printf("ITOA TEST...%s\n", strncmp(buffer_itoa,test_string_itoa,5) == 0 ? "OK" : "FAIL");
+
+	char* test_string_length = "1234567890";
+	display_printf("STRLEN TEST...%s\n", strlen(test_string_length) == 10 ? "OK" : "FAIL");
+
+	uint8_t test_fg_color = COLOR_GREEN;
+	set_fg_color(test_fg_color);
+	display_printf("SET FG COLOR TEST...");
+	cursor_position_t cursor_position = get_cursor_position();
+	cursor_position.x -= 1;
+	char* pointer = get_vram_pointer(cursor_position);
+	//We increment because first byte of a position is the char, second is the color
+	pointer++;
+	display_printf("%s\n", (*pointer & 0x0F) == test_fg_color ? "OK" : "FAIL");
+
+	uint8_t test_bg_color = COLOR_WHITE;
+	set_bg_color(test_bg_color);
+	display_printf("SET BG COLOR TEST...");
+	cursor_position = get_cursor_position();
+	cursor_position.x -= 1;
+	pointer = get_vram_pointer(cursor_position);
+	//We increment because first byte of a position is the char, second is the color
+	pointer++;
+	display_printf("%s\n", ((*pointer >> 4) & 0x0F) == test_bg_color ? "OK" : "FAIL");
+
+	set_bg_color(COLOR_BLACK);
+	set_fg_color(COLOR_WHITE);
 }
 
 void sleep_for_cancel() {
