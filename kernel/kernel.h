@@ -1,7 +1,7 @@
 #ifndef _KERNEL_H_
 #define _KERNEL_H_
 #include "multiboot.h"
-#include "minStdLib.h"
+#include "min_std_lib.h"
 #include "gdt.h"
 #include "display.h"
 

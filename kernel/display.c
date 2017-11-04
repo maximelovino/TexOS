@@ -1,3 +1,11 @@
+/**
+ * Display source file
+ * @file 	display.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #include "display.h"
 
 static uint8_t current_color = (COLOR_BLACK << 4) | COLOR_WHITE;

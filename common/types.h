@@ -1,3 +1,11 @@
+/**
+ * Types header file
+ * @file 	types.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #ifndef _TYPES_H_
 #define _TYPES_H_
 

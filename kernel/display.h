@@ -12,8 +12,8 @@
 #include "../common/types.h"
 #include "../common/const.h"
 #include "x86.h"
-#include "minStdLib.h"
-#include "vga_colors.h"
+#include "min_std_lib.h"
+#include "../common/vga_colors.h"
 #include "cursor.h"
 
 #ifndef TAB_SIZE

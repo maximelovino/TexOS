@@ -1,4 +1,12 @@
-#include "minStdLib.h"
+/**
+ * Minimal stdlib source file
+ * @file 	min_std_lib.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
+#include "min_std_lib.h"
 
 void *memset(void *dst, int value, uint count){
 	unsigned char val = (unsigned char) value;

@@ -1,3 +1,11 @@
+/**
+ * Cursor header file
+ * @file 	cursor.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #ifndef _CURSOR_H_
 #define _CURSOR_H_
 
@@ -29,9 +37,13 @@
 #define CURSOR_DATA_ADDRESS 0x3d5
 #endif
 
+//External functions defined in pio_asm.s
 extern void outb(uint16_t port, uint8_t data);
 extern uint8_t inb(uint16_t port);
 
+/**
+ * Structure defining a 2D position
+ */
 typedef struct cursor_position_st {
 	uint8_t x;
 	uint8_t y;

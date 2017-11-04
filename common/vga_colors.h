@@ -1,3 +1,11 @@
+/**
+ * VGA colors header file
+ * @file 	vga_colors.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #ifndef _VGA_COLORS_H_
 #define _VGA_COLORS_H_
 

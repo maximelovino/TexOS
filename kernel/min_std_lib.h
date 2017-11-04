@@ -1,3 +1,11 @@
+/**
+ * Minimal stdlib header file
+ * @file 	min_std_lib.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #ifndef _MIN_STD_LIB_H_
 #define _MIN_STD_LIB_H_
 #include "../common/types.h"

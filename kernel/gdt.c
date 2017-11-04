@@ -1,3 +1,11 @@
+/**
+ * GDT source file
+ * @file 	gdt.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #include "../common/types.h"
 #include "gdt.h"
 #include "x86.h"
@@ -16,23 +24,23 @@ static gdt_ptr_t   gdt_ptr;
 // granularity indicates 1 byte or 4KB granularity
 // dpl is the privilege level
 static gdt_entry_t build_entry(uint32_t base, uint32_t limit, uint8_t type, uint8_t s, uint8_t db,
-                               uint8_t granularity, uint8_t dpl) {
+							   uint8_t granularity, uint8_t dpl) {
 	gdt_entry_t entry;
-    // For a TSS and LDT, base is the addresse of the TSS/LDT structure
-    // and limit is the size of the structure.
-    entry.lim15_0 = limit & 0xffff;
-    entry.base15_0 = base & 0xffff;
-    entry.base23_16 = (base >> 16) & 0xff;
-    entry.type = type;  // See TYPE_xxx flags
-    entry.s = s;        // 1 for segments; 0 for system (TSS, LDT, gates)
-    entry.dpl = dpl;    // privilege level
-    entry.present = 1;  // present in memory
-    entry.lim19_16 = (limit >> 16) & 0xf;
-    entry.avl = 0;      // available for use
-    entry.l = 0;        // should be 0 (64-bit code segment)
-    entry.db = db;      // 1 for 32-bit code and data segments; 0 for system (TSS, LDT, gate)
-    entry.granularity = granularity;  // granularity of the limit value: 0 = 1 byte; 1 = 4096 bytes
-    entry.base31_24 = (base >> 24) & 0xff;
+	// For a TSS and LDT, base is the addresse of the TSS/LDT structure
+	// and limit is the size of the structure.
+	entry.lim15_0 = limit & 0xffff;
+	entry.base15_0 = base & 0xffff;
+	entry.base23_16 = (base >> 16) & 0xff;
+	entry.type = type;  // See TYPE_xxx flags
+	entry.s = s;        // 1 for segments; 0 for system (TSS, LDT, gates)
+	entry.dpl = dpl;    // privilege level
+	entry.present = 1;  // present in memory
+	entry.lim19_16 = (limit >> 16) & 0xf;
+	entry.avl = 0;      // available for use
+	entry.l = 0;        // should be 0 (64-bit code segment)
+	entry.db = db;      // 1 for 32-bit code and data segments; 0 for system (TSS, LDT, gate)
+	entry.granularity = granularity;  // granularity of the limit value: 0 = 1 byte; 1 = 4096 bytes
+	entry.base31_24 = (base >> 24) & 0xff;
 	return entry;
 }
 
@@ -63,6 +71,6 @@ void gdt_init() {
 	gdt_ptr.base = (uint32_t) &gdt_table;
 	gdt_ptr.limit = sizeof(gdt_table) - 1;
 
-    // Load the GDT
-    gdt_load(&gdt_ptr);
+	// Load the GDT
+	gdt_load(&gdt_ptr);
 }

@@ -1,3 +1,11 @@
+/**
+ * Cursor source file
+ * @file 	cursor.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #include "cursor.h"
 
 static cursor_position_t current_position;
