@@ -13,21 +13,18 @@ void display_clear() {
 	cursor_position_t start;
 	start.x = 0;
 	start.y = 0;
-	display_clear_zone(start, DISPLAY_SIZE_BYTES);
+	display_clear_zone(start, DISPLAY_WIDTH * DISPLAY_HEIGHT);
 }
 
 void display_clear_zone(cursor_position_t start_coordinate, int count) {
 	//TODO check that we didn't go further than the screen
 	void* start_position = get_vram_pointer(start_coordinate);
-	//TODO this is count in bytes for now, perhaps change it to pixels and change doc
+
 	for (int i = 0; i < count; i++) {
-		if (i % 2 == 0) {
-			//even bytes are null chars
-			memset((start_position + i), 0, 1);
-		} else {
-			//odd bytes are current_color
-			memset((start_position + i), current_color, 1);
-		}
+		//even bytes are null chars
+		memset((start_position + 2 * i), 0, 1);
+		//odd bytes are current_color
+		memset((start_position + 2 * i + 1), current_color, 1);
 	}
 }
 
@@ -55,7 +52,7 @@ uint8_t get_fg_color() {
 	return (uint8_t) (get_colors() & 0x0F);
 }
 
-void carriage_return() {
+void new_line() {
 	cursor_position_t pos = get_cursor_position();
 	cursor_position_t start_of_clear;
 	start_of_clear.y = pos.y;
@@ -72,9 +69,10 @@ void print_char(char to_print) {
 		cursor = get_cursor_position();
 	}
 	if (to_print == '\n') {
-		carriage_return();
+		new_line();
 		return;
 	}
+	//TODO what if end of line etc
 	if (to_print == '\t') {
 		for (char i = 0; i < TAB_SIZE; i++) {
 			print_char(' ');
@@ -138,7 +136,7 @@ void scroll_screen() {
 	cursor_position_t start_clear;
 	start_clear.x = 0;
 	start_clear.y = DISPLAY_HEIGHT - 1;
-	display_clear_zone(start_clear, DISPLAY_WIDTH * 2);
+	display_clear_zone(start_clear, DISPLAY_WIDTH);
 }
 
 void* get_vram_pointer(cursor_position_t position) {

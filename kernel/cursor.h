@@ -37,7 +37,7 @@ typedef struct cursor_position_st {
 	uint8_t y;
 } cursor_position_t;
 
-//TODO specifies end of line
+//TODO specify end of line
 /**
  * A function to shift the cursor according to the two axis
  * @param x_shift The shift on the x axis (horizontal shift)

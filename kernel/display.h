@@ -43,7 +43,7 @@ void display_clear();
 /**
  * Function to clear part of the screen according to current colors
  * @param start_coordinate A position structure defining the start of the zone to clear
- * @param count The number of characters to clear in bytes
+ * @param count The number of characters to clear (by character, we mean a cell of the screen)
  */
 void display_clear_zone(cursor_position_t start_coordinate, int count);
 
@@ -120,10 +120,10 @@ void scroll_screen();
 void* get_vram_pointer(cursor_position_t position);
 
 /**
- * Function to do a carriage return of the cursor
+ * Function to do a new line
  * Clears remainder of current line and puts cursor in first col of next line
  */
-void carriage_return();
+void new_line();
 
 
 #endif /* end of include guard: _DISPLAY_H_ */

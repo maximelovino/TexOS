@@ -25,6 +25,13 @@ void demo_mode() {
 			text, smiley_face, 0xB00B, 0xCAFE, 0xB00B, 0xCAFE);
 	display_printf("Here we have a sentence with a tab\tright before this\n");
 	sleep_for_demo();
+	display_clear();
+	for (int m = 0; m < DISPLAY_HEIGHT * DISPLAY_WIDTH; ++m) {
+		print_char('A');
+	}
+	sleep_for_demo();
+	print_char('B');
+	sleep_for_demo();
 	display_init();
 	set_fg_color(COLOR_GREEN);
 	display_printf("MATRIX TIME");
