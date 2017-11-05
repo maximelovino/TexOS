@@ -8,6 +8,12 @@
 
 #include "display.h"
 
+/**
+ * Function to do a new line
+ * Clears remainder of current line and puts cursor in first col of next line
+ */
+static void new_line();
+
 static uint8_t current_color = (COLOR_BLACK << 4) | COLOR_WHITE;
 
 void display_init() {
@@ -35,28 +41,20 @@ void display_clear_zone(cursor_position_t start_coordinate, int count) {
 	}
 }
 
-void set_colors(uint8_t colors) {
-	current_color = colors;
-}
-
 void set_bg_color(uint8_t color) {
-	set_colors((current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0));
+	current_color = (current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0);
 }
 
 void set_fg_color(uint8_t color) {
-	set_colors((get_colors() & (uint8_t) 0xF0) | (color & (uint8_t) 0x0F));
-}
-
-uint8_t get_colors() {
-	return current_color;
+	current_color = (current_color & (uint8_t) 0xF0) | (color & (uint8_t) 0x0F);
 }
 
 uint8_t get_bg_color() {
-	return (uint8_t) ((get_colors() >> 4) & 0x0F);
+	return (uint8_t) ((current_color >> 4) & 0x0F);
 }
 
 uint8_t get_fg_color() {
-	return (uint8_t) (get_colors() & 0x0F);
+	return (uint8_t) (current_color & 0x0F);
 }
 
 void new_line() {

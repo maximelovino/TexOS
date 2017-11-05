@@ -60,18 +60,6 @@ void set_bg_color(uint8_t color);
 void set_fg_color(uint8_t color);
 
 /**
- * Function to set background and foreground colors together
- * (shift and combination of the colors done beforehand)
- * @param colors The new colors to set
- */
-void set_colors(uint8_t colors);
-
-/**
- * @return The colors currently set (background and foreground together)
- */
-uint8_t get_colors();
-
-/**
  * @return The background color currently set
  */
 uint8_t get_bg_color();
@@ -118,12 +106,6 @@ void scroll_screen();
  * @return A pointer to the VRAM for that coordinate
  */
 void* get_vram_pointer(cursor_position_t position);
-
-/**
- * Function to do a new line
- * Clears remainder of current line and puts cursor in first col of next line
- */
-void new_line();
 
 
 #endif /* end of include guard: _DISPLAY_H_ */
