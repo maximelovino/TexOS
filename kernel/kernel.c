@@ -1,5 +1,14 @@
-#include "kernel.h"
+#include "multiboot.h"
+#include "min_std_lib.h"
+#include "gdt.h"
+#include "display.h"
 
+#ifdef TEST
+void demo_mode();
+void automated_tests();
+void sleep_for_cancel();
+void sleep_for_demo();
+#endif
 
 void kernelEntry(multiboot_info_t* multibootInfos) {
 	gdt_init();
@@ -105,7 +114,7 @@ void automated_tests(){
 
 void sleep_for_cancel() {
 	for (int i = 0; i < (5 * 10e4); ++i) {
-		
+
 	}
 }
 

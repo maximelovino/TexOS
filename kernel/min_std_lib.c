@@ -8,18 +8,16 @@
 
 #include "min_std_lib.h"
 
-void *memset(void *dst, int value, uint count){
+void* memset(void* dst, int value, uint count) {
 	unsigned char val = (unsigned char) value;
-	if (count) {
-		char* d = dst;
-		do {
-			*d++ = val;
-		} while(--count);
+	char* d = dst;
+	while (count--) {
+		*d++ = val;
 	}
 	return dst;
 }
 
-void *memcpy(void *dst, void *src, uint count){
+void* memcpy(void* dst, void* src, uint count) {
 	char* d = dst;
 	char* s = src;
 	for (uint i = 0; i < count; i++) {
@@ -28,11 +26,11 @@ void *memcpy(void *dst, void *src, uint count){
 	return dst;
 }
 
-int strncmp(const char *p, const char *q, uint n){
+int strncmp(const char* p, const char* q, uint n) {
 	for (uint i = 0; i < n; i++) {
 		if (p[i] < q[i]) {
 			return -1;
-		}else if (p[i] > q[i]){
+		} else if (p[i] > q[i]) {
 			return 1;
 		}
 	}
@@ -64,7 +62,7 @@ void itoa(int value, bool hex, char* buffer) {
 	}
 
 	char tempBuffer[100];
-	for (int i = 0; i < current; i++) {
+	for (uint i = 0; i < current; i++) {
 		tempBuffer[i] = buffer[current - i - 1];
 	}
 	memcpy(buffer, tempBuffer, current);
