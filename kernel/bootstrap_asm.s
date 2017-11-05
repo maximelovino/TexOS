@@ -1,5 +1,5 @@
 global entrypoint  ; the entry point symbol defined in kernel.ld
-extern kernelEntry
+extern kernel_entry
 
 ; Values for the multiboot header
 MULTIBOOT_MAGIC        equ 0x1BADB002
@@ -30,7 +30,7 @@ entrypoint:
 	mov esp, stack_top;
 	mov ebp, stack_top;
 	push ebx; We pass the multiboot info to the kernel
-	call kernelEntry;Here we call the kernel
+	call kernel_entry;Here we call the kernel
 
 	; infinite loop (should never get here)
 .forever:

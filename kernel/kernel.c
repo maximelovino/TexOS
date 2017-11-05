@@ -10,14 +10,14 @@ void sleep_for_cancel();
 void sleep_for_demo();
 #endif
 
-void kernelEntry(multiboot_info_t* multibootInfos) {
+void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
+	display_printf("GDT Initalized\nDisplay initialized\n");
+	display_printf("Hello and welcome to TexOS\nThe available memory is %d KB", multibootInfos->mem_upper);
 
 #ifdef TEST
 	demo_mode();
-#else
-	display_printf("Hello and welcome to TexOS\nThe available memory is %d KB",multibootInfos->mem_upper);
 #endif
 
 	while (1) {
@@ -26,6 +26,8 @@ void kernelEntry(multiboot_info_t* multibootInfos) {
 }
 #ifdef TEST
 void demo_mode() {
+	sleep_for_demo();
+	display_init();
 	automated_tests();
 	sleep_for_demo();
 	display_init();

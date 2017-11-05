@@ -50,4 +50,4 @@ $(BUILD_FOLDER)pio_asm.o:pio_asm.s
 	$(NASM) $< -o $@
 
 clean:
-	@-rm -r $(BUILD_FOLDER)
+	@-rm -rf $(BUILD_FOLDER)

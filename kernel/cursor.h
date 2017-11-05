@@ -58,57 +58,57 @@ typedef struct cursor_position_st {
  * @param x_shift The shift on the x axis (horizontal shift)
  * @param y_shift The shift on the y axis (vertical shift)
  */
-void shift_cursor(int x_shift, int y_shift);
+extern void shift_cursor(int x_shift, int y_shift);
 
 /**
  * Function to move the cursor by one char further
  */
-void increment_cursor();
+extern void increment_cursor();
 
 /**
  * Function to set the cursor to the origin of the screen
  */
-void set_cursor_to_origin();
+extern void set_cursor_to_origin();
 
 /**
  * Function to enable the display of the cursor
  */
-void enable_cursor();
+extern void enable_cursor();
 
 /**
  * Function to disable the display of the cursor
  */
-void disable_cursor();
+extern void disable_cursor();
 
 /**
  * A function to set the cursor to its default look, block cursor
  */
-void set_cursor_default_look();
+extern void set_cursor_default_look();
 
 /**
  * Function to convert the 2D position of a cursor to 1D
  * @param cursor The structure containing the 2D position of the cursor
  * @return The 1D value of the position
  */
-ushort convert_2d_to_1d_position(cursor_position_t cursor);
+extern ushort convert_2d_to_1d_position(cursor_position_t cursor);
 
 /**
  * Function to convert 1D position to 2D
  * @param position_1d The 1D position of the cursor
  * @return A structure position containing the 2D position of the given 1D position
  */
-cursor_position_t convert_1d_to_2d_position(ushort position_1d);
+extern cursor_position_t convert_1d_to_2d_position(ushort position_1d);
 
 /**
  * Function to set the cursor to a specific position
  * @param position The 2D position to set
  */
-void set_cursor_position(cursor_position_t position);
+extern void set_cursor_position(cursor_position_t position);
 
 /**
  * Function to get the current cursor position
  * @return The current 2D cursor position
  */
-cursor_position_t get_cursor_position();
+extern cursor_position_t get_cursor_position();
 
 #endif //_CURSOR_H_

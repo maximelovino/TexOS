@@ -33,53 +33,53 @@
  * the whole screen (according to the current colors, by default: black background, white text),
  * setting the cursor to the top left corner and enabling it.
  */
-void display_init();
+extern void display_init();
 
 /**
  * This function clears the whole screen according to the current colors
  */
-void display_clear();
+extern void display_clear();
 
 /**
  * Function to clear part of the screen according to current colors
  * @param start_coordinate A position structure defining the start of the zone to clear
  * @param count The number of characters to clear (by character, we mean a cell of the screen)
  */
-void display_clear_zone(cursor_position_t start_coordinate, int count);
+extern void display_clear_zone(cursor_position_t start_coordinate, int count);
 
 /**
  * Function to set the background color
  * @param color The new color to set (@see vga_colors.h)
  */
-void set_bg_color(uint8_t color);
+extern void set_bg_color(uint8_t color);
 
 /**
  * Function to set the foreground color
  * @param color The new color to set (@see vga_colors.h)
  */
-void set_fg_color(uint8_t color);
+extern void set_fg_color(uint8_t color);
 
 /**
  * @return The background color currently set
  */
-uint8_t get_bg_color();
+extern uint8_t get_bg_color();
 
 /**
  * @return The foreground color currently set
  */
-uint8_t get_fg_color();
+extern uint8_t get_fg_color();
 
 /**
  * Function to display a character on screen at the current cursor position
  * @param to_print The character to display
  */
-void print_char(char to_print);
+extern void print_char(char to_print);
 
 /**
  * Function to display a string on screen at the current cursor position
  * @param to_print The string to display
  */
-void print_string(char* to_print);
+extern void print_string(char* to_print);
 
 /**
  * Function to display a string on screen at the current cursor position with parameters
@@ -92,20 +92,20 @@ void print_string(char* to_print);
  * @param format The format of the string
  * @param ... The additional arguments to match the formatted parameters
  */
-void display_printf(char* format, ...);
+extern void display_printf(char* format, ...);
 
 /**
  * Function to scroll the screen
  * Implemented by copying the VRAM from 2nd line to end to the first line, and clearing last line
  */
-void scroll_screen();
+extern void scroll_screen();
 
 /**
  * Function to get a position in the VRAM from a cursor position structure
  * @param position A position structure defining the position we want to get
  * @return A pointer to the VRAM for that coordinate
  */
-void* get_vram_pointer(cursor_position_t position);
+extern void* get_vram_pointer(cursor_position_t position);
 
 
 #endif /* end of include guard: _DISPLAY_H_ */

@@ -21,7 +21,7 @@
  * @param count The number of bytes to write
  * @return A pointer to the memory we set
  */
-void *memset(void *dst, int value, uint count);
+extern void* memset(void* dst, int value, uint count);
 
 /**
  * This functions copies count bytes of memory from the src to the dst
@@ -30,7 +30,7 @@ void *memset(void *dst, int value, uint count);
  * @param count The number of bytes to copy
  * @return A pointer to the memory we set
  */
-void *memcpy(void *dst, void *src, uint count);
+extern void* memcpy(void* dst, void* src, uint count);
 
 /**
  * Function to compare two strings on n bytes
@@ -39,7 +39,7 @@ void *memcpy(void *dst, void *src, uint count);
  * @param n The number of bytes to compare
  * @return -1, 0 or 1 if the p is respectively less, equal or bigger than q
  */
-int strncmp(const char *p, const char *q, uint n);
+extern int strncmp(const char* p, const char* q, uint n);
 
 /**
  * Function to represent an int in a string
@@ -47,13 +47,13 @@ int strncmp(const char *p, const char *q, uint n);
  * @param hex If we want to convert in hexadecimal notation (decimal otherwise)
  * @param buffer The buffer to write the converted int to
  */
-void itoa(int value, bool hex, char* buffer);
+extern void itoa(int value, bool hex, char* buffer);
 
 /**
  * Function to get the length of a string
  * @param string The string we want to get the length of
  * @return The length of that string
  */
-int strlen(char* string);
+extern int strlen(char* string);
 
 #endif /* end of include guard: _MIN_STD_LIB_H_ */
