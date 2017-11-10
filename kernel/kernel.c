@@ -2,6 +2,7 @@
 #include "min_std_lib.h"
 #include "gdt.h"
 #include "display.h"
+#include "idt.h"
 
 #ifdef TEST
 void demo_mode();
@@ -13,6 +14,7 @@ void sleep_for_demo();
 void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
+	idt_init();
 	display_printf("GDT Initalized\nDisplay initialized\n");
 	display_printf("Hello and welcome to TexOS\nThe available memory is %d KB", multibootInfos->mem_upper);
 
@@ -30,6 +32,7 @@ void demo_mode() {
 	display_init();
 	automated_tests();
 	sleep_for_demo();
+	int x = 2 / 0;
 	display_init();
 	char* text = "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.";
 	char smiley_face = 1;

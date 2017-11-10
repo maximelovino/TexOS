@@ -3,7 +3,7 @@ global outw;
 global inb;
 global inw;
 
-//TODO remove enter and leave and put ebp+4 and ebp+8 instead of ebp+8 and ebp+12
+;TODO remove enter and leave and put ebp+4 and ebp+8 instead of ebp+8 and ebp+12
 outb:
 	enter 0,0
 	mov dx,word[ebp+8]; Here we have the port

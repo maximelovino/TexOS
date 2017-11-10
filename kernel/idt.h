@@ -2,6 +2,83 @@
 #define _IDT_H_
 
 #include "../common/types.h"
+#include "x86.h"
+#include "min_std_lib.h"
+#include "display.h"
+
+extern void proc_interrupt_0();
+
+extern void proc_interrupt_1();
+
+extern void proc_interrupt_2();
+
+extern void proc_interrupt_3();
+
+extern void proc_interrupt_4();
+
+extern void proc_interrupt_5();
+
+extern void proc_interrupt_6();
+
+extern void proc_interrupt_7();
+
+extern void proc_interrupt_8();
+
+extern void proc_interrupt_9();
+
+extern void proc_interrupt_10();
+
+extern void proc_interrupt_11();
+
+extern void proc_interrupt_12();
+
+extern void proc_interrupt_13();
+
+extern void proc_interrupt_14();
+
+extern void proc_interrupt_15();
+
+extern void proc_interrupt_16();
+
+extern void proc_interrupt_17();
+
+extern void proc_interrupt_18();
+
+extern void proc_interrupt_19();
+
+extern void proc_interrupt_20();
+
+extern void irq_0();
+
+extern void irq_1();
+
+extern void irq_2();
+
+extern void irq_3();
+
+extern void irq_4();
+
+extern void irq_5();
+
+extern void irq_6();
+
+extern void irq_7();
+
+extern void irq_8();
+
+extern void irq_9();
+
+extern void irq_10();
+
+extern void irq_11();
+
+extern void irq_12();
+
+extern void irq_13();
+
+extern void irq_14();
+
+extern void irq_15();
 
 // Structure of an IDT descriptor. There are 3 types of descriptors:
 // a task-gate, an interrupt-gate, and a trap-gate.
@@ -27,4 +104,5 @@ typedef struct idt_ptr_st {
 
 extern void idt_init();
 
+extern void idt_load(idt_ptr_t* ptr);
 #endif

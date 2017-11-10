@@ -11,6 +11,7 @@
 
 #include "../common/types.h"
 #include "../common/const.h"
+#include "pio_asm.h"
 
 #ifndef CURSOR_FAT_LOOK_START
 #define CURSOR_FAT_LOOK_START 0b0
@@ -36,10 +37,6 @@
 #ifndef CURSOR_DATA_ADDRESS
 #define CURSOR_DATA_ADDRESS 0x3d5
 #endif
-
-//External functions defined in pio_asm.s
-extern void outb(uint16_t port, uint8_t data);
-extern uint8_t inb(uint16_t port);
 
 /**
  * Structure defining a 2D position

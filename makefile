@@ -21,9 +21,9 @@ $(KERNEL_ISO):$(KERNEL_ELF_FILE)
 	genisoimage -R -b $(STAGE2) -input-charset utf8 -no-emul-boot -boot-info-table -o $(KERNEL_ISO) $(OS_FOLDER)
 
 elf_file:
-	cd kernel; make kernel TEST_FLAGS="$(TEST_FLAGS)"
+	$(MAKE) -C kernel/ kernel TEST_FLAGS="$(TEST_FLAGS)"
 
 .PHONY=run test elf_file
 
 clean:
-	cd kernel;make clean
+	$(MAKE) -C kernel/ clean
