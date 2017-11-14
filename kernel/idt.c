@@ -1,6 +1,7 @@
 // CPU context used when saving/restoring context from an interrupt
 #include "idt.h"
 
+
 static idt_entry_t idt_table[256];
 
 static char* processor_interruption_messages[21] = {
@@ -26,14 +27,6 @@ static char* processor_interruption_messages[21] = {
 		"[19] SIMD floating point exception",
 		"[20] Virtualization exception"
 };
-
-typedef struct regs_st {
-	uint32_t gs, fs, es, ds;
-	uint32_t ebp, edi, esi;
-	uint32_t edx, ecx, ebx, eax;
-	uint32_t number, error_code;
-	uint32_t eip, cs, eflags, esp, ss;
-} regs_t;
 
 // Build and return an IDT entry.
 // selector is the code segment selector to access the ISR
@@ -62,7 +55,10 @@ void exception_handler(regs_t* regs) {
 }
 
 void irq_handler(regs_t* regs) {
-
+	if (regs->number == 1) {
+		keyboard_handler();
+	}
+	pic_eoi(regs->number);
 }
 
 void idt_init() {

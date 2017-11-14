@@ -3,6 +3,7 @@
 #include "gdt.h"
 #include "display.h"
 #include "idt.h"
+#include "pic.h"
 
 #ifdef TEST
 void demo_mode();
@@ -14,9 +15,13 @@ void sleep_for_demo();
 void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
+	pic_init();
 	idt_init();
+	sti();
 	display_printf("GDT Initalized\nDisplay initialized\n");
-	display_printf("Hello and welcome to TexOS\nThe available memory is %d KB", multibootInfos->mem_upper);
+	display_printf(
+			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
+			multibootInfos->mem_upper);
 
 #ifdef TEST
 	demo_mode();

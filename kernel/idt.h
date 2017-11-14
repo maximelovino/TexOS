@@ -5,6 +5,8 @@
 #include "x86.h"
 #include "min_std_lib.h"
 #include "display.h"
+#include "pic.h"
+#include "keyboard.h"
 
 extern void proc_interrupt_0();
 
@@ -80,6 +82,14 @@ extern void irq_14();
 
 extern void irq_15();
 
+typedef struct regs_st {
+	uint32_t gs, fs, es, ds;
+	uint32_t ebp, edi, esi;
+	uint32_t edx, ecx, ebx, eax;
+	uint32_t number, error_code;
+	uint32_t eip, cs, eflags, esp, ss;
+} regs_t;
+
 // Structure of an IDT descriptor. There are 3 types of descriptors:
 // a task-gate, an interrupt-gate, and a trap-gate.
 // See 5.11 of Intel 64 & IA32 architectures software developer's manual for more details.
@@ -101,6 +111,10 @@ typedef struct idt_ptr_st {
 	uint16_t limit;   // Limit of the table (ie. its size)
 	uint32_t base;    // Address of the first entry
 } __attribute__((packed)) idt_ptr_t;
+
+extern void exception_handler(regs_t* regs);
+
+extern void irq_handler(regs_t* regs);
 
 extern void idt_init();
 

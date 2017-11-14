@@ -66,7 +66,6 @@ macro_irq i
 %assign i i+1
 %endrep
 
-
 ;------------------------------------------------
 ; Wrapper for exceptions
 
