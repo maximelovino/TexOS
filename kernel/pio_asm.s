@@ -19,7 +19,6 @@ inb:
 	mov eax,0;
 	mov dx,word[esp+4]; The port
 	in al,dx;
-	leave;
 	ret;
 
 inw:

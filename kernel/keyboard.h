@@ -22,6 +22,8 @@
 #define ALT_MAKE_CODE 0x38
 #define ALT_BREAK_CODE 0xB8
 
+#define KEYBOARD_BUFFER_SIZE 10
+
 
 extern void keyboard_init();
 extern void keyboard_handler();

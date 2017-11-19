@@ -17,6 +17,7 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 	display_init();
 	pic_init();
 	idt_init();
+	keyboard_init();
 	sti();
 	display_printf("GDT Initalized\nDisplay initialized\n");
 	display_printf(
@@ -28,7 +29,7 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 #endif
 
 	while (1) {
-
+		display_printf("%c",getc());
 	}
 }
 #ifdef TEST
