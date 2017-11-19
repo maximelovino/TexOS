@@ -96,6 +96,6 @@ int getc() {
 
 // Non-blocking call. Return 1 if a key is pressed
 int keypressed() {
-	return -1;
+	return buffer_count != 0;
 }
 
