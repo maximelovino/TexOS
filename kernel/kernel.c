@@ -25,9 +25,6 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
 			multibootInfos->mem_upper);
-	display_printf("LET'S SLEEP FOR 5 seconds\n");
-	sleep(5000);
-	display_printf("WAKE UP BITCH\n");
 
 #ifdef TEST
 	demo_mode();
@@ -39,6 +36,7 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 }
 #ifdef TEST
 void demo_mode() {
+	display_printf("TEST MODE\n");
 	sleep_for_demo();
 	display_init();
 	automated_tests();
