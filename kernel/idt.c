@@ -57,6 +57,8 @@ void exception_handler(regs_t* regs) {
 void irq_handler(regs_t* regs) {
 	if (regs->number == 1) {
 		keyboard_handler();
+	} else if (regs->number == 0) {
+		timer_handler();
 	}
 	pic_eoi(regs->number);
 }

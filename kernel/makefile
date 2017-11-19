@@ -6,7 +6,7 @@ COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -f elf32
 ASM_OBJECTS=bootstrap_asm.o gdt_asm.o pio_asm.o idt_asm.o
-C_OBJECTS=kernel.o min_std_lib.o gdt.o display.o cursor.o idt.o pic.o keyboard.o
+C_OBJECTS=kernel.o min_std_lib.o gdt.o display.o cursor.o idt.o pic.o keyboard.o timer.o
 BUILD_FOLDER=../build/
 ASM_OBJECTS_FILES=$(addprefix $(BUILD_FOLDER),$(ASM_OBJECTS))
 C_OBJECTS_FILES=$(addprefix $(BUILD_FOLDER),$(C_OBJECTS))
@@ -34,6 +34,9 @@ $(BUILD_FOLDER)gdt_asm.o:gdt_asm.s const.inc
 	$(NASM) $< -o $@
 
 $(BUILD_FOLDER)idt.o:idt.c idt.h pic.h
+	$(COMPILE) $< -o $@
+
+$(BUILD_FOLDER)timer.o:timer.c timer.h
 	$(COMPILE) $< -o $@
 
 $(BUILD_FOLDER)keyboard.o:keyboard.c keyboard.h

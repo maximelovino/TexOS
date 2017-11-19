@@ -7,6 +7,7 @@
 #include "display.h"
 #include "pic.h"
 #include "keyboard.h"
+#include "timer.h"
 
 extern void proc_interrupt_0();
 

@@ -4,6 +4,7 @@
 #include "display.h"
 #include "idt.h"
 #include "pic.h"
+#include "timer.h"
 
 #ifdef TEST
 void demo_mode();
@@ -16,6 +17,7 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
 	pic_init();
+	timer_init(400);
 	idt_init();
 	keyboard_init();
 	sti();
@@ -23,6 +25,9 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
 			multibootInfos->mem_upper);
+	display_printf("LET'S SLEEP FOR 5 seconds\n");
+	sleep(5000);
+	display_printf("WAKE UP BITCH\n");
 
 #ifdef TEST
 	demo_mode();
