@@ -37,7 +37,7 @@ void demo_mode() {
 	display_init();
 	automated_tests();
 	sleep_for_demo();
-	int x = 2 / 0;
+	//int x = 2 / 0;
 	display_init();
 	char* text = "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.";
 	char smiley_face = 1;
@@ -45,8 +45,9 @@ void demo_mode() {
 			"Here is a quote:\n%s\nAnd a smiley: %c and some random hexa numbers: %x and %x and their decimal value %d and %d\n",
 			text, smiley_face, 0xB00B, 0xCAFE, 0xB00B, 0xCAFE);
 	display_printf("Here we have a sentence with a tab\tright before this\n");
+	display_printf("Displaying a negative number %d and %d\n", -129, 0);
 	sleep_for_demo();
-	display_clear();
+	display_init();
 	for (int m = 0; m < DISPLAY_HEIGHT * DISPLAY_WIDTH; ++m) {
 		print_char('A');
 	}

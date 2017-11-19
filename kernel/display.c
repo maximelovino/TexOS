@@ -103,14 +103,14 @@ void display_printf(char* format, ...) {
 	while (*current_char) {
 		if (strncmp(current_char, "%d", 2) == 0) {
 			int* value = (void*) &format + next_param_shift * STACK_JUMP;
-			char buffer[100] = {0};
+			char buffer[ITOA_BUFFER_SIZE] = {0};
 			itoa(*value, false, buffer);
 			print_string(buffer);
 			next_param_shift++;
 			current_char++;
 		} else if (strncmp(current_char, "%x", 2) == 0) {
 			int* hexValue = (void*) &format + next_param_shift * STACK_JUMP;
-			char hexBuffer[100] = {0};
+			char hexBuffer[ITOA_BUFFER_SIZE] = {0};
 			itoa(*hexValue, true, hexBuffer);
 			print_string("0x");
 			print_string(hexBuffer);

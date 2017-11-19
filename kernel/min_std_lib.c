@@ -41,9 +41,15 @@ void itoa(int value, bool hex, char* buffer) {
 
 	buffer[0] = 0; //This is the null terminator
 	uint current = 0;
+	bool negative = false;
 	if (value == 0) {
 		buffer[0] = '0';
 		return;
+	}
+
+	if (value < 0) {
+		negative = true;
+		value = value * -1;
 	}
 
 	int base = hex ? 16 : 10;
@@ -61,11 +67,16 @@ void itoa(int value, bool hex, char* buffer) {
 		current++;
 	}
 
-	char tempBuffer[100];
-	for (uint i = 0; i < current; i++) {
-		tempBuffer[i] = buffer[current - i - 1];
+	char tempBuffer[ITOA_BUFFER_SIZE] = {0};
+	char* bufferToCopy = &tempBuffer[0];
+	if (negative) {
+		tempBuffer[0] = '-';
+		bufferToCopy = &tempBuffer[1];
 	}
-	memcpy(buffer, tempBuffer, current);
+	for (uint i = 0; i < current; i++) {
+		bufferToCopy[i] = buffer[current - i - 1];
+	}
+	memcpy(buffer, tempBuffer, ITOA_BUFFER_SIZE);
 }
 
 int strlen(char* string) {

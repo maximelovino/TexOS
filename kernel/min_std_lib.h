@@ -10,6 +10,8 @@
 #define _MIN_STD_LIB_H_
 #include "../common/types.h"
 
+#define ITOA_BUFFER_SIZE 16
+
 #define MAX(a, b) (a < b ? b : a)
 #define MIN(a, b) (a < b ? a : b)
 
