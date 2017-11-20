@@ -12,7 +12,8 @@ static bool right_shift_down = 0;
 
 static uint8_t values[] = {' ', ' ', '1', '2', '3', '4', '5', '6', '7', '8',
 						   '9',
-						   '0', 39, '^', ' ', ' ', 'q', 'w', 'e', 'r', 't', 'z',
+						   '0', 39, '^', '\b', ' ', 'q', 'w', 'e', 'r', 't',
+						   'z',
 						   'u',
 						   'i', 'o', 'p', 138, ' ', '\n', ' ', 'a', 's', 'd',
 						   'f',
@@ -24,7 +25,7 @@ static uint8_t values[] = {' ', ' ', '1', '2', '3', '4', '5', '6', '7', '8',
 static uint8_t shifted_values[] = {' ', ' ', '+', '"', '*', 135, '%', '&', '/',
 								   '(',
 								   ')',
-								   '=', '?', '`', ' ', ' ', 'Q', 'W', 'E', 'R',
+								   '=', '?', '`', '\b', ' ', 'Q', 'W', 'E', 'R',
 								   'T',
 								   'Z', 'U',
 								   'I', 'O', 'P', 129, '!', '\n', ' ', 'A', 'S',
@@ -70,6 +71,7 @@ void keyboard_handler() {
 				if(buffer_count == KEYBOARD_BUFFER_SIZE){
 					display_printf("\nBUFFER FULL\n");
 				}else{
+					//display_printf("%d\n",scan_code);
 					buffer[current_write_index++] = (right_shift_down ||
 													 left_shift_down)
 													? shifted_values[scan_code]

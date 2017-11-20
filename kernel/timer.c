@@ -22,6 +22,14 @@ uint get_ticks() {
 }
 
 void sleep(uint ms) {
+	/*TODO
+	 Check to do like that instead
+	int ticks_to_stop = ms / (1000 * freq);
+
+	while(get_ticks() != ticks_to_stop){
+
+	}
+	 */
 	uint32_t tick_time = 1000 / freq;
 	uint32_t start_tick = get_ticks();
 

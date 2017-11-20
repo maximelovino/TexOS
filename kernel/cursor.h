@@ -63,6 +63,11 @@ extern void shift_cursor(int x_shift, int y_shift);
 extern void increment_cursor();
 
 /**
+ * Function to move the cursor by one char back
+ */
+extern void decrement_cursor();
+
+/**
  * Function to set the cursor to the origin of the screen
  */
 extern void set_cursor_to_origin();

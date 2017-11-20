@@ -24,6 +24,7 @@ void set_cursor_default_look() {
 }
 
 void shift_cursor(int x_shift, int y_shift) {
+	//TODO recheck shift cursor function
 	current_position.x += x_shift;
 	current_position.x %= DISPLAY_WIDTH;
 	current_position.y += (current_position.x / DISPLAY_WIDTH);
@@ -38,6 +39,12 @@ void shift_cursor(int x_shift, int y_shift) {
 
 void increment_cursor() {
 	set_cursor_position(convert_1d_to_2d_position((convert_2d_to_1d_position(get_cursor_position()) + 1)));
+}
+
+void decrement_cursor() {
+	//TODO should we check here that we don't go out of screen?
+	set_cursor_position(convert_1d_to_2d_position(
+			(convert_2d_to_1d_position(get_cursor_position()) - 1)));
 }
 
 void set_cursor_to_origin() {

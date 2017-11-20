@@ -33,7 +33,8 @@ void display_clear() {
 void display_clear_zone(cursor_position_t start_coordinate, int count) {
 	void* start_position = get_vram_pointer(start_coordinate);
 
-	for (int i = 0; i < count && ((start_position + 2 * i + 1) < (VGA_MEMORY + DISPLAY_SIZE_BYTES)); i++) {
+	for (int i = 0; i < count && ((start_position + 2 * i + 1) <
+								  (VGA_MEMORY + DISPLAY_SIZE_BYTES)); i++) {
 		//even bytes are null chars
 		memset((start_position + 2 * i), 0, 1);
 		//odd bytes are current_color
@@ -42,7 +43,8 @@ void display_clear_zone(cursor_position_t start_coordinate, int count) {
 }
 
 void set_bg_color(uint8_t color) {
-	current_color = (current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0);
+	current_color =
+			(current_color & (uint8_t) 0x0F) | (color << 4 & (uint8_t) 0xF0);
 }
 
 void set_fg_color(uint8_t color) {
@@ -65,6 +67,14 @@ void new_line() {
 
 void print_char(char to_print) {
 	cursor_position_t cursor = get_cursor_position();
+	if (to_print == '\b') {
+		if (!(cursor.x == 0 && cursor.y == 0)) {
+			decrement_cursor();
+			print_char(0);
+			decrement_cursor();
+		}
+		return;
+	}
 	if (convert_2d_to_1d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {
 		scroll_screen();
 		cursor.x = 0;
@@ -134,7 +144,8 @@ void display_printf(char* format, ...) {
 }
 
 void scroll_screen() {
-	memcpy(VGA_MEMORY, VGA_MEMORY + (DISPLAY_WIDTH * 2), DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
+	memcpy(VGA_MEMORY, VGA_MEMORY + (DISPLAY_WIDTH * 2),
+		   DISPLAY_SIZE_BYTES - (DISPLAY_WIDTH * 2));
 	// We clear from start of last line for a whole line
 	cursor_position_t start_clear;
 	start_clear.x = 0;
