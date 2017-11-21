@@ -1,9 +1,19 @@
-// CPU context used when saving/restoring context from an interrupt
+/**
+ * IDT source file
+ * @file 	idt.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 21, 2017
+ */
+
 #include "idt.h"
 
 
 static idt_entry_t idt_table[256];
 
+/**
+ * Array of error messages for processor interrupts
+ */
 static char* processor_interruption_messages[21] = {
 		"[0] Divide Error",
 		"[1] Intel RESERVED exception number",
@@ -28,11 +38,14 @@ static char* processor_interruption_messages[21] = {
 		"[20] Virtualization exception"
 };
 
-// Build and return an IDT entry.
-// selector is the code segment selector to access the ISR
-// offset is the address of the ISR (for task gates, offset must be 0)
-// type indicates the IDT entry type
-// dpl is the privilege level required to call the associated ISR
+/**
+ * Builds and returns an IDT entry
+ * @param selector The code segment selector to access the ISR
+ * @param offset The adress of the ISR
+ * @param type The IDT entry type
+ * @param dpl The privilege level required to call the ISR
+ * @return An IDT entry
+ */
 static idt_entry_t
 idt_build_entry(uint16_t selector, uint32_t offset, uint8_t type, uint8_t dpl) {
 	idt_entry_t entry;
@@ -46,7 +59,6 @@ idt_build_entry(uint16_t selector, uint32_t offset, uint8_t type, uint8_t dpl) {
 	return entry;
 }
 
-// Exception handler
 void exception_handler(regs_t* regs) {
 	set_bg_color(COLOR_BLACK);
 	set_fg_color(COLOR_RED);

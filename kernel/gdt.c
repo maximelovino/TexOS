@@ -12,19 +12,22 @@
 
 static gdt_entry_t gdt_table[3];
 
-// Pointeur sur la table GDT
-static gdt_ptr_t   gdt_ptr;
+static gdt_ptr_t gdt_ptr;
 
-// Build and return a GDT entry.
-// base is the base of the segment
-// limit is the limit of the segment (NOTE: it's a 20-bit value)
-// type is the type of segment
-// s indicates whether it's a system segment
-// db indicates whether it's a code/data segment or TSS, LDT or gate
-// granularity indicates 1 byte or 4KB granularity
-// dpl is the privilege level
-static gdt_entry_t build_entry(uint32_t base, uint32_t limit, uint8_t type, uint8_t s, uint8_t db,
-							   uint8_t granularity, uint8_t dpl) {
+/**
+ * Builds and returns a GDT entry
+ * @param base The base of the segment
+ * @param limit Limit of the segment (20-bit value)
+ * @param type Type of the segment
+ * @param s Indicates whether it's a system segment
+ * @param db Indicates whether it's a code/data segment or TSS, LDT or gate
+ * @param granularity Indicates 1 byte or 4KB granularity
+ * @param dpl The privilege lever
+ * @return The GDT entry created
+ */
+static gdt_entry_t
+build_entry(uint32_t base, uint32_t limit, uint8_t type, uint8_t s, uint8_t db,
+			uint8_t granularity, uint8_t dpl) {
 	gdt_entry_t entry;
 	// For a TSS and LDT, base is the addresse of the TSS/LDT structure
 	// and limit is the size of the structure.
@@ -44,24 +47,42 @@ static gdt_entry_t build_entry(uint32_t base, uint32_t limit, uint8_t type, uint
 	return entry;
 }
 
-// Create a NULL "segment".
+/**
+ * Function to create a null GDT segment
+ * @return A null GDT segment
+ */
 static gdt_entry_t gdt_make_null_segment() {
 	gdt_entry_t entry;
 	memset(&entry, 0, (uint) sizeof(gdt_entry_t));
 	return entry;
 }
 
-// Create a code segment specified by the base, limit and privilege level passed in arguments.
-static gdt_entry_t gdt_make_code_segment(uint32_t base, uint32_t limit, uint8_t dpl) {
-	return build_entry(base, limit, TYPE_CODE_EXECREAD, S_CODE_OR_DATA, DB_SEG, 1, dpl);
+/**
+ * Function to create a code segment
+ * @param base The base of the segment
+ * @param limit The limit of the segment (20-bit value)
+ * @param dpl The privilege level
+ * @return A code segment entry
+ */
+static gdt_entry_t
+gdt_make_code_segment(uint32_t base, uint32_t limit, uint8_t dpl) {
+	return build_entry(base, limit, TYPE_CODE_EXECREAD, S_CODE_OR_DATA, DB_SEG,
+					   1, dpl);
 }
 
-// Return a data segment specified by the base, limit and privilege level passed in arguments.
-static gdt_entry_t gdt_make_data_segment(uint32_t base, uint32_t limit, uint8_t dpl) {
-	return build_entry(base, limit, TYPE_DATA_READWRITE, S_CODE_OR_DATA, DB_SEG, 1, dpl);
+/**
+ * Function to create a data segment
+ * @param base The base of the segment
+ * @param limit The limit of the segment (20-bit value)
+ * @param dpl The privilege level
+ * @return A data segment entry
+ */
+static gdt_entry_t
+gdt_make_data_segment(uint32_t base, uint32_t limit, uint8_t dpl) {
+	return build_entry(base, limit, TYPE_DATA_READWRITE, S_CODE_OR_DATA, DB_SEG,
+					   1, dpl);
 }
 
-// Initialize the GDT
 void gdt_init() {
 	// Code and data segments must have a privilege level of 0.
 	gdt_table[0] = gdt_make_null_segment();

@@ -1,3 +1,12 @@
+/**
+ * Kernel source file
+ * @brief	Entry point of our OS
+ * @file 	kernel.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 3, 2017
+ */
+
 #include "multiboot.h"
 #include "min_std_lib.h"
 #include "gdt.h"
@@ -29,11 +38,18 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 #ifdef TEST
 	demo_mode();
 #endif
-
+	uint8_t toPrint;
 	while (1) {
-		display_printf("%c",getc());
+		toPrint = (uint8_t) getc();
+		if (toPrint == 'Q') {
+			display_init();
+			display_printf("SYSTEM GOING DOWN NOW");
+			halt();
+		}
+		display_printf("%c", toPrint);
 	}
 }
+
 #ifdef TEST
 void demo_mode() {
 	display_printf("TEST MODE\n");
