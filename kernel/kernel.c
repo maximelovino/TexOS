@@ -25,10 +25,9 @@ void sleep_for_demo();
 void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
-	pic_init();
-	timer_init(400);
 	idt_init();
-	keyboard_init();
+	pic_init();
+	timer_init(100);
 	sti();
 	display_printf("GDT Initalized\nDisplay initialized\n");
 	display_printf(
@@ -38,15 +37,19 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 #ifdef TEST
 	demo_mode();
 #endif
-	uint8_t toPrint;
+	int toPrint;
 	while (1) {
-		toPrint = (uint8_t) getc();
+		toPrint = getc();
 		if (toPrint == 'Q') {
 			display_init();
-			display_printf("SYSTEM GOING DOWN NOW");
+			display_printf("System shutting down NOW");
 			halt();
+		} else if (toPrint == ESCAPE_CHAR) {
+			display_init();
+		} else if (toPrint != UNKNOWN_KEY) {
+			display_printf("%c", toPrint);
+
 		}
-		display_printf("%c", toPrint);
 	}
 }
 

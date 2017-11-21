@@ -1,7 +1,7 @@
 #include "timer.h"
 #include "display.h"
 
-static uint ticks = 0;
+static uint32_t ticks = 0;
 static uint32_t freq = HIGHEST_FREQ;
 
 void timer_init(uint32_t freq_hz) {
@@ -26,6 +26,7 @@ void sleep(uint ms) {
 	 Check to do like that instead
 	int ticks_to_stop = ms / (1000 * freq);
 
+	 !=
 	while(get_ticks() != ticks_to_stop){
 
 	}

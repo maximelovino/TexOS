@@ -17,6 +17,9 @@
 #include "keyboard.h"
 #include "timer.h"
 
+#define KEYBOARD_IRQ 1
+#define TIMER_IRQ 0
+
 /**
  * IDT function for processor interrupt 0, defined in idt_asm.s
  */
