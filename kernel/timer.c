@@ -1,5 +1,12 @@
+/**
+ * Timer source file
+ * @file 	timer.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 21, 2017
+ */
+
 #include "timer.h"
-#include "display.h"
 
 static uint32_t ticks = 0;
 static uint32_t freq = HIGHEST_FREQ;

@@ -7,8 +7,7 @@
 // End Of Interrupt (reactivate the specified PIC)
 #define PIC_EOI         0x20
 
-// Initialize the PICs by remapping IRQs 0-15 to 32-47
-// More details here: http://wiki.osdev.org/8259_PIC
+
 void pic_init() {
 	// By default IRQ 0 to 7 (master PIC) are mapped to interrupts 0-7
 	// and IRQ 8 to 15 (slave PIC) are mapped to interrupts 8-15.
@@ -34,8 +33,6 @@ void pic_init() {
 	outb(PIC2_DATA, 0x01);
 }
 
-// Send an end-of-interrupt to the PICs.
-// An EOI must also be sent to the slave for IRQs > 7
 void pic_eoi(int irq) {
 	if (irq > 7)
 		outb(PIC2_CMD, PIC_EOI);
