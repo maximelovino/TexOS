@@ -24,27 +24,14 @@ void set_cursor_default_look() {
 }
 
 void shift_cursor(int x_shift, int y_shift) {
-	//TODO recheck shift cursor function
-	current_position.x += x_shift;
-	current_position.x %= DISPLAY_WIDTH;
-	current_position.y += (current_position.x / DISPLAY_WIDTH);
-	current_position.y += y_shift;
-	if (current_position.y * current_position.x >= DISPLAY_WIDTH * DISPLAY_HEIGHT) {
-		//We set cursor to first outside of screen position if we go further than the screen
-		current_position.x = 0;
-		current_position.y = DISPLAY_HEIGHT;
-	}
-	write_cursor_to_memory();
+	int count = y_shift * DISPLAY_WIDTH + x_shift;
+	move_cursor(count);
 }
 
-void increment_cursor() {
-	set_cursor_position(convert_1d_to_2d_position((convert_2d_to_1d_position(get_cursor_position()) + 1)));
-}
-
-void decrement_cursor() {
-	//TODO should we check here that we don't go out of screen?
+void move_cursor(int count) {
+	//TODO add check here to check that we don't go out of screen
 	set_cursor_position(convert_1d_to_2d_position(
-			(convert_2d_to_1d_position(get_cursor_position()) - 1)));
+			(convert_2d_to_1d_position(get_cursor_position()) + count)));
 }
 
 void set_cursor_to_origin() {

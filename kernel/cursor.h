@@ -58,14 +58,10 @@ typedef struct cursor_position_st {
 extern void shift_cursor(int x_shift, int y_shift);
 
 /**
- * Function to move the cursor by one char further
+ * Function to move the cursor
+ * @param count The number of position to move the cursor (1D)
  */
-extern void increment_cursor();
-
-/**
- * Function to move the cursor by one char back
- */
-extern void decrement_cursor();
+extern void move_cursor(int count);
 
 /**
  * Function to set the cursor to the origin of the screen

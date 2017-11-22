@@ -69,9 +69,9 @@ void print_char(char to_print) {
 	cursor_position_t cursor = get_cursor_position();
 	if (to_print == '\b') {
 		if (!(cursor.x == 0 && cursor.y == 0)) {
-			decrement_cursor();
+			move_cursor(-1);
 			print_char(0);
-			decrement_cursor();
+			move_cursor(-1);
 		}
 		return;
 	}
@@ -96,7 +96,7 @@ void print_char(char to_print) {
 	void* address = get_vram_pointer(cursor);
 	memset(address, to_print, 1); // first the character
 	memset(address + 1, current_color, 1); //then the current_color
-	increment_cursor();
+	move_cursor(1);
 }
 
 void print_string(char* to_print) {
