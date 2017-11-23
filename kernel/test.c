@@ -1,3 +1,11 @@
+/**
+ * Test source file
+ * @file 	test.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 21, 2017
+ */
+
 #include "test.h"
 
 void demo_mode() {

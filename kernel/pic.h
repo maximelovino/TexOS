@@ -1,3 +1,11 @@
+/**
+ * PIC header file
+ * @file 	pic.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	November 21, 2017
+ */
+
 #ifndef _PIC_H_
 #define _PIC_H_
 
