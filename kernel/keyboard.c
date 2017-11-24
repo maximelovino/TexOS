@@ -64,6 +64,14 @@ void keyboard_handler() {
 				left_shift_down = true;
 			} else if (scan_code == RIGHT_SHIFT_MAKE_CODE) {
 				right_shift_down = true;
+			} else if (scan_code == UP_ARROW_KEY) {
+				shift_cursor(0, -1);
+			} else if (scan_code == DOWN_ARROW_KEY) {
+				shift_cursor(0, 1);
+			} else if (scan_code == LEFT_ARROW_KEY) {
+				shift_cursor(-1, 0);
+			} else if (scan_code == RIGHT_ARROW_KEY) {
+				shift_cursor(1, 0);
 			} else {
 				if (buffer_count == KEYBOARD_BUFFER_SIZE) {
 					display_printf("\nBUFFER FULL\n");
