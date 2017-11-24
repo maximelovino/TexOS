@@ -18,6 +18,8 @@ Parce que si on les laisse de 0 à 7, elles seraient en conflit avec les 8 premi
 
 # Comment pouvez-vous vérifier que votre gestionnaire d'interruption pour les exceptions fonctionne correctement ?
 
+On peut essayer de lancer une division par zéro par exemple, cela va lancer une exception 0 et afficher le message de "Divide Error" et arrêter le système.
+
 # Quelle taille de buffer clavier avez-vous choisie et pourquoi ?
 
 Nous avons un buffer de taille 10
@@ -27,3 +29,5 @@ Nous avons un buffer de taille 10
 Il y a deux façons de le faire. On peut ne pas appeler `getc()` et écrire dans le buffer, ce qui va remplir le buffer sans jamais le vider. Ou on peut également mettre un `sleep` d'une certaine durée dans notre code avant l'appel à `getc()` et remplir le buffer pendant le sleep, le buffer sera plein, et ensuite vidé d'un char lors de chaque appel à `getc()`.
 
 # Est-ce que votre fonction sleep possède une limitation ? Si oui, laquelle et pourquoi ?
+
+La limitation dépend de la fréquence qu'on utilise. C'est-à-dire que la granularité de notre sleep dépend de la fréquence. Par exemple, si nous avons une fréquenc de 100Hz, on ne pourra pas faire de `sleep` avec une précision de moins de 10 ms

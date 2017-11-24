@@ -20,11 +20,15 @@
 void kernel_entry(multiboot_info_t* multibootInfos) {
 	gdt_init();
 	display_init();
+	display_printf("Display initialized\nGDT initialized\n");
 	idt_init();
+	display_printf("IDT initialized\n");
 	pic_init();
+	display_printf("PIC initialized\n");
 	timer_init(100);
+	display_printf("Timer initialized\n");
 	sti();
-	display_printf("GDT Initalized\nDisplay initialized\n");
+	display_printf("Enabled interruptions\n");
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
 			multibootInfos->mem_upper);

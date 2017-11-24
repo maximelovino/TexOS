@@ -12,6 +12,11 @@ static uint32_t ticks = 0;
 static uint32_t freq = HIGHEST_FREQ;
 
 void timer_init(uint32_t freq_hz) {
+	if (freq_hz < LOWEST_FREQ) {
+		freq_hz = LOWEST_FREQ;
+	} else if (freq_hz > HIGHEST_FREQ) {
+		freq_hz = HIGHEST_FREQ;
+	}
 	uint16_t divide_value = (uint16_t) (HIGHEST_FREQ / freq_hz);
 	freq = freq_hz;
 	outb(TIMER_COMMAND_REGISTER, 0x36);

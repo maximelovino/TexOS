@@ -17,6 +17,7 @@
 #define TIMER_PORT_0 0x40
 
 #define HIGHEST_FREQ 1193180
+#define LOWEST_FREQ 19
 
 /**
  * Function to initialize the timer
