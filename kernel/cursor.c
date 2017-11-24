@@ -29,9 +29,23 @@ void shift_cursor(int x_shift, int y_shift) {
 }
 
 void move_cursor(int count) {
-	//TODO add check here to check that we don't go out of screen
-	set_cursor_position(convert_1d_to_2d_position(
-			(convert_2d_to_1d_position(get_cursor_position()) + count)));
+	ushort current_1D_position = convert_2d_to_1d_position(current_position);
+	cursor_position_t cursor_to_set;
+
+	if (count < 0 && count * -1 > current_1D_position) {
+		//if we want to go before the screen, we set to 0,0
+		cursor_to_set.x = 0;
+		cursor_to_set.y = 0;
+	} else if (count > 0 &&
+			   count + current_1D_position >= DISPLAY_WIDTH * DISPLAY_HEIGHT) {
+		//if we want to go outside the screen, we set to first outside the screen the position
+		cursor_to_set.x = 0;
+		cursor_to_set.y = DISPLAY_HEIGHT;
+	} else {
+		cursor_to_set = convert_1d_to_2d_position(
+				(convert_2d_to_1d_position(get_cursor_position()) + count));
+	}
+	set_cursor_position(cursor_to_set);
 }
 
 void set_cursor_to_origin() {

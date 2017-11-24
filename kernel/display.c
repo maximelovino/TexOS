@@ -68,11 +68,9 @@ void new_line() {
 void print_char(char to_print) {
 	cursor_position_t cursor = get_cursor_position();
 	if (to_print == '\b') {
-		if (!(cursor.x == 0 && cursor.y == 0)) {
-			move_cursor(-1);
-			print_char(0);
-			move_cursor(-1);
-		}
+		move_cursor(-1);
+		print_char(0);
+		move_cursor(-1);
 		return;
 	}
 	if (convert_2d_to_1d_position(cursor) >= (DISPLAY_HEIGHT * DISPLAY_WIDTH)) {

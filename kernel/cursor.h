@@ -59,6 +59,8 @@ extern void shift_cursor(int x_shift, int y_shift);
 
 /**
  * Function to move the cursor
+ * If we move after the screen limit, we set the cursor to the first outside the screen position
+ * If we move before the screen start, we set the cursor the 0,0 position of the screen
  * @param count The number of position to move the cursor (1D)
  */
 extern void move_cursor(int count);
