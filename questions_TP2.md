@@ -8,7 +8,7 @@
 
 Il faut commencer par la GDT, étant donné qu'ensuite notre code sera placé dans le code selector, ensuite l'affichage pour pouvoir afficher ce qui est initialisé. Ensuite on peut initialiser l'IDT et le PIC. Et le timer qui dépend de la table d'IDT pour son fonctionnement.
 
-Après tout cela, nous appelons `sti()` pour débloquer les interruptions.
+Après tout cela, nous appelons `sti()` pour débloquer les interruptions. Le plus important est d'appeler `sti()` après toutes les autres initialisations, sinon des interruptions vont se déclencher mais nous ne serions pas prêts à les gérer.
 
 Nous n'avons pas d'initialisation du clavier, car il n'y a rien à initialiser dans notre implémentation.
 
