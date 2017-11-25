@@ -53,50 +53,60 @@ void keyboard_handler() {
 
 		if ((scan_code >> 7)) {
 			//key up, break code, just used for shift detection
-			if (scan_code == LEFT_SHIFT_BREAK_CODE) {
-				left_shift_down = false;
-			} else if (scan_code == RIGHT_SHIFT_BREAK_CODE) {
-				right_shift_down = false;
+			switch (scan_code) {
+				case LEFT_SHIFT_BREAK_CODE:
+					left_shift_down = false;
+					break;
+				case RIGHT_SHIFT_BREAK_CODE:
+					right_shift_down = false;
+					break;
+				default:
+					break;
 			}
 		} else {
 			//key down, make code
-			if (scan_code == LEFT_SHIFT_MAKE_CODE) {
-				left_shift_down = true;
-			} else if (scan_code == RIGHT_SHIFT_MAKE_CODE) {
-				right_shift_down = true;
-			} else if (scan_code == UP_ARROW_KEY) {
-				shift_cursor(0, -1);
-			} else if (scan_code == DOWN_ARROW_KEY) {
-				shift_cursor(0, 1);
-			} else if (scan_code == LEFT_ARROW_KEY) {
-				shift_cursor(-1, 0);
-			} else if (scan_code == RIGHT_ARROW_KEY) {
-				shift_cursor(1, 0);
-			} else {
-				if (buffer_count == KEYBOARD_BUFFER_SIZE) {
-					display_printf("\nBUFFER FULL\n");
-				} else {
-					if (scan_code > LAST_SUPPORTED_CHAR_MAKE_CODE) {
-						buffer[current_write_index++] = UNKNOWN_KEY;
+			switch (scan_code) {
+				case LEFT_SHIFT_MAKE_CODE:
+					left_shift_down = true;
+					break;
+				case RIGHT_SHIFT_MAKE_CODE:
+					right_shift_down = true;
+					break;
+				case UP_ARROW_KEY:
+					shift_cursor(0, -1);
+					break;
+				case DOWN_ARROW_KEY:
+					shift_cursor(0, 1);
+					break;
+				case LEFT_ARROW_KEY:
+					shift_cursor(-1, 0);
+					break;
+				case RIGHT_ARROW_KEY:
+					shift_cursor(1, 0);
+					break;
+				default:
+					if (buffer_count == KEYBOARD_BUFFER_SIZE) {
+						display_printf("\nBUFFER FULL\n");
 					} else {
-						buffer[current_write_index++] = (right_shift_down ||
-														 left_shift_down)
-														? shifted_values[scan_code]
-														: values[scan_code];
+						if (scan_code > LAST_SUPPORTED_CHAR_MAKE_CODE) {
+							buffer[current_write_index++] = UNKNOWN_KEY;
+						} else {
+							buffer[current_write_index++] = (right_shift_down ||
+															 left_shift_down)
+															? shifted_values[scan_code]
+															: values[scan_code];
+						}
+						current_write_index %= KEYBOARD_BUFFER_SIZE;
+						buffer_count++;
 					}
-					current_write_index %= KEYBOARD_BUFFER_SIZE;
-					buffer_count++;
-				}
-
+					break;
 			}
 		}
 	}
 }
 
 int getc() {
-	while (buffer_count == 0) {
-
-	}
+	while (buffer_count == 0) {}
 
 	int character = buffer[current_read_index++];
 	current_read_index %= KEYBOARD_BUFFER_SIZE;
