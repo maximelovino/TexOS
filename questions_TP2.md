@@ -14,7 +14,7 @@ Nous n'avons pas d'initialisation du clavier, car il n'y a rien à initialiser d
 
 # Pourquoi remappe-t-on les IRQ 0 à 7 aux interruptions 32 à 39 ? Que se passerait-il si on ne le faisait pas ?
 
-Parce que si on les laisse de 0 à 7, elles seraient en conflit avec les 8 premières interruptions processeur. Du coup on les mets à 32, car les interruptions processeurs réservent jusqu'à 31.
+Parce que si on les laisse de 0 à 7, elles seraient en conflit avec les 8 premières interruptions processeur. Du coup il faut les déplacer à 32, car les interruptions processeurs réservent jusqu'à l'entrée 31.
 
 # Comment pouvez-vous vérifier que votre gestionnaire d'interruption pour les exceptions fonctionne correctement ?
 
@@ -22,7 +22,7 @@ On peut essayer de lancer une division par zéro par exemple, cela va lancer une
 
 # Quelle taille de buffer clavier avez-vous choisie et pourquoi ?
 
-Nous avons un buffer de taille 10
+Nous avons un buffer de taille 10. Il n'y a pas de raison particulière, en soi, on pourrait avoir un buffer de 256 ou plus même, mais étant donné que le buffer se remplit qu'en cas de non-lecture, ce qui dans notre cas signifie être dans une phase de `sleep`, il n'était pas forcément nécessaire d'avoir un buffer plus grand.
 
 # Comment pouvez-vous causer une situation de buffer plein, même pour un buffer de grande capacité ?
 
