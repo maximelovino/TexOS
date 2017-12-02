@@ -6,7 +6,7 @@ COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -f elf32
 
-BUILD_FOLDER=../build/
+BUILD_FOLDER=../build/kernel/
 SRCS=$(wildcard *.c *.s)
 OBJS=$(patsubst %.c,$(BUILD_FOLDER)%.o,$(patsubst %.s,$(BUILD_FOLDER)%.o,$(SRCS)))
 DEPS=$(OBJS:.o=.d)

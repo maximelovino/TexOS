@@ -1,7 +1,8 @@
 BUILD_FOLDER=build/
-KERNEL_ELF_FILE=$(BUILD_FOLDER)kernel.elf
-KERNEL_ISO=$(BUILD_FOLDER)kernel.iso
-OS_FOLDER=$(BUILD_FOLDER)texos/
+BUILD_KERNEL_FOLDER=$(BUILD_FOLDER)/kernel/
+KERNEL_ELF_FILE=$(BUILD_KERNEL_FOLDER)kernel.elf
+KERNEL_ISO=$(BUILD_KERNEL_FOLDER)kernel.iso
+OS_FOLDER=$(BUILD_KERNEL_FOLDER)texos/
 GRUB_OG_FOLDER=grub/
 STAGE2=boot/grub/stage2_eltorito
 TEST_FLAGS=
@@ -24,10 +25,13 @@ $(KERNEL_ELF_FILE): elf_file
 elf_file:
 	$(MAKE) -C kernel/ kernel TEST_FLAGS="$(TEST_FLAGS)"
 
-.PHONY=run test elf_file
+build_tools:
+	$(MAKE) -C tools/ all
+
+.PHONY=run test elf_file build_tools
 
 clean:
-	$(MAKE) -C kernel/ clean
+	@-rm -rf $(BUILD_FOLDER)
 
 help:
 	@echo "Usage:"
@@ -35,4 +39,5 @@ help:
 	@echo "\ttest: Builds all the dependencies and runs the kernel in test mode"
 	@echo "\t$(KERNEL_ISO): Builds all the dependencies and makes the iso file"
 	@echo "\telf_file: Builds all the dependencies and makes the elf file"
+	@echo "\tbuild_tools: Builds all tools"
 	@echo "\tclean: cleans everything. You have to clean between test and run launches"
