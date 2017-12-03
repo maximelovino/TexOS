@@ -10,9 +10,12 @@ DEPS=$(OBJS:.o=.d)
 
 $(shell mkdir -p $(BUILD_FOLDER))
 
-all: $(BUILD_FOLDER)fs_create
+all: $(BUILD_FOLDER)fs_create $(BUILD_FOLDER)fs_add
 
-$(BUILD_FOLDER)fs_create: $(BUILD_FOLDER)fs_create.o
+$(BUILD_FOLDER)fs_add: $(BUILD_FOLDER)fs_add.o $(BUILD_FOLDER)tex_fs_tools.o
+	$(LINK) $^ -o $@
+
+$(BUILD_FOLDER)fs_create: $(BUILD_FOLDER)fs_create.o $(BUILD_FOLDER)tex_fs_tools.o
 	$(LINK) $^ -o $@
 
 $(BUILD_FOLDER)%.o:%.c

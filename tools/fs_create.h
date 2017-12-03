@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include "../common/tex_fs.h"
 #include <string.h>
-
-#define SECTOR_SIZE 512
+#include "tex_fs_tools.h"
 
 #endif //_FS_CREATE_H_
