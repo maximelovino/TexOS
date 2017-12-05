@@ -6,6 +6,7 @@
 #define TEX_FS_MAGIC ((u_int16_t) 0xD0D0)
 #define TEX_FS_VERSION 1
 #define SECTOR_SIZE 512
+#define DIRECT_BLOCKS 8
 
 typedef struct tex_fs_superblock_st {
 	u_int16_t magic;
@@ -14,6 +15,7 @@ typedef struct tex_fs_superblock_st {
 	int16_t block_size;
 	int16_t block_map;
 	int16_t block_count;
+	int16_t inode_bitmap;
 	int16_t inode_list;
 	int16_t inode_count;
 	int16_t first_data_block;
@@ -21,8 +23,8 @@ typedef struct tex_fs_superblock_st {
 
 typedef struct tex_fs_inode_st {
 	char name[64];
-	int16_t size;
-	int16_t direct_blocks[8];
+	uint32_t size;
+	int16_t direct_blocks[DIRECT_BLOCKS];
 	int16_t indirect_blocks;
 } __attribute__((packed)) tex_fs_inode_t;
 

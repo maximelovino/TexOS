@@ -17,7 +17,7 @@
 #include "timer.h"
 
 
-void kernel_entry(multiboot_info_t* multibootInfos) {
+void kernel_entry(multiboot_info_t* multiboot_infos) {
 	gdt_init();
 	display_init();
 	display_printf("Display initialized\nGDT initialized\n");
@@ -31,7 +31,7 @@ void kernel_entry(multiboot_info_t* multibootInfos) {
 	display_printf("Enabled interruptions\n");
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
-			multibootInfos->mem_upper);
+			multiboot_infos->mem_upper);
 
 #ifdef TEST
 	demo_mode();

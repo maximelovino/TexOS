@@ -26,6 +26,11 @@ void read_image(char* filename, tex_fs_metadata_t* fs) {
 	fseek(image, fs->superblock->block_map * fs->superblock->block_size,
 		  SEEK_SET);
 	fread(fs->block_map, 1, fs->superblock->block_count, image);
+
+	fseek(image, fs->superblock->inode_bitmap * fs->superblock->block_size,
+		  SEEK_SET);
+	fs->inode_map = malloc(sizeof(uint8_t) * fs->superblock->inode_count);
+	fread(fs->inode_map, 1, fs->superblock->inode_count, image);
 	fseek(image, fs->superblock->inode_list * fs->superblock->block_size,
 		  SEEK_SET);
 	fs->inode_list = malloc(

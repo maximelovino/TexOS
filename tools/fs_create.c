@@ -9,6 +9,8 @@ int main(int argc, char* argv[]) {
 		display_usage();
 		return EXIT_FAILURE;
 	}
+
+	//TODO add inode bitmap
 	printf("Welcome to the creation of your TexFS image\n");
 	printf("============================\n");
 
@@ -43,8 +45,14 @@ int main(int argc, char* argv[]) {
 	uint8_t block_map[block_count];
 	memset(block_map, 0, block_count);
 
+	int16_t block_count_inode_map = (int16_t) (
+			max_file_count / superblock.block_size + 1);
 
-	superblock.inode_list = superblock.block_map + block_count_block_map;
+	uint8_t inode_map[max_file_count];
+	memset(inode_map, 0, max_file_count);
+	superblock.inode_bitmap = superblock.block_map + block_count_block_map;
+
+	superblock.inode_list = superblock.inode_bitmap + block_count_inode_map;
 
 	int16_t block_count_inode_list = (int16_t) (
 			(superblock.inode_count * sizeof(tex_fs_inode_t)) /
@@ -62,6 +70,9 @@ int main(int argc, char* argv[]) {
 	fwrite(&superblock, sizeof(superblock), 1, image_file);
 	fseek(image_file, superblock.block_map * superblock.block_size, SEEK_SET);
 	fwrite(block_map, 1, block_count, image_file);
+	fseek(image_file, superblock.inode_bitmap * superblock.block_size,
+		  SEEK_SET);
+	fwrite(inode_map, 1, max_file_count, image_file);
 	fseek(image_file, superblock.inode_list * superblock.block_size, SEEK_SET);
 	fwrite(inodes, sizeof(tex_fs_inode_t), superblock.inode_count, image_file);
 	fseek(image_file, superblock.first_data_block * superblock.block_size,
@@ -72,5 +83,6 @@ int main(int argc, char* argv[]) {
 	void* data = calloc(data_size, 1);
 	fwrite(data, 1, data_size, image_file);
 	fclose(image_file);
+	free(data);
 	printf("File closed, your image %s is ready\n", image_name);
 }

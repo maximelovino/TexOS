@@ -9,6 +9,7 @@
 typedef struct tex_fs_metadata_st {
 	tex_fs_superblock_t* superblock;
 	uint8_t* block_map;
+	uint8_t* inode_map;
 	tex_fs_inode_t* inode_list;
 } __attribute__((packed)) tex_fs_metadata_t;
 
