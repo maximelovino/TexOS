@@ -39,3 +39,16 @@ void read_image(char* filename, tex_fs_metadata_t* fs) {
 		  image);
 	fclose(image);
 }
+
+uint32_t compute_max_file_size(tex_fs_superblock_t* superblock) {
+	return superblock->block_size * DIRECT_BLOCKS +
+		   INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
+}
+
+uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs) {
+	uint32_t free_blocks_count = 0;
+	for (int i = 0; i < fs->superblock->block_count; i++) {
+		free_blocks_count += !fs->block_map[i];
+	}
+	return free_blocks_count;
+}

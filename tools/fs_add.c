@@ -64,22 +64,27 @@ int main(int argc, char* argv[]) {
 		   file_size);
 
 	uint16_t blocks_to_write[blocks_needed_for_file];
-	int block_index;
-	for (int j = 0; j < fs.superblock->block_count; j++) {
+	int block_index = 0;
+	for (int j = 0; j < fs.superblock->block_count && block_index < blocks_needed_for_file; j++) {
 		if (!fs.block_map[j]) {
 			blocks_to_write[block_index++] = j;
 		}
 	}
 
-	if (block_index < (blocks_needed_for_file - 1)) {
+	if (block_index < blocks_needed_for_file) {
 		printf("Not enough free blocks to allocate the file\n");
 		return EXIT_FAILURE;
+	} else {
+		printf("Found enough blocks for the file %d\n", block_index);
 	}
 
 	file_inode->size = file_size;
 
 
 	void* buffer = malloc(fs.superblock->block_size);
+	if (!buffer) {
+		exit(1);
+	}
 
 	for (int k = 0; k < blocks_needed_for_file; k++) {
 		if (k < 8) {
@@ -87,8 +92,10 @@ int main(int argc, char* argv[]) {
 		} else {
 			//put in indirect block
 		}
-		fread(buffer, fs.superblock->block_size, 1, file_to_add);
+		//fread(buffer, fs.superblock->block_size, 1, file_to_add);
+		printf("%d ", blocks_to_write[k]);
 	}
+	printf("\n");
 
 
 	fseek(image_file,

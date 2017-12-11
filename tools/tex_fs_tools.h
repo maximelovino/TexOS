@@ -19,4 +19,8 @@ void read_superblock(FILE* image, tex_fs_superblock_t* superblock);
 
 void print_superblock(tex_fs_superblock_t* superblock);
 
+uint32_t compute_max_file_size(tex_fs_superblock_t* superblock);
+
+uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs);
+
 #endif //_TEX_FS_TOOLS_H_
