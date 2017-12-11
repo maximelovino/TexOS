@@ -15,7 +15,7 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 typedef unsigned int uint;
-typedef unsigned long long ulong;
+//typedef unsigned long long ulong;
 
 #ifndef NULL
 #define NULL 0

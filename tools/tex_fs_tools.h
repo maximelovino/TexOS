@@ -15,6 +15,8 @@ typedef struct tex_fs_metadata_st {
 
 void read_image(char* filename, tex_fs_metadata_t* fs);
 
+void free_tex_fs_metadata(tex_fs_metadata_t* fs);
+
 void read_superblock(FILE* image, tex_fs_superblock_t* superblock);
 
 void print_superblock(tex_fs_superblock_t* superblock);

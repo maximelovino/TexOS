@@ -10,7 +10,7 @@ void print_usage() {
 int main(int argc, char* argv[]) {
 	if (argc != 2) {
 		print_usage();
-		exit(1);
+		return EXIT_FAILURE;
 	}
 	char* image_name = argv[1];
 	tex_fs_metadata_t fs;
@@ -23,4 +23,8 @@ int main(int argc, char* argv[]) {
 	printf("Free blocks: %d / %d blocks\n", free_blocks, fs.superblock->block_count);
 	printf("Free space: %d / %d bytes\n", free_blocks * fs.superblock->block_size,
 		   fs.superblock->block_count * fs.superblock->block_size);
+	printf("===============\n");
+	printf("Max filesize for this filesystem: %d\n", compute_max_file_size(fs.superblock));
+	free_tex_fs_metadata(&fs);
+	return 0;
 }

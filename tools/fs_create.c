@@ -25,9 +25,14 @@ int main(int argc, char* argv[]) {
 	char* image_name = argv[5];
 
 
-	if (block_size < 0 || block_size % SECTOR_SIZE != 0) {
+	if (block_size % SECTOR_SIZE != 0) {
 		printf("Block size must be a multiple of %d bytes, and be positive\n", SECTOR_SIZE);
-		return 1;
+		return EXIT_FAILURE;
+	}
+
+	if (strlen(label) > MAX_LABEL_LENGTH) {
+		printf("The name of the label you want to use is too long, maximum %d chars\n", MAX_LABEL_LENGTH);
+		return EXIT_FAILURE;
 	}
 
 	printf("The selected parameters are:\nLabel: %s\nBlock Size: %d\nBlock count: %d\nFilename: %s\nMax File count: %d\n",
@@ -37,7 +42,7 @@ int main(int argc, char* argv[]) {
 	FILE* image_file = fopen(image_name, "wb");
 	if (!image_file) {
 		printf("Couldn't open the file %s for writing\n", image_name);
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
 
 	tex_fs_superblock_t superblock;
@@ -102,4 +107,5 @@ int main(int argc, char* argv[]) {
 
 	fclose(image_file);
 	printf("File closed, your image %s is ready\n", image_name);
+	return 0;
 }

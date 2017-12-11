@@ -9,11 +9,13 @@
 #define DIRECT_BLOCKS 8
 #define INDIRECT_BLOCKS 4
 #define BYTES_BLOCK_ADDRESS 4
+#define MAX_LABEL_LENGTH 30
+#define MAX_FILENAME_LENGTH 64
 
 typedef struct tex_fs_superblock_st {
-	u_int16_t magic;
+	uint16_t magic;
 	uint8_t version;
-	char label[30];
+	char label[MAX_LABEL_LENGTH];
 	uint16_t block_size;
 	uint32_t block_map;
 	uint32_t block_count;
@@ -24,7 +26,7 @@ typedef struct tex_fs_superblock_st {
 } __attribute__((packed)) tex_fs_superblock_t;
 
 typedef struct tex_fs_inode_st {
-	char name[64];
+	char name[MAX_FILENAME_LENGTH];
 	uint32_t size;
 	uint32_t direct_blocks[DIRECT_BLOCKS];
 	uint32_t indirect_blocks[INDIRECT_BLOCKS];

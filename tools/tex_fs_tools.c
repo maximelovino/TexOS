@@ -20,6 +20,10 @@ void print_superblock(tex_fs_superblock_t* superblock) {
 
 void read_image(char* filename, tex_fs_metadata_t* fs) {
 	FILE* image = fopen(filename, "rb");
+	if (!image) {
+		printf("The image file %s doesn't exist\n", filename);
+		exit(1);
+	}
 	fs->superblock = malloc(sizeof(tex_fs_superblock_t));
 	read_superblock(image, fs->superblock);
 	fs->block_map = malloc(sizeof(uint8_t) * fs->superblock->block_count);
@@ -40,6 +44,13 @@ void read_image(char* filename, tex_fs_metadata_t* fs) {
 	fclose(image);
 }
 
+void free_tex_fs_metadata(tex_fs_metadata_t* fs) {
+	free(fs->superblock);
+	free(fs->block_map);
+	free(fs->inode_map);
+	free(fs->inode_list);
+}
+
 uint32_t compute_max_file_size(tex_fs_superblock_t* superblock) {
 	return superblock->block_size * DIRECT_BLOCKS +
 		   INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
@@ -47,7 +58,7 @@ uint32_t compute_max_file_size(tex_fs_superblock_t* superblock) {
 
 uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs) {
 	uint32_t free_blocks_count = 0;
-	for (int i = 0; i < fs->superblock->block_count; i++) {
+	for (uint32_t i = 0; i < fs->superblock->block_count; i++) {
 		free_blocks_count += !fs->block_map[i];
 	}
 	return free_blocks_count;
