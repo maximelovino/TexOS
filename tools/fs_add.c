@@ -76,8 +76,12 @@ int main(int argc, char* argv[]) {
 		   data_blocks_needed,
 		   file_size);
 
-	uint32_t indirect_blocks_needed =
-			((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size + 1;
+	uint32_t indirect_blocks_needed = 0;
+	if (data_blocks_needed > DIRECT_BLOCKS) {
+		indirect_blocks_needed =
+				((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size + 1;
+	}
+
 	printf("For storing these blocks, you will need %d indirect blocks\n", indirect_blocks_needed);
 
 	uint32_t blocks_to_write[data_blocks_needed + indirect_blocks_needed];
@@ -120,6 +124,7 @@ int main(int argc, char* argv[]) {
 			for (uint32_t j = 0; j < indices_per_block; j++) {
 				index_block[j] = indirect_data_blocks_indices[i * indices_per_block + j];
 			}
+			//TODO uncomment this
 			//fseek(image_file, file_inode->indirect_blocks[i] * fs.superblock->block_size, SEEK_SET);
 			//fwrite(index_block, sizeof(uint32_t), indices_per_block, image_file);
 		}
@@ -128,29 +133,33 @@ int main(int argc, char* argv[]) {
 	fseek(image_file, fs.superblock->inode_list * fs.superblock->block_size + free_inode_index * sizeof(tex_fs_inode_t),
 		  SEEK_SET);
 	fwrite(file_inode, sizeof(tex_fs_inode_t), 1, image_file);
-/*
-	void* buffer = malloc(fs.superblock->block_size);
-	if (!buffer) {
-		exit(1);
-	}
+
+	//TODO then write all datablocks starting from direct_data_block_indices for a count of data_blocks_needed
+
+	fs.inode_map[free_inode_index] = 1;
+	fseek(image_file, fs.superblock->inode_bitmap * fs.superblock->block_size, SEEK_SET);
+	fwrite(fs.inode_map, sizeof(uint8_t), fs.superblock->inode_count, image_file);
+
+	uint8_t block[fs.superblock->block_size];
+	uint32_t remaining_file_size = file_size;
 
 	for (uint32_t k = 0; k < data_blocks_needed; k++) {
-		if (k < 8) {
-			//put in direct block
-		} else {
-			//put in indirect block
-		}
-		//fread(buffer, fs.superblock->block_size, 1, file_to_add);
-		printf("%d ", blocks_to_write[k]);
+		memset(block, 0, fs.superblock->block_size);
+		uint32_t size_to_read =
+				remaining_file_size < fs.superblock->block_size ? remaining_file_size : fs.superblock->block_size;
+		fread(block, sizeof(uint8_t), size_to_read, file_to_add);
+		remaining_file_size -= size_to_read;
+		//fseek(image_file, direct_data_blocks_indices[k] * fs.superblock->block_size, SEEK_SET);
+		//fwrite(block, sizeof(uint8_t), fs.superblock->block_size, image_file);
+		printf("Setting datablock %d to used\n", direct_data_blocks_indices[k]);
+		fs.block_map[direct_data_blocks_indices[k]] = 1;
 	}
-	printf("\n");
 
+	printf("Moving to block %d for writing block map, that is offset of %d\n", fs.superblock->block_map,
+		   fs.superblock->block_map * fs.superblock->block_size);
+	fseek(image_file, fs.superblock->block_map * fs.superblock->block_size, SEEK_SET);
+	fwrite(fs.block_map, sizeof(uint8_t), fs.superblock->block_count, image_file);
 
-	fseek(image_file,
-		  fs.superblock->inode_list * fs.superblock->block_size +
-		  sizeof(tex_fs_inode_t) * free_inode_index, SEEK_SET);
-	fwrite(file_inode, sizeof(tex_fs_inode_t), 1, image_file);
-	*/
 	free_tex_fs_metadata(&fs);
 	fclose(image_file);
 	fclose(file_to_add);

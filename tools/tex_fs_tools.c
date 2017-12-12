@@ -19,6 +19,7 @@ void print_superblock(tex_fs_superblock_t* superblock) {
 }
 
 void read_image(char* filename, tex_fs_metadata_t* fs) {
+	//TODO test all the mallocs
 	FILE* image = fopen(filename, "rb");
 	if (!image) {
 		printf("The image file %s doesn't exist\n", filename);
