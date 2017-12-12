@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 	read_image(image_name, &fs);
 	print_superblock(fs.superblock);
 
-	FILE* image_file = fopen(image_name, "ab");
+	FILE* image_file = fopen(image_name, "r+b");
 	FILE* file_to_add = fopen(filename, "rb");
 
 	if (!file_to_add) {
@@ -125,8 +125,8 @@ int main(int argc, char* argv[]) {
 				index_block[j] = indirect_data_blocks_indices[i * indices_per_block + j];
 			}
 			//TODO uncomment this
-			//fseek(image_file, file_inode->indirect_blocks[i] * fs.superblock->block_size, SEEK_SET);
-			//fwrite(index_block, sizeof(uint32_t), indices_per_block, image_file);
+			fseek(image_file, file_inode->indirect_blocks[i] * fs.superblock->block_size, SEEK_SET);
+			fwrite(index_block, sizeof(uint32_t), indices_per_block, image_file);
 		}
 	}
 
@@ -149,8 +149,8 @@ int main(int argc, char* argv[]) {
 				remaining_file_size < fs.superblock->block_size ? remaining_file_size : fs.superblock->block_size;
 		fread(block, sizeof(uint8_t), size_to_read, file_to_add);
 		remaining_file_size -= size_to_read;
-		//fseek(image_file, direct_data_blocks_indices[k] * fs.superblock->block_size, SEEK_SET);
-		//fwrite(block, sizeof(uint8_t), fs.superblock->block_size, image_file);
+		fseek(image_file, direct_data_blocks_indices[k] * fs.superblock->block_size, SEEK_SET);
+		fwrite(block, sizeof(uint8_t), fs.superblock->block_size, image_file);
 		printf("Setting datablock %d to used\n", direct_data_blocks_indices[k]);
 		fs.block_map[direct_data_blocks_indices[k]] = 1;
 	}

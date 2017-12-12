@@ -25,6 +25,8 @@ uint32_t compute_max_file_size(tex_fs_superblock_t* superblock);
 
 uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs);
 
+uint32_t compute_free_inodes_count(tex_fs_metadata_t* fs);
+
 //TODO make a reverse bits function that takes a block map pointer and an array of block indices and reverses the bits for those blocks
 
 #endif //_TEX_FS_TOOLS_H_

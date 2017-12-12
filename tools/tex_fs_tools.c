@@ -64,3 +64,11 @@ uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs) {
 	}
 	return free_blocks_count;
 }
+
+uint32_t compute_free_inodes_count(tex_fs_metadata_t* fs) {
+	uint32_t free_inodes_count = 0;
+	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
+		free_inodes_count += !fs->inode_map[i];
+	}
+	return free_inodes_count;
+}
