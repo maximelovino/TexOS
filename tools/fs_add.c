@@ -70,6 +70,8 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	//TODO I think the +1 for the blocks needed is only if the division is not perfect, so it should be + ! (file.size % block size == 0)
+
 	uint32_t data_blocks_needed = file_size / fs.superblock->block_size + 1;
 
 	printf("You need %d blocks for the data of the file of size %d bytes\n",

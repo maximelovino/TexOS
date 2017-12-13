@@ -14,4 +14,11 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
+	char* filename = argv[1];
+
+	tex_fs_metadata_t fs;
+	read_image(filename, &fs);
+	list_all_files(&fs);
+	free_tex_fs_metadata(&fs);
+	return 0;
 }

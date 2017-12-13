@@ -72,3 +72,11 @@ uint32_t compute_free_inodes_count(tex_fs_metadata_t* fs) {
 	}
 	return free_inodes_count;
 }
+
+void list_all_files(tex_fs_metadata_t* fs) {
+	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
+		if (fs->inode_map[i]) {
+			printf("%s\t%d bytes\n", fs->inode_list[i].name, fs->inode_list[i].size);
+		}
+	}
+}
