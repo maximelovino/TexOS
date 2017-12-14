@@ -80,3 +80,16 @@ void list_all_files(tex_fs_metadata_t* fs) {
 		}
 	}
 }
+
+bool is_file_already_present(char* filename, tex_fs_metadata_t* fs) {
+	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
+		if (fs->inode_map[i] && strcmp(fs->inode_list[i].name, filename) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool valid_magic(tex_fs_metadata_t* fs) {
+	return fs->superblock->magic == TEX_FS_MAGIC;
+}

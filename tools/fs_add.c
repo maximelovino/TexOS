@@ -25,6 +25,12 @@ int main(int argc, char* argv[]) {
 
 	tex_fs_metadata_t fs;
 	read_image(image_name, &fs);
+
+	if (!valid_magic(&fs)) {
+		printf("Magic is wrong, this is not a TexFS image\n");
+		return EXIT_FAILURE;
+	}
+
 	print_superblock(fs.superblock);
 
 	FILE* image_file = fopen(image_name, "r+b");
@@ -37,6 +43,11 @@ int main(int argc, char* argv[]) {
 
 	if (!image_file) {
 		printf("The image %s doesn't exist\n", image_name);
+		return EXIT_FAILURE;
+	}
+
+	if (is_file_already_present(filename, &fs)) {
+		printf("The file %s you want to add is already present on the filesystem\n", filename);
 		return EXIT_FAILURE;
 	}
 

@@ -4,6 +4,7 @@
 #include "../common/tex_fs.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 typedef struct tex_fs_metadata_st {
@@ -28,6 +29,10 @@ uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs);
 uint32_t compute_free_inodes_count(tex_fs_metadata_t* fs);
 
 void list_all_files(tex_fs_metadata_t* fs);
+
+bool is_file_already_present(char* filename, tex_fs_metadata_t* fs);
+
+bool valid_magic(tex_fs_metadata_t* fs);
 
 //TODO make a reverse bits function that takes a block map pointer and an array of block indices and reverses the bits for those blocks
 

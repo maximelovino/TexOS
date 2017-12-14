@@ -18,6 +18,10 @@ int main(int argc, char* argv[]) {
 
 	tex_fs_metadata_t fs;
 	read_image(filename, &fs);
+	if (!valid_magic(&fs)) {
+		printf("Magic is wrong, this is not a TexFS image\n");
+		return EXIT_FAILURE;
+	}
 	list_all_files(&fs);
 	free_tex_fs_metadata(&fs);
 	return 0;

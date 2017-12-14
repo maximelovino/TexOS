@@ -15,6 +15,10 @@ int main(int argc, char* argv[]) {
 	char* image_name = argv[1];
 	tex_fs_metadata_t fs;
 	read_image(image_name, &fs);
+	if (!valid_magic(&fs)) {
+		printf("Magic is wrong, this is not a TexFS image\n");
+		return EXIT_FAILURE;
+	}
 	uint32_t free_blocks = compute_free_blocks_count(&fs);
 	printf("Displaying infos about %s\n", image_name);
 	printf("=============================================\n");
