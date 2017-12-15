@@ -38,6 +38,8 @@ int find_inode_number_for_file(char* filename, tex_fs_metadata_t* fs);
 
 void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE* image);
 
+void seek_to_block(FILE* file, uint32_t block_number, uint16_t block_size);
+
 //TODO make a reverse bits function that takes a block map pointer and an array of block indices and reverses the bits for those blocks
 
 #endif //_TEX_FS_TOOLS_H_

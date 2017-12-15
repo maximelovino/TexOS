@@ -12,6 +12,7 @@
 #include "gdt.h"
 #include "display.h"
 #include "idt.h"
+#include "ide.h"
 #include "test.h"
 #include "pic.h"
 #include "timer.h"

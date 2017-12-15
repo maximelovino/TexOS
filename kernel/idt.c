@@ -46,8 +46,7 @@ static char* processor_interruption_messages[21] = {
  * @param dpl The privilege level required to call the ISR
  * @return An IDT entry
  */
-static idt_entry_t
-idt_build_entry(uint16_t selector, uint32_t offset, uint8_t type, uint8_t dpl) {
+static idt_entry_t idt_build_entry(uint16_t selector, uint32_t offset, uint8_t type, uint8_t dpl) {
 	idt_entry_t entry;
 	entry.offset15_0 = offset & 0xffff;
 	entry.selector = selector;
@@ -217,4 +216,5 @@ void idt_init() {
 
 	// Load the GDT
 	idt_load(&idt_ptr);
+
 }

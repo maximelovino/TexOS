@@ -10,7 +10,7 @@ TEST_FLAGS=
 $(shell mkdir -p $(BUILD_FOLDER))
 
 run:elf_file $(KERNEL_ISO)
-	qemu-system-i386 -cdrom $(KERNEL_ISO)
+	qemu-system-i386 -cdrom $(KERNEL_ISO) -hda $(BUILD_KERNEL_FOLDER)fs.img
 
 test:TEST_FLAGS+=-DTEST
 test:run

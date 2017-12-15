@@ -20,6 +20,7 @@ void print_superblock(tex_fs_superblock_t* superblock) {
 }
 
 void read_image(char* filename, tex_fs_metadata_t* fs) {
+	//TODO pass a file pointer here, because we open with r outside anyway
 	FILE* image = fopen(filename, "rb");
 	if (!image) {
 		printf("The image file %s doesn't exist\n", filename);
@@ -36,20 +37,17 @@ void read_image(char* filename, tex_fs_metadata_t* fs) {
 		printf("Exiting because malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	fseek(image, fs->superblock->block_map * fs->superblock->block_size,
-		  SEEK_SET);
+	seek_to_block(image, fs->superblock->block_map, fs->superblock->block_size);
 	fread(fs->block_map, 1, fs->superblock->block_count, image);
 
-	fseek(image, fs->superblock->inode_bitmap * fs->superblock->block_size,
-		  SEEK_SET);
+	seek_to_block(image, fs->superblock->inode_bitmap, fs->superblock->block_size);
 	fs->inode_map = malloc(sizeof(uint8_t) * fs->superblock->inode_count);
 	if (!fs->inode_map) {
 		printf("Exiting because malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
 	fread(fs->inode_map, 1, fs->superblock->inode_count, image);
-	fseek(image, fs->superblock->inode_list * fs->superblock->block_size,
-		  SEEK_SET);
+	seek_to_block(image, fs->superblock->inode_list, fs->superblock->block_size);
 	fs->inode_list = malloc(
 			sizeof(tex_fs_inode_t) * fs->superblock->inode_count);
 	if (!fs->inode_list) {
@@ -115,6 +113,7 @@ int find_inode_number_for_file(char* filename, tex_fs_metadata_t* fs) {
 }
 
 void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE* image) {
+	//TODO this doesn't work, it doesn't free all file blocks
 	uint32_t block_to_clear = 0;
 	for (uint32_t i = 0; i < DIRECT_BLOCKS; i++) {
 		block_to_clear = inode->direct_blocks[i];
@@ -129,7 +128,7 @@ void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE
 		if (block_to_clear != 0) {
 			fs->block_map[block_to_clear] = 0;
 			memset(block, 0, fs->superblock->block_size);
-			fseek(image, fs->superblock->block_size * block_to_clear, SEEK_SET);
+			seek_to_block(image, block_to_clear, fs->superblock->block_size);
 			fread(block, 1, fs->superblock->block_size, image);
 
 			for (int j = 0; j < fs->superblock->block_size; j++) {
@@ -140,4 +139,8 @@ void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE
 			}
 		}
 	}
+}
+
+void seek_to_block(FILE* file, uint32_t block_number, uint16_t block_size) {
+	fseek(file, block_number * block_size, SEEK_SET);
 }
