@@ -6,7 +6,7 @@
 #include "tex_fs_tools.h"
 
 void display_usage() {
-	printf("fs_create <label> <block_size> <block_count> <max_file_count> <image_name>\n");
+	printf("./fs_create <label> <block_size> <block_count> <max_file_count> <image_name>\n");
 }
 
 int main(int argc, char* argv[]) {

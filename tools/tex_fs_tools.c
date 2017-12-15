@@ -11,23 +11,31 @@ void print_superblock(tex_fs_superblock_t* superblock) {
 	printf("Version: %d\n", superblock->version);
 	printf("Label: %s\n", superblock->label);
 	printf("Block size: %d\n", superblock->block_size);
-	printf("Block map: %d\n", superblock->block_map);
+	printf("Block map block number: %d\n", superblock->block_map);
 	printf("Block count: %d\n", superblock->block_count);
-	printf("Inode list: %d\n", superblock->inode_list);
+	printf("Inode bitmap block number: %d\n", superblock->inode_bitmap);
+	printf("Inode list block number: %d\n", superblock->inode_list);
 	printf("Inode count: %d\n", superblock->inode_count);
-	printf("First data block: %d\n", superblock->first_data_block);
+	printf("First data block number: %d\n", superblock->first_data_block);
 }
 
 void read_image(char* filename, tex_fs_metadata_t* fs) {
-	//TODO test all the mallocs
 	FILE* image = fopen(filename, "rb");
 	if (!image) {
 		printf("The image file %s doesn't exist\n", filename);
 		exit(1);
 	}
 	fs->superblock = malloc(sizeof(tex_fs_superblock_t));
+	if (!fs->superblock) {
+		printf("Exiting because malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
 	read_superblock(image, fs->superblock);
 	fs->block_map = malloc(sizeof(uint8_t) * fs->superblock->block_count);
+	if (!fs->block_map) {
+		printf("Exiting because malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
 	fseek(image, fs->superblock->block_map * fs->superblock->block_size,
 		  SEEK_SET);
 	fread(fs->block_map, 1, fs->superblock->block_count, image);
@@ -35,11 +43,19 @@ void read_image(char* filename, tex_fs_metadata_t* fs) {
 	fseek(image, fs->superblock->inode_bitmap * fs->superblock->block_size,
 		  SEEK_SET);
 	fs->inode_map = malloc(sizeof(uint8_t) * fs->superblock->inode_count);
+	if (!fs->inode_map) {
+		printf("Exiting because malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
 	fread(fs->inode_map, 1, fs->superblock->inode_count, image);
 	fseek(image, fs->superblock->inode_list * fs->superblock->block_size,
 		  SEEK_SET);
 	fs->inode_list = malloc(
 			sizeof(tex_fs_inode_t) * fs->superblock->inode_count);
+	if (!fs->inode_list) {
+		printf("Exiting because malloc failed\n");
+		exit(EXIT_FAILURE);
+	}
 	fread(fs->inode_list, sizeof(tex_fs_inode_t), fs->superblock->inode_count,
 		  image);
 	fclose(image);
@@ -82,14 +98,46 @@ void list_all_files(tex_fs_metadata_t* fs) {
 }
 
 bool is_file_already_present(char* filename, tex_fs_metadata_t* fs) {
-	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
-		if (fs->inode_map[i] && strcmp(fs->inode_list[i].name, filename) == 0) {
-			return true;
-		}
-	}
-	return false;
+	return find_inode_number_for_file(filename, fs) != -1;
 }
 
 bool valid_magic(tex_fs_metadata_t* fs) {
 	return fs->superblock->magic == TEX_FS_MAGIC;
+}
+
+int find_inode_number_for_file(char* filename, tex_fs_metadata_t* fs) {
+	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
+		if (fs->inode_map[i] && strcmp(fs->inode_list[i].name, filename) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE* image) {
+	uint32_t block_to_clear = 0;
+	for (uint32_t i = 0; i < DIRECT_BLOCKS; i++) {
+		block_to_clear = inode->direct_blocks[i];
+		if (block_to_clear != 0) {
+			fs->block_map[block_to_clear] = 0;
+		}
+	}
+	uint8_t block[fs->superblock->block_size];
+
+	for (uint32_t i = 0; i < INDIRECT_BLOCKS; i++) {
+		block_to_clear = inode->indirect_blocks[i];
+		if (block_to_clear != 0) {
+			fs->block_map[block_to_clear] = 0;
+			memset(block, 0, fs->superblock->block_size);
+			fseek(image, fs->superblock->block_size * block_to_clear, SEEK_SET);
+			fread(block, 1, fs->superblock->block_size, image);
+
+			for (int j = 0; j < fs->superblock->block_size; j++) {
+				block_to_clear = block[j];
+				if (block_to_clear != 0) {
+					fs->block_map[block_to_clear] = 0;
+				}
+			}
+		}
+	}
 }
