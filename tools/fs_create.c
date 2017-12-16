@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	char* image_name = argv[5];
 
 
-	if (block_size % SECTOR_SIZE != 0) {
+	if (block_size <= 0 || block_size % SECTOR_SIZE != 0) {
 		printf("Block size must be a multiple of %d bytes, and be positive\n", SECTOR_SIZE);
 		return EXIT_FAILURE;
 	}

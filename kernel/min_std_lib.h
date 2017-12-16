@@ -58,4 +58,12 @@ extern void itoa(int value, bool hex, char* buffer);
  */
 extern int strlen(char* string);
 
+/**
+ * Function to compare two strings until the end of the first one
+ * @param p	The first string
+ * @param q	The second string
+ * @return -1, 0, or 1 if p is respectively less, equal or bigger than q
+ */
+extern int strcmp(char* p, char* q);
+
 #endif /* end of include guard: _MIN_STD_LIB_H_ */

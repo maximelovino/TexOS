@@ -53,11 +53,12 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	tex_fs_inode_t inode_list[fs.superblock->inode_count];
 	memset(inode_list, 0, fs.superblock->inode_count * sizeof(tex_fs_inode_t));
 	fs.inode_list = inode_list;
-	read_image(&fs);
-
-
-	display_printf("%d\n", fs.block_map[0]);
-
+	fs_init(&fs);
+	stat_t st;
+	if (file_stat("yo", &st) == 0)
+		display_printf("File yo has size of %d bytes\n", st.size);
+	int fd = file_open("yo");
+	display_printf("%d fd\n", fd);
 #ifdef TEST
 	demo_mode();
 #endif

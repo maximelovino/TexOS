@@ -88,3 +88,14 @@ int strlen(char* string) {
 	}
 	return i;
 }
+
+int strcmp(char* p, char* q) {
+	while (!*p) {
+		if (*p++ > *q++) {
+			return 1;
+		} else if (*p++ < *q++) {
+			return -1;
+		}
+	}
+	return 0;
+}
