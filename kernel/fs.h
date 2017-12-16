@@ -41,4 +41,6 @@ void read_image(tex_fs_metadata_t* fs);
 
 void read_block(uint32_t block_number, void* block_data, uint16_t block_size);
 
+void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block, uint16_t block_size);
+
 #endif

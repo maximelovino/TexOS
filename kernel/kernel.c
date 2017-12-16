@@ -34,16 +34,29 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
 			multiboot_infos->mem_upper);
-	tex_fs_superblock_t superblock;
-	memset(&superblock, 0, sizeof(tex_fs_superblock_t));
-	read_superblock(&superblock);
+
+	tex_fs_superblock_t sb;
+	memset(&sb, 0, sizeof(tex_fs_superblock_t));
+	read_superblock(&sb);
+
 	tex_fs_metadata_t fs;
+	fs.superblock = &sb;
+
 	uint8_t block_map[fs.superblock->block_count];
 	memset(block_map, 0, fs.superblock->block_count);
-	fs.superblock = &superblock;
-	fs.block_map = &block_map[0];
-	/*read_image(&fs);
-	display_printf("%d\n", fs.block_map[0]);*/
+	fs.block_map = block_map;
+
+	uint8_t inode_map[fs.superblock->inode_count];
+	memset(inode_map, 0, fs.superblock->inode_count);
+	fs.inode_map = inode_map;
+
+	tex_fs_inode_t inode_list[fs.superblock->inode_count];
+	memset(inode_list, 0, fs.superblock->inode_count * sizeof(tex_fs_inode_t));
+	fs.inode_list = inode_list;
+	read_image(&fs);
+
+
+	display_printf("%d\n", fs.block_map[0]);
 
 #ifdef TEST
 	demo_mode();
