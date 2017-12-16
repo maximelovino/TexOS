@@ -1,10 +1,10 @@
 CC=gcc
 TEST_FLAGS=
-COMPILE_FLAGS=-m32 -nostdlib -ffreestanding -Wall -Wextra $(TEST_FLAGS)
+COMPILE_FLAGS=-m32 -g -nostdlib -ffreestanding -Wall -Wextra $(TEST_FLAGS)
 LINKER_FLAGS=-Tkernel.ld -static -lgcc
 COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
-NASM=nasm -f elf32
+NASM=nasm -g -f elf32
 
 BUILD_FOLDER=../build/kernel/
 SRCS=$(wildcard *.c *.s)

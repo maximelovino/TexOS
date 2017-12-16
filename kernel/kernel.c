@@ -16,6 +16,7 @@
 #include "test.h"
 #include "pic.h"
 #include "timer.h"
+#include "fs.h"
 
 
 void kernel_entry(multiboot_info_t* multiboot_infos) {
@@ -33,6 +34,16 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	display_printf(
 			"Hello and welcome to TexOS\nThe available memory is %d KB\n",
 			multiboot_infos->mem_upper);
+	tex_fs_superblock_t superblock;
+	memset(&superblock, 0, sizeof(tex_fs_superblock_t));
+	read_superblock(&superblock);
+	tex_fs_metadata_t fs;
+	uint8_t block_map[fs.superblock->block_count];
+	memset(block_map, 0, fs.superblock->block_count);
+	fs.superblock = &superblock;
+	fs.block_map = &block_map[0];
+	/*read_image(&fs);
+	display_printf("%d\n", fs.block_map[0]);*/
 
 #ifdef TEST
 	demo_mode();

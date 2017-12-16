@@ -32,5 +32,12 @@ typedef struct tex_fs_inode_st {
 	uint32_t indirect_blocks[INDIRECT_BLOCKS];
 } __attribute__((packed)) tex_fs_inode_t;
 
+typedef struct tex_fs_metadata_st {
+	tex_fs_superblock_t* superblock;
+	uint8_t* block_map;
+	uint8_t* inode_map;
+	tex_fs_inode_t* inode_list;
+} __attribute__((packed)) tex_fs_metadata_t;
+
 
 #endif //_TEX_FS_H_

@@ -1,5 +1,6 @@
 BUILD_FOLDER=build/
-BUILD_KERNEL_FOLDER=$(BUILD_FOLDER)/kernel/
+BUILD_KERNEL_FOLDER=$(BUILD_FOLDER)kernel/
+BUILD_TOOLS_FOLDER=$(BUILD_FOLDER)tools/
 KERNEL_ELF_FILE=$(BUILD_KERNEL_FOLDER)kernel.elf
 KERNEL_ISO=$(BUILD_KERNEL_FOLDER)kernel.iso
 OS_FOLDER=$(BUILD_KERNEL_FOLDER)texos/
@@ -10,7 +11,10 @@ TEST_FLAGS=
 $(shell mkdir -p $(BUILD_FOLDER))
 
 run:elf_file $(KERNEL_ISO)
-	qemu-system-i386 -cdrom $(KERNEL_ISO) -hda $(BUILD_KERNEL_FOLDER)fs.img
+	qemu-system-i386 -cdrom $(KERNEL_ISO) -hda $(BUILD_TOOLS_FOLDER)fs.img
+
+debug:elf_file $(KERNEL_ISO)
+	qemu-system-i386 -s -S -cdrom $(KERNEL_ISO) -hda $(BUILD_TOOLS_FOLDER)fs.img
 
 test:TEST_FLAGS+=-DTEST
 test:run
@@ -28,7 +32,7 @@ elf_file:
 build_tools:
 	$(MAKE) -C tools/ all
 
-.PHONY=run test elf_file build_tools
+.PHONY=run test elf_file build_tools debug
 
 clean:
 	@-rm -rf $(BUILD_FOLDER)

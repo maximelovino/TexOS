@@ -2,6 +2,8 @@
 #define _FS_H_
 
 #include "../common/tex_fs.h"
+#include "ide.h"
+#include "min_std_lib.h"
 
 typedef struct stat_st {
 
@@ -32,5 +34,11 @@ file_iterator_t file_iterator();
 bool file_has_next(file_iterator_t* it);
 
 void file_next(char* filename, file_iterator_t* it);
+
+void read_superblock(tex_fs_superblock_t* superblock);
+
+void read_image(tex_fs_metadata_t* fs);
+
+void read_block(uint32_t block_number, void* block_data, uint16_t block_size);
 
 #endif
