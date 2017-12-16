@@ -18,9 +18,9 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 	tex_fs_metadata_t fs;
-	read_image(image_file, &fs);
+	read_image(image, &fs);
 
-	int inode_index_to_del = find_inode_number_for_file(filename, &fs);
+	int inode_index_to_del = find_inode_number_of_file(filename, &fs);
 
 	if (inode_index_to_del == -1) {
 		printf("The file %s you want to delete doesn't exist on this filesystem\n", filename);
@@ -33,6 +33,7 @@ int main(int argc, char* argv[]) {
 	fwrite(fs.inode_map, 1, fs.superblock->inode_count, image);
 
 	tex_fs_inode_t* inode_to_del = &fs.inode_list[inode_index_to_del];
+	print_inode(inode_to_del);
 	free_all_blocks_for_file(inode_to_del, &fs, image);
 
 	seek_to_block(image, fs.superblock->block_map, fs.superblock->block_size);

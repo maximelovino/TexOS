@@ -17,12 +17,18 @@ int main(int argc, char* argv[]) {
 	char* filename = argv[1];
 
 	tex_fs_metadata_t fs;
-	read_image(filename, &fs);
+	FILE* image = fopen(filename, "rb");
+	if (!image) {
+		printf("The image %s doesn't exist\n", filename);
+		return EXIT_FAILURE;
+	}
+	read_image(image, &fs);
 	if (!valid_magic(&fs)) {
 		printf("Magic is wrong, this is not a TexFS image\n");
 		return EXIT_FAILURE;
 	}
 	list_all_files(&fs);
 	free_tex_fs_metadata(&fs);
+	fclose(image);
 	return 0;
 }

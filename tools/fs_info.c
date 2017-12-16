@@ -14,7 +14,12 @@ int main(int argc, char* argv[]) {
 	}
 	char* image_name = argv[1];
 	tex_fs_metadata_t fs;
-	read_image(image_name, &fs);
+	FILE* image = fopen(image_name, "rb");
+	if (!image) {
+		printf("The image %s doesn't exist\n", image_name);
+		return EXIT_FAILURE;
+	}
+	read_image(image, &fs);
 	if (!valid_magic(&fs)) {
 		printf("Magic is wrong, this is not a TexFS image\n");
 		return EXIT_FAILURE;
@@ -31,5 +36,6 @@ int main(int argc, char* argv[]) {
 	printf("=============================================\n");
 	printf("Max filesize for this filesystem: %d\n", compute_max_file_size(fs.superblock));
 	free_tex_fs_metadata(&fs);
+	fclose(image);
 	return 0;
 }
