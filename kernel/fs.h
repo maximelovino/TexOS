@@ -12,7 +12,7 @@ typedef struct stat_st {
 } stat_t;
 
 typedef struct file_iterator_st {
-
+	int inode_number;
 } file_iterator_t;
 
 typedef struct file_descriptor_st {
@@ -47,9 +47,11 @@ void read_image();
 
 void read_block(uint32_t block_number, void* block_data, uint16_t block_size);
 
-void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block, uint16_t block_size);
+void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block);
 
 tex_fs_inode_t* find_inode_of_file(char* filename);
+
+int find_next_used_inode(uint32_t start_index);
 
 void fs_init(tex_fs_metadata_t* fs_meta);
 

@@ -59,6 +59,17 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 		display_printf("File yo has size of %d bytes\n", st.size);
 	int fd = file_open("yo");
 	display_printf("%d fd\n", fd);
+	file_seek(fd, 20);
+	file_close(fd);
+	file_iterator_t it = file_iterator();
+	char filename[MAX_FILENAME_LENGTH];
+	while (file_has_next(&it)) {
+		file_next(filename, &it);
+		int ret = file_stat(filename, &st);
+		display_printf("%s (%d bytes) %d\n", filename, st.size, ret);
+	}
+	tex_fs_inode_t* inode = find_inode_of_file("test_to_del");
+	display_printf("%d bytes", inode->size);
 #ifdef TEST
 	demo_mode();
 #endif

@@ -4,6 +4,7 @@ static file_descriptor_t descriptors[FILE_DESCRIPTOR_TABLE_COUNT] = {0};
 static int next_free_descriptor = 0;
 static uint16_t free_descriptor_count = FILE_DESCRIPTOR_TABLE_COUNT;
 static tex_fs_metadata_t* fs;
+static tex_fs_superblock_t* sb;
 
 int file_stat(char* filename, stat_t* stat) {
 	tex_fs_inode_t* inode = find_inode_of_file(filename);
@@ -82,15 +83,28 @@ void file_close(int fd) {
 
 file_iterator_t file_iterator() {
 	file_iterator_t result;
+	result.inode_number = find_next_used_inode(0);
 	return result;
 }
 
+int find_next_used_inode(uint32_t start_index) {
+	for (uint32_t i = start_index; i < sb->inode_count; i++) {
+		if (fs->inode_map[i]) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 bool file_has_next(file_iterator_t* it) {
-	return 0;
+	return it->inode_number != -1;
 }
 
 void file_next(char* filename, file_iterator_t* it) {
+	if (it->inode_number == -1) return;
 
+	memcpy(filename, fs->inode_list[it->inode_number].name, MAX_FILENAME_LENGTH);
+	it->inode_number = find_next_used_inode(it->inode_number + 1);
 }
 
 void read_superblock(tex_fs_superblock_t* superblock) {
@@ -102,32 +116,32 @@ void read_superblock(tex_fs_superblock_t* superblock) {
 
 void fs_init(tex_fs_metadata_t* fs_meta) {
 	fs = fs_meta;
+	sb = fs->superblock;
 	read_image();
 }
 
 void read_image() {
-	read_bitmap(fs->block_map, fs->superblock->block_count, fs->superblock->block_map, fs->superblock->block_size);
-	read_bitmap(fs->inode_map, fs->superblock->inode_count, fs->superblock->inode_bitmap, fs->superblock->block_size);
+	read_bitmap(fs->block_map, sb->block_count, sb->block_map);
+	read_bitmap(fs->inode_map, sb->inode_count, sb->inode_bitmap);
 
-	uint32_t inode_list_blocks_taken = fs->superblock->first_data_block - fs->superblock->inode_list;
-	uint8_t* raw_data_inode_blocks[inode_list_blocks_taken * fs->superblock->block_size];
+	uint32_t inode_list_blocks_taken = sb->first_data_block - sb->inode_list;
+	uint8_t* raw_data_inode_blocks[inode_list_blocks_taken * sb->block_size];
 
 	for (uint32_t i = 0; i < inode_list_blocks_taken; i++) {
-		read_block(fs->superblock->inode_list + i, &raw_data_inode_blocks[i * fs->superblock->block_size],
-				   fs->superblock->block_size);
+		read_block(sb->inode_list + i, &raw_data_inode_blocks[i * sb->block_size], sb->block_size);
 	}
 
-	memcpy(fs->inode_list, raw_data_inode_blocks, sizeof(tex_fs_inode_t) * fs->superblock->inode_count);
+	memcpy(fs->inode_list, raw_data_inode_blocks, sizeof(tex_fs_inode_t) * sb->inode_count);
 }
 
-void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block, uint16_t block_size) {
-	uint32_t number_blocks_to_read = bitmap_size / block_size + (bitmap_size % block_size != 0);
+void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block) {
+	uint32_t number_blocks_to_read = bitmap_size / sb->block_size + (bitmap_size % sb->block_size != 0);
 
-	uint8_t* raw_block_bitmap[number_blocks_to_read * block_size];
-	memset(raw_block_bitmap, 0, number_blocks_to_read * block_size);
+	uint8_t* raw_block_bitmap[number_blocks_to_read * sb->block_size];
+	memset(raw_block_bitmap, 0, number_blocks_to_read * sb->block_size);
 
 	for (int i = 0; i < number_blocks_to_read; i++) {
-		read_block(start_block + i, &raw_block_bitmap[block_size * i], block_size);
+		read_block(start_block + i, &raw_block_bitmap[sb->block_size * i], sb->block_size);
 	}
 	memcpy(bitmap_data, raw_block_bitmap, bitmap_size);
 
