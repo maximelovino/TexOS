@@ -64,8 +64,8 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	files_list();
 	stat_t st_hello;
 	file_stat("myHelloWorld", &st_hello);
-	char content[st_hello.size];
-	memset(content, 0, st_hello.size);
+	char content[st_hello.size + 1];
+	memset(content, 0, st_hello.size + 1);
 	int hello_fd = file_open("myHelloWorld");
 	file_read(hello_fd, content, st_hello.size);
 	display_printf("Content:\n%s\n", content);
