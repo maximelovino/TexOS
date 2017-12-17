@@ -113,6 +113,7 @@ int main(int argc, char* argv[]) {
 		uint32_t indices_per_block = (uint32_t) fs.superblock->block_size / BYTES_BLOCK_ADDRESS;
 		for (uint32_t i = 0; i < indirect_blocks_needed; i++) {
 			file_inode->indirect_blocks[i] = blocks_to_write[i];
+			fs.block_map[blocks_to_write[i]] = 1;
 			uint32_t index_block[indices_per_block];
 			memset(index_block, 0, indices_per_block);
 			for (uint32_t j = 0; j < indices_per_block; j++) {

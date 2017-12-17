@@ -4,6 +4,7 @@
 #include "../common/tex_fs.h"
 #include "ide.h"
 #include "min_std_lib.h"
+#include "display.h"
 
 #define FILE_DESCRIPTOR_TABLE_COUNT 128
 
@@ -25,11 +26,17 @@ int file_stat(char* filename, stat_t* stat);
 
 int find_next_free_descriptor();
 
+void files_list();
+
 bool file_exists(char* filename);
 
 int file_open(char* filename);
 
 int file_read(int fd, void* buf, uint count);
+
+int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t count);
+
+int bmap(tex_fs_inode_t* inode, uint32_t absolute_block_of_file);
 
 int file_seek(int fd, uint offset);
 
@@ -45,7 +52,7 @@ void read_superblock(tex_fs_superblock_t* superblock);
 
 void read_image();
 
-void read_block(uint32_t block_number, void* block_data, uint16_t block_size);
+void read_block(uint32_t block_number, void* block_data);
 
 void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block);
 

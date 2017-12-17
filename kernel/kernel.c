@@ -61,15 +61,14 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	display_printf("%d fd\n", fd);
 	file_seek(fd, 20);
 	file_close(fd);
-	file_iterator_t it = file_iterator();
-	char filename[MAX_FILENAME_LENGTH];
-	while (file_has_next(&it)) {
-		file_next(filename, &it);
-		int ret = file_stat(filename, &st);
-		display_printf("%s (%d bytes) %d\n", filename, st.size, ret);
-	}
-	tex_fs_inode_t* inode = find_inode_of_file("test_to_del");
-	display_printf("%d bytes", inode->size);
+	files_list();
+	stat_t st_hello;
+	file_stat("myHelloWorld", &st_hello);
+	char content[st_hello.size];
+	memset(content, 0, st_hello.size);
+	int hello_fd = file_open("myHelloWorld");
+	file_read(hello_fd, content, st_hello.size);
+	display_printf("Content:\n%s\n", content);
 #ifdef TEST
 	demo_mode();
 #endif

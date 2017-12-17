@@ -90,7 +90,7 @@ int strlen(char* string) {
 }
 
 int strcmp(char* p, char* q) {
-	while (!*p) {
+	while (*p) {
 		if (*p++ > *q++) {
 			return 1;
 		} else if (*p++ < *q++) {
