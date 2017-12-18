@@ -91,11 +91,13 @@ int strlen(char* string) {
 
 int strcmp(char* p, char* q) {
 	while (*p) {
-		if (*p++ > *q++) {
+		if (*p > *q) {
 			return 1;
-		} else if (*p++ < *q++) {
+		} else if (*p < *q) {
 			return -1;
 		}
+		p++;
+		q++;
 	}
-	return 0;
+	return *q ? -1 : 0;
 }

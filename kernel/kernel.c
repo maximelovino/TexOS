@@ -69,6 +69,17 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	int hello_fd = file_open("myHelloWorld");
 	file_read(hello_fd, content, st_hello.size);
 	display_printf("Content:\n%s\n", content);
+	sleep(2000);
+	file_close(fd);
+	file_close(hello_fd);
+	display_init();
+	int splash_fd = file_open("splash2");
+	stat_t st_splash;
+	file_stat("splash2", &st_splash);
+	char splash[st_splash.size + 1];
+	memset(splash, 0, st_splash.size + 1);
+	file_read(splash_fd, splash, st_splash.size);
+	display_printf("%s", splash);
 #ifdef TEST
 	demo_mode();
 #endif
