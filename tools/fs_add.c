@@ -128,7 +128,6 @@ int main(int argc, char* argv[]) {
 	fseek(image_file, free_inode_index * sizeof(tex_fs_inode_t), SEEK_CUR);
 	fwrite(file_inode, sizeof(tex_fs_inode_t), 1, image_file);
 
-
 	fs.inode_map[free_inode_index] = 1;
 	write_bitmap_to_file(image_file, fs.inode_map, fs.superblock->inode_bitmap, fs.superblock->inode_count,
 						 fs.superblock->block_size);

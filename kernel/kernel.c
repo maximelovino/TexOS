@@ -54,31 +54,17 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	memset(inode_list, 0, fs.superblock->inode_count * sizeof(tex_fs_inode_t));
 	fs.inode_list = inode_list;
 	fs_init(&fs);
-	stat_t st;
-	if (file_stat("yo", &st) == 0)
-		display_printf("File yo has size of %d bytes\n", st.size);
-	int fd = file_open("yo");
-	display_printf("%d fd\n", fd);
-	file_seek(fd, 20);
-	file_close(fd);
+	display_printf("Disk content:\n");
 	files_list();
-	stat_t st_hello;
-	file_stat("myHelloWorld", &st_hello);
-	char content[st_hello.size + 1];
-	memset(content, 0, st_hello.size + 1);
-	int hello_fd = file_open("myHelloWorld");
-	file_read(hello_fd, content, st_hello.size);
-	display_printf("Content:\n%s\n", content);
 	sleep(2000);
-	file_close(fd);
-	file_close(hello_fd);
 	display_init();
-	int splash_fd = file_open("splash2");
+	int splash_fd = file_open("common/splash2");
 	stat_t st_splash;
-	file_stat("splash2", &st_splash);
+	file_stat("common/splash2", &st_splash);
 	char splash[st_splash.size + 1];
 	memset(splash, 0, st_splash.size + 1);
 	file_read(splash_fd, splash, st_splash.size);
+	file_close(splash_fd);
 	display_printf("%s", splash);
 #ifdef TEST
 	demo_mode();

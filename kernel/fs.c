@@ -67,7 +67,7 @@ int file_open(char* filename) {
 int file_read(int fd, void* buf, uint count) {
 	if (fd >= FILE_DESCRIPTOR_TABLE_COUNT && !descriptors[fd].open)
 		return -1;
-	//TODO so now basically, we have to get the descriptor and read count bytes at the current offset
+	//TODO this must move the offset in the file as well, not just read
 	file_descriptor_t* desc = &descriptors[fd];
 	tex_fs_inode_t* inode = desc->inode;
 	return read_bytes(inode, buf, desc->offset, count);
