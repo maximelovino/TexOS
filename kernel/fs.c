@@ -1,3 +1,11 @@
+/**
+ * FS source file
+ * @file 	fs.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include "fs.h"
 
 static file_descriptor_t descriptors[FILE_DESCRIPTOR_TABLE_COUNT] = {0};
@@ -5,6 +13,63 @@ static int next_free_descriptor = 0;
 static uint16_t free_descriptor_count = FILE_DESCRIPTOR_TABLE_COUNT;
 static tex_fs_metadata_t* fs;
 static tex_fs_superblock_t* sb;
+
+/**
+ * Function to read all the contents (except superblock) of the structure fs from disk
+ */
+static void read_image();
+
+/**
+ * @return	The number of the first free file descriptor, or -1 if none
+ */
+static int find_next_free_descriptor();
+
+/**
+ * Function to read count bytes from a file
+ * @param inode	The inode of the file to read
+ * @param buf	The buffer in which to store the data read
+ * @param start_offset	The offset at which to start reading
+ * @param count	The number of bytes to read
+ * @return	The number of bytes read, 0 if the file was over, -1 in case of error
+ */
+static int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t count);
+
+/**
+ * Function to get the block number of the nth block of a file
+ * @param inode	The inode of the file
+ * @param absolute_block_of_file	The absolute number of the block to get for the file
+ * @return	The block number of that block for the file, or -1 if the block doesn't exist
+ */
+static int bmap(tex_fs_inode_t* inode, uint32_t absolute_block_of_file);
+
+/**
+ * Function to read a block of data from the disk
+ * @param block_number	The block number to read
+ * @param block_data	The array in which to store the block data
+ */
+static void read_block(uint32_t block_number, void* block_data);
+
+/**
+ * Function to read a bitmap from disk
+ * @param bitmap_data	The array in which to store the bitmap data
+ * @param bitmap_size	The number of elements in the bitmap
+ * @param start_block	The number of the first block of the bitmap
+ */
+static void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block);
+
+/**
+ * Function to find the inode of a file
+ * @param filename	The name of the file we're looking for
+ * @return	A pointer to the inode or NULL if the file is not found
+ */
+static tex_fs_inode_t* find_inode_of_file(char* filename);
+
+/**
+ * A function to find the next used inode
+ * @param start_index	The inode number at which to start looking
+ * @return	The number of the next used inode, or -1 if there isn't one
+ */
+static int find_next_used_inode(uint32_t start_index);
 
 int file_stat(char* filename, stat_t* stat) {
 	tex_fs_inode_t* inode = find_inode_of_file(filename);
@@ -31,6 +96,7 @@ void files_list() {
 }
 
 int find_next_free_descriptor() {
+	//TODO we could start from the current one instead of from the beginning
 	if (!free_descriptor_count)
 		return -1;
 
@@ -68,6 +134,7 @@ int file_read(int fd, void* buf, uint count) {
 	if (fd >= FILE_DESCRIPTOR_TABLE_COUNT && !descriptors[fd].open)
 		return -1;
 	//TODO this must move the offset in the file as well, not just read
+	//TODO also in this and in read_bytes, check that the return values are coherent
 	file_descriptor_t* desc = &descriptors[fd];
 	tex_fs_inode_t* inode = desc->inode;
 	return read_bytes(inode, buf, desc->offset, count);
@@ -87,7 +154,7 @@ int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t
 	uint8_t block[sb->block_size];
 	uint32_t count_remaining = count;
 	uint32_t to_copy = 0;
-	for (int i = 0; i < blocks_to_read; i++) {
+	for (uint32_t i = 0; i < blocks_to_read; i++) {
 		int block_num = bmap(inode, file_block_containing_offset + i);
 		if (block_num == -1) {
 			break;
@@ -213,7 +280,7 @@ void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block) 
 	uint8_t* raw_block_bitmap[number_blocks_to_read * sb->block_size];
 	memset(raw_block_bitmap, 0, number_blocks_to_read * sb->block_size);
 
-	for (int i = 0; i < number_blocks_to_read; i++) {
+	for (uint32_t i = 0; i < number_blocks_to_read; i++) {
 		read_block(start_block + i, &raw_block_bitmap[sb->block_size * i]);
 	}
 	memcpy(bitmap_data, raw_block_bitmap, bitmap_size);
