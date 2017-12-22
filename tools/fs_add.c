@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <libgen.h>
 
 
 void print_usage() {
@@ -15,8 +16,9 @@ int main(int argc, char* argv[]) {
 		print_usage();
 		return EXIT_FAILURE;
 	}
-	char* filename = argv[1];
+	char* filepath = argv[1];
 	char* image_name = argv[2];
+	char* filename = basename(filepath);
 
 	if (strlen(filename) > MAX_FILENAME_LENGTH) {
 		printf("The name of the file you want to add is too long, maximum %d chars\n", MAX_FILENAME_LENGTH);
@@ -39,7 +41,7 @@ int main(int argc, char* argv[]) {
 
 	print_superblock(fs.superblock);
 
-	FILE* file_to_add = fopen(filename, "rb");
+	FILE* file_to_add = fopen(filepath, "rb");
 
 	if (!file_to_add) {
 		printf("The file you want to add doesn't exist\n");

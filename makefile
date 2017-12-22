@@ -28,7 +28,7 @@ debug:elf_file $(KERNEL_ISO) tools_build $(FS_IMAGE)
 test:TEST_FLAGS+=-DTEST
 test:run
 
-$(FS_IMAGE):$(TOOLS)
+$(FS_IMAGE):$(TOOLS) common/splash common/splash2
 	$(IMAGE_CREATE) $(IMAGE_LABEL) $(BLOCK_SIZE) $(BLOCK_COUNT) $(INODE_COUNT) $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash2 $(FS_IMAGE)
