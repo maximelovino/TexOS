@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 
 	uint32_t indirect_blocks_needed = 0;
 	if (data_blocks_needed > DIRECT_BLOCKS) {
-		//TODO check here with the +1
+		//TODO check here with the +1 and all other blocks_needed (bitmaps, inode table etc)
 		indirect_blocks_needed =
 				((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size + 1;
 	}
