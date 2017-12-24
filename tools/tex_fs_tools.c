@@ -20,7 +20,6 @@ void print_superblock(tex_fs_superblock_t* superblock) {
 }
 
 void read_image(FILE* image, tex_fs_metadata_t* fs) {
-	//TODO pass a file pointer here, because we open with r outside anyway
 	fs->superblock = malloc(sizeof(tex_fs_superblock_t));
 	if (!fs->superblock) {
 		printf("Exiting because malloc failed\n");
@@ -107,7 +106,6 @@ int find_inode_number_of_file(char* filename, tex_fs_metadata_t* fs) {
 }
 
 void free_all_blocks_for_file(tex_fs_inode_t* inode, tex_fs_metadata_t* fs, FILE* image) {
-	//TODO this doesn't work, it doesn't free all file blocks
 	uint32_t blocks_cleared = 0;
 	uint32_t block_to_clear = 0;
 	for (uint32_t i = 0; i < DIRECT_BLOCKS; i++) {

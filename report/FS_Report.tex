@@ -65,9 +65,19 @@ typedef struct tex_fs_inode_st {
 \end{minted}
 L'inode contient toutes les métadonnées d'un fichier ainsi que les indices des blocs directs et indirects qui contiennent les données de ce fichier. En terme de métadonnées, on stocke la taille et le nom (maximum 64 char). \\
 
-On a 8 blocs directs et 4 blocs indirects. En se basant sur le fait que chaque indice de bloc est stocké sur 4 bytes, on peut calculer la taille maximum d'un fichier en fonction de la taille d'un bloc $n$, on obtient $8 * n + (4 * \frac{n}{4} * n)$. Pour une taille de bloc minimale de 512 bytes, on peut stocker un fichier de taille $8 * 512 + (4 * \frac{512}{4} * 512)=266240$ bytes, ce qui est suffisant par rapport à la taille demandée de 256 kbytes.
+On a 8 blocs directs et 4 blocs indirects. En se basant sur le fait que chaque indice de bloc est stocké sur 4 bytes, on peut calculer la taille maximum d'un fichier en fonction de la taille d'un bloc $n$, on obtient $8 * n + (4 * \frac{n}{4} * n)$. Pour une taille de bloc minimale de 512 bytes, on peut stocker un fichier de taille $8 * 512 + (4 * \frac{512}{4} * 512)=266240$ bytes, ce qui est suffisant par rapport à la taille demandée de 256 kbytes.\\
 
-% TODO Insert figure blocks for file here
+Les données des blocs directs sont stockés de cette façon: \\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{FS_direct.png}
+\end{figure}
+
+Les données des blocs indirects sont elles stockées de cette façon: \\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{FS_indirect.png}
+\end{figure}
 \section{Exemples}
 \section{Implémentation}
 \section{Avantages du système choisi}
