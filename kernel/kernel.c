@@ -36,7 +36,6 @@ void splash_screen() {
 	enable_cursor();
 }
 
-
 void kernel_entry(multiboot_info_t* multiboot_infos) {
 	gdt_init();
 	display_init();

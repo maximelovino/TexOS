@@ -50,7 +50,7 @@ Le superblock comprend le \verb+magic+ de TexFS, c'est-à-dire \verb+0xD0D0+ ain
 
 Ensuite, \verb+block_map+, \verb+inode_bitmap+, \verb+inode_list+ et \verb+first_data_block+ représentent les numéros de blocks à laquelle commencent les sections correspondantes. \verb+block_count+ et \verb+inode_count+ représentent respectivement le nombre de blocks de l'image et le nombre d'inodes.
 \subsubsection{Block bitmap et inode bitmap}
-
+Les blocks et inode bitmap sont simplement des bitmap servant à spécifier quels blocks et inodes sont respectivement occupés. Pour ce faire, nous allouons un \verb+uint_8+ par block et par inode dans chaque cas. Il s'agit de la façon la plus simple de faire car les méthodes de lectures nous permettent de lire au minimum 1 byte. Nous aurions pu également utiliser simplement 1 bit et grouper 8 booléens dans un byte du coup, mais cela aurait ajouté de la complexité au moment de la lecture avec des décalages bits à bits.\\
 \subsubsection{Inode Table}
 \begin{minted}[breaklines,breaksymbol=, linenos, frame=single, stepnumber=5,tabsize=2]{C}
 #define DIRECT_BLOCKS 8
@@ -79,7 +79,9 @@ Les données des blocs indirects sont elles stockées de cette façon: \\
 	\includegraphics[width=\textwidth]{FS_indirect.png}
 \end{figure}
 \section{Exemples}
+%TODO example section
 \section{Implémentation}
+%TODO implementation section
 \section{Avantages du système choisi}
 \begin{itemize}
 	\item Structure inspirée de Ext2, donc déjà connue

@@ -15,7 +15,7 @@ static tex_fs_metadata_t* fs;
 static tex_fs_superblock_t* sb;
 
 /**
- * Function to read all the contents (except superblock) of the structure fs from disk
+ * Function to read all the contents (except superblock, which is already read) of the structure fs from disk
  */
 static void read_image();
 
@@ -133,11 +133,13 @@ int file_open(char* filename) {
 int file_read(int fd, void* buf, uint count) {
 	if (fd >= FILE_DESCRIPTOR_TABLE_COUNT && !descriptors[fd].open)
 		return -1;
-	//TODO this must move the offset in the file as well, not just read
-	//TODO also in this and in read_bytes, check that the return values are coherent
 	file_descriptor_t* desc = &descriptors[fd];
 	tex_fs_inode_t* inode = desc->inode;
-	return read_bytes(inode, buf, desc->offset, count);
+	int bytes = read_bytes(inode, buf, desc->offset, count);
+	if (bytes > 0) {
+		file_seek(fd, desc->offset + (uint) bytes);
+	}
+	return bytes;
 }
 
 int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t count) {
@@ -162,7 +164,7 @@ int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t
 		read_block(block_num, block);
 		if (in_block_offset) {
 			if (i == 0) {
-				to_copy = sb->block_size - in_block_offset;
+				to_copy = MIN(count_remaining, sb->block_size - in_block_offset);
 				memcpy(buf, &block[in_block_offset], to_copy);
 			} else {
 				to_copy = MIN(count_remaining, sb->block_size);
@@ -288,12 +290,13 @@ void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block) 
 }
 
 void read_block(uint32_t block_number, void* block_data) {
+	uint8_t* block = (uint8_t) block_data;
 	uint16_t sectors_for_block = sb->block_size / SECTOR_SIZE;
 
 	uint32_t first_sector = block_number * sectors_for_block;
 
 	for (int i = 0; i < sectors_for_block; i++) {
-		read_sector(first_sector + i, &block_data[SECTOR_SIZE * i]);
+		read_sector(first_sector + i, &block[SECTOR_SIZE * i]);
 	}
 }
 

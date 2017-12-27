@@ -115,7 +115,7 @@ extern void read_superblock(tex_fs_superblock_t* superblock);
 
 /**
  * Function to initialize the filesystem, will store the pointer to the structure allocated in kernel here,
- * and then call read_image to load all metadata from the FS in RAM
+ * and then load all metadata from the FS in RAM
  * @param fs_meta	The pointer to the allocated structure that will contain all FS metadata
  */
 extern void fs_init(tex_fs_metadata_t* fs_meta);

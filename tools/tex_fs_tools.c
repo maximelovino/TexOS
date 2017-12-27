@@ -1,3 +1,11 @@
+/**
+ * Tex FS tools header file
+ * @file 	tex_fs_tools.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include "tex_fs_tools.h"
 
 void read_superblock(FILE* image, tex_fs_superblock_t* superblock) {
@@ -61,7 +69,7 @@ void free_tex_fs_metadata(tex_fs_metadata_t* fs) {
 
 uint32_t compute_max_file_size(tex_fs_superblock_t* superblock) {
 	return superblock->block_size * DIRECT_BLOCKS +
-		   INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
+			INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
 }
 
 uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs) {
@@ -88,7 +96,7 @@ void list_all_files(tex_fs_metadata_t* fs) {
 	}
 }
 
-bool is_file_already_present(char* filename, tex_fs_metadata_t* fs) {
+bool does_file_exist(char* filename, tex_fs_metadata_t* fs) {
 	return find_inode_number_of_file(filename, fs) != -1;
 }
 

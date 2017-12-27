@@ -56,13 +56,15 @@ int main(int argc, char* argv[]) {
 	superblock.inode_count = max_file_count;
 
 
-	uint32_t block_count_block_map = (uint32_t) (superblock.block_count / superblock.block_size + 1);
+	uint32_t block_count_block_map = (uint32_t) (superblock.block_count / superblock.block_size +
+												 (superblock.block_count % superblock.block_size != 0));
 	uint8_t block_map[superblock.block_count];
 	memset(block_map, 0, superblock.block_count);
 
 	superblock.inode_bitmap = superblock.block_map + block_count_block_map;
 
-	uint32_t block_count_inode_map = (uint32_t) (superblock.inode_count / superblock.block_size + 1);
+	uint32_t block_count_inode_map = (uint32_t) (superblock.inode_count / superblock.block_size +
+												 (superblock.inode_count % superblock.block_size != 0));
 	uint8_t inode_map[superblock.inode_count];
 	memset(inode_map, 0, superblock.inode_count);
 
@@ -70,7 +72,8 @@ int main(int argc, char* argv[]) {
 
 
 	uint32_t block_count_inode_list = (uint32_t) (
-			(superblock.inode_count * sizeof(tex_fs_inode_t)) / superblock.block_size + 1);
+			(superblock.inode_count * sizeof(tex_fs_inode_t)) / superblock.block_size +
+			((superblock.inode_count * sizeof(tex_fs_inode_t)) % superblock.block_size != 0));
 
 	tex_fs_inode_t inodes[superblock.inode_count];
 	memset(inodes, 0, superblock.inode_count * sizeof(tex_fs_inode_t));

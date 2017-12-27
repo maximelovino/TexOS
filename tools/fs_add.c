@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	if (is_file_already_present(filename, &fs)) {
+	if (does_file_exist(filename, &fs)) {
 		printf("The file %s you want to add is already present on the filesystem\n", filename);
 		return EXIT_FAILURE;
 	}
@@ -79,9 +79,9 @@ int main(int argc, char* argv[]) {
 
 	uint32_t indirect_blocks_needed = 0;
 	if (data_blocks_needed > DIRECT_BLOCKS) {
-		//TODO check here with the +1 and all other blocks_needed (bitmaps, inode table etc)
 		indirect_blocks_needed =
-				((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size + 1;
+				((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size +
+				(((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) % fs.superblock->block_size != 0);
 	}
 
 	printf("For storing these blocks, you will need %d indirect blocks\n", indirect_blocks_needed);
