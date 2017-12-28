@@ -78,6 +78,7 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	splash_screen();
 	display_printf("Disk content:\n");
 	files_list();
+	display_printf("You can use the Escape key to clear the screen, and press on Q to quit the kernel\n");
 #ifdef TEST
 	demo_mode();
 #endif

@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 	uint32_t free_blocks = compute_free_blocks_count(&fs);
-	printf("Displaying infos about %s\n", image_name);
+	printf("Displaying infos about the Tex FS image: %s\n", image_name);
 	printf("=============================================\n");
 	print_superblock(fs.superblock);
 	printf("=============================================\n");
