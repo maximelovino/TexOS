@@ -9,8 +9,8 @@ cp -r grub/ $groupFolder/grub/
 cp -r tools/ $groupFolder/tools/
 cp -r user/ $groupFolder/user/
 cp makefile $groupFolder
-cp questions_TP2.pdf $groupFolder
+cp report/FS_Report.pdf $groupFolder
 
 tar -cvzf $groupFolder.tar.gz $groupFolder
 
-rm -r $groupFolder
+rm -rf $groupFolder

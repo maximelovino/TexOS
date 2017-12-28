@@ -104,10 +104,14 @@ Du coup 3 blocs seront nécessaires pour stocker la table des inodes, ce qui fai
 Imaginons maintenant que sur cette image terminée, nous voulons stocker un fichier de 800 bytes. Dans ce cas, le nombre de bloc nécessaire est de 2, donc on peut se contenter des blocs directs. Il suffit donc de trouver deux blocs libres et une inode libre. Ensuite au niveau du stockage du fichier, cela donne:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{FS_petit_fichier.png}
+    \includegraphics[width=0.8\textwidth]{FS_petit_fichier.png}
 \end{figure}
 \subsection{Stockage d'un grand fichier avec indirection}
-% TODO grand fichier
+Imaginons que nous voulons stocker un fichier de 5000 bytes, maintenant, 10 blocs seront nécessaires au total, du coup nous aurons besoin d'un bloc d'indirection. Ce qui fait qu'au total nous aurons besoin de 11 blocs. (10 blocs de données et 1 bloc d'indirection). Ce qui donne:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{FS_grand_fichier.png}
+\end{figure}
 \section{Implémentation}
 En terme d'implémentation, nous chargeons au niveau des tools et au niveau du kernel tous les blocs de métadonnées de l'image en RAM. Côté kernel, la structure et les tableaux contenant les métadonnées sont alloués statiquement au niveau de la fonction \verb+kernel_entry+ du kernel, le pointeur de \verb+tex_fs_metadata+ est ensuite passé à la fonction \verb+fs_init()+ qui va stocker ce pointeur dans une variable globale au fichier \verb+fs.c+.
 \section{Avantages du système choisi}
