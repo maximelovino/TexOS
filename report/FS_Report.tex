@@ -23,7 +23,9 @@ Pour réaliser le système de fichiers utilisé par notre Kernel, nous nous somm
 
 De ce fait, lors de la création d'une image TexFS, il est nécessaire de spécifier la taille de bloc, le nombre de bloc à allouer et le nombre de fichiers maximum pour l'image. La taille de bloc et le nombre de blocs devaient être spécifiés de toute façon, mais compte tenu de la structure utilisée, il est nécessaire d'entrer également le nombre de fichiers maximum que contiendra l'image. (Si nous avions des groupes, nous aurions pu allouer un nouveau groupe en cas de besoins de nouveaux fichiers)
 \section{Structure du système de fichiers}
-TexFS a une structure sur le disque similaire à Ext2. Nous n'avons par contre pas besoin de réserver le premier block pour le MBR car nous ne démarrons pas sur notre image. Du coup nous commençons au block 0 par le superblock, suivi du block bitmap, puis de l'inode bitmap et de la table des inodes. Après toutes ces blocs de métadonnées, nous avons les blocs de données.
+TexFS a une structure sur le disque similaire à Ext2. Nous n'avons par contre pas besoin de réserver le premier block pour le MBR car nous ne démarrons pas sur notre image. Du coup nous commençons au block 0 par le superblock, suivi du block bitmap, puis de l'inode bitmap et de la table des inodes. Après toutes ces blocs de métadonnées, nous avons les blocs de données. \\
+
+A noter que l'offset \verb+block_map+ est toujours égal à 1.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{FS_disk_structure.png}
@@ -79,9 +81,35 @@ Les données des blocs indirects sont elles stockées de cette façon: \\
 	\includegraphics[width=\textwidth]{FS_indirect.png}
 \end{figure}
 \section{Exemples}
-%TODO example section
+Dans ces exemples, nous allons nous baser sur une image avec une taille de bloc de 512 bytes.
+\subsection{Block bitmap}
+Imaginons qu'à la création de l'image, l'utilisateur a demandé de créer une image contenant 1000 blocs. \\
+
+Il faudra donc créer une block bitmap pour ces 1000 blocs demandés. Etant donné que chaque booléen de la bitmap est stocké sur 1 byte, nous aurons besoin de 1000 bytes pour stocker le block bitmap. Du coup il faut calculer le nombre de blocs nécessaire pour stocker le block bitmap. Dans ce cas, nous aurons besoin de 2 blocs car:
+\begin{equation*}
+	\lceil \frac{1000}{512} \rceil = 2
+\end{equation*}
+Du coup nous pouvons déjà savoir que l'offset \verb+inode_map+ sera 3 car l'offset \verb+block_map+ était de 1 et on y ajoute le nombre de blocs nécessaire, c'est-à-dire 2 dans ce cas.
+\subsection{Inode bitmap}
+Ensuite, imaginons que l'utilisateur a demandé d'allouer 100 inodes. Dans ce cas, un bloc suffit pour stocker l'inode bitmap.\\
+
+Du coup l'offset suivant, c'est-à-dire \verb+inode_table+ sera 4.
+\subsection{Inode table}
+Pour l'inode table par contre, étant donné que la taille d'un inode est de 116 bytes (voir structure plus haut), il faudrait $100*116=1160$ bytes, dans ce cas il faudra:
+\begin{equation*}
+	\lceil \frac{1160}{512} \rceil = 3
+\end{equation*}
+Du coup 3 blocs seront nécessaires pour stocker la table des inodes, ce qui fait que l'offset pour le premier bloc de données sera $4+3=7$.
+\subsection{Stockage d'un petit fichier sans indirection}
+Imaginons maintenant que sur cette image terminée, nous voulons stocker un fichier de 800 bytes. Dans ce cas, le nombre de bloc nécessaire est de 2, donc on peut se contenter des blocs directs. Il suffit donc de trouver deux blocs libres et une inode libre. Ensuite au niveau du stockage du fichier, cela donne:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{FS_petit_fichier.png}
+\end{figure}
+\subsection{Stockage d'un grand fichier avec indirection}
+% TODO grand fichier
 \section{Implémentation}
-%TODO implementation section
+En terme d'implémentation, nous chargeons au niveau des tools et au niveau du kernel tous les blocs de métadonnées de l'image en RAM. Côté kernel, la structure et les tableaux contenant les métadonnées sont alloués statiquement au niveau de la fonction \verb+kernel_entry+ du kernel, le pointeur de \verb+tex_fs_metadata+ est ensuite passé à la fonction \verb+fs_init()+ qui va stocker ce pointeur dans une variable globale au fichier \verb+fs.c+.
 \section{Avantages du système choisi}
 \begin{itemize}
 	\item Structure inspirée de Ext2, donc déjà connue

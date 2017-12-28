@@ -139,13 +139,4 @@ extern void write_bitmap(FILE* file, uint8_t* bitmap, uint32_t block_number, uin
  * @return	The number of blocks found
  */
 extern uint32_t find_blocks(uint32_t* blocks, uint8_t* block_map, uint32_t fs_blk_count, uint32_t blocks_needed);
-
-/**
- * Function to convert a size in bytes to a number of blocks required for the size
- * @param size	The size in bytes
- * @param block_size	The block size in bytes
- * @return	The number of blocks required
- */
-extern uint32_t size_to_blocks(uint32_t size, uint16_t block_size);
-
 #endif //_TEX_FS_TOOLS_H_

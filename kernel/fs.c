@@ -96,7 +96,6 @@ void files_list() {
 }
 
 int find_next_free_descriptor() {
-	//TODO we could start from the current one instead of from the beginning
 	if (!free_descriptor_count)
 		return -1;
 
@@ -182,22 +181,27 @@ int read_bytes(tex_fs_inode_t* inode, uint8_t* buf, uint32_t start_offset, uint3
 
 int bmap(tex_fs_inode_t* inode, uint32_t absolute_block_of_file) {
 	if (absolute_block_of_file < DIRECT_BLOCKS) {
-		return inode->direct_blocks[absolute_block_of_file] == 0 ? -1 : inode->direct_blocks[absolute_block_of_file];
-	} else {
-		uint32_t block_indexes_per_block = sb->block_size / BYTES_BLOCK_ADDRESS;
-		absolute_block_of_file -= DIRECT_BLOCKS;
-		uint16_t indirect_block_index = absolute_block_of_file / block_indexes_per_block;
-		uint16_t block_in_indirect = absolute_block_of_file % block_indexes_per_block;
-		if (indirect_block_index >= INDIRECT_BLOCKS)
+		if (inode->direct_blocks[absolute_block_of_file] == 0)
 			return -1;
-
-		if (inode->indirect_blocks[indirect_block_index] == 0)
-			return -1;
-
-		uint32_t block[sb->block_size / BYTES_BLOCK_ADDRESS];
-		read_block(inode->indirect_blocks[indirect_block_index], block);
-		return block[block_in_indirect] == 0 ? -1 : block[block_in_indirect];
+		else
+			return inode->direct_blocks[absolute_block_of_file];
 	}
+	uint32_t block_indexes_per_block = sb->block_size / BYTES_BLOCK_ADDRESS;
+	absolute_block_of_file -= DIRECT_BLOCKS;
+	uint16_t indirect_block_index = absolute_block_of_file / block_indexes_per_block;
+	uint16_t block_in_indirect = absolute_block_of_file % block_indexes_per_block;
+	if (indirect_block_index >= INDIRECT_BLOCKS)
+		return -1;
+
+	if (inode->indirect_blocks[indirect_block_index] == 0)
+		return -1;
+
+	uint32_t block[sb->block_size / BYTES_BLOCK_ADDRESS];
+	read_block(inode->indirect_blocks[indirect_block_index], block);
+	if (block[block_in_indirect] == 0)
+		return -1;
+	else
+		return block[block_in_indirect];
 }
 
 
