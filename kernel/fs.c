@@ -32,7 +32,7 @@ static int find_next_free_descriptor();
  * @param count	The number of bytes to read
  * @return	The number of bytes read, 0 if the file was over, -1 in case of error
  */
-static int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t count);
+static int read_bytes(tex_fs_inode_t* inode, uint8_t* buf, uint32_t start_offset, uint32_t count);
 
 /**
  * Function to get the block number of the nth block of a file
@@ -142,7 +142,7 @@ int file_read(int fd, void* buf, uint count) {
 	return bytes;
 }
 
-int read_bytes(tex_fs_inode_t* inode, void* buf, uint32_t start_offset, uint32_t count) {
+int read_bytes(tex_fs_inode_t* inode, uint8_t* buf, uint32_t start_offset, uint32_t count) {
 	if (start_offset == inode->size - 1) {
 		return 0;
 	}
@@ -256,10 +256,11 @@ void read_superblock(tex_fs_superblock_t* superblock) {
 	memcpy(superblock, sector_data, sizeof(tex_fs_superblock_t));
 }
 
-void fs_init(tex_fs_metadata_t* fs_meta) {
+int fs_init(tex_fs_metadata_t* fs_meta) {
 	fs = fs_meta;
 	sb = fs->superblock;
 	read_image();
+	return !valid_magic(fs->superblock->magic);
 }
 
 void read_image() {
@@ -277,7 +278,7 @@ void read_image() {
 }
 
 void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block) {
-	uint32_t number_blocks_to_read = bitmap_size / sb->block_size + (bitmap_size % sb->block_size != 0);
+	uint32_t number_blocks_to_read = size_to_blocks(bitmap_size, sb->block_size);
 
 	uint8_t* raw_block_bitmap[number_blocks_to_read * sb->block_size];
 	memset(raw_block_bitmap, 0, number_blocks_to_read * sb->block_size);
@@ -290,7 +291,7 @@ void read_bitmap(void* bitmap_data, uint32_t bitmap_size, uint32_t start_block) 
 }
 
 void read_block(uint32_t block_number, void* block_data) {
-	uint8_t* block = (uint8_t) block_data;
+	uint8_t* block = (uint8_t*) block_data;
 	uint16_t sectors_for_block = sb->block_size / SECTOR_SIZE;
 
 	uint32_t first_sector = block_number * sectors_for_block;

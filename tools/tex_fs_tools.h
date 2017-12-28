@@ -83,13 +83,6 @@ extern void list_all_files(tex_fs_metadata_t* fs);
 extern bool does_file_exist(char* filename, tex_fs_metadata_t* fs);
 
 /**
- * Function to check the validity of the magic
- * @param fs A pointer to the metadata structure
- * @return If the magic is valid or not
- */
-extern bool valid_magic(tex_fs_metadata_t* fs);
-
-/**
  * Function to find the inode number for a file
  * @param filename The name of the file
  * @param fs A pointer to the metadata structure
@@ -135,18 +128,24 @@ extern uint32_t get_size_of_file(FILE* file);
  * @param size 	The size of the bitmap
  * @param block_size The block_size of the filesystem
  */
-extern void
-write_bitmap_to_file(FILE* file, uint8_t* bitmap, uint32_t block_number, uint32_t size, uint16_t block_size);
+extern void write_bitmap(FILE* file, uint8_t* bitmap, uint32_t block_number, uint32_t size, uint16_t block_size);
 
 /**
  * Function to find all blocks required for a file
  * @param blocks An array in which to store the block indices
  * @param block_map	A pointer to the block bitmap
- * @param fs_block_count	The number of blocks of the filesystem (size of the bitmap)
- * @param total_blocks_needed	The number of blocks needed
+ * @param fs_blk_count	The number of blocks of the filesystem (size of the bitmap)
+ * @param blocks_needed	The number of blocks needed
  * @return	The number of blocks found
  */
-extern uint32_t
-find_blocks_for_file(uint32_t* blocks, uint8_t* block_map, uint32_t fs_block_count, uint32_t total_blocks_needed);
+extern uint32_t find_blocks(uint32_t* blocks, uint8_t* block_map, uint32_t fs_blk_count, uint32_t blocks_needed);
+
+/**
+ * Function to convert a size in bytes to a number of blocks required for the size
+ * @param size	The size in bytes
+ * @param block_size	The block size in bytes
+ * @return	The number of blocks required
+ */
+extern uint32_t size_to_blocks(uint32_t size, uint16_t block_size);
 
 #endif //_TEX_FS_TOOLS_H_

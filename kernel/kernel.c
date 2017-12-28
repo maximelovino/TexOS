@@ -69,7 +69,11 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 	tex_fs_inode_t inode_list[fs.superblock->inode_count];
 	memset(inode_list, 0, fs.superblock->inode_count * sizeof(tex_fs_inode_t));
 	fs.inode_list = inode_list;
-	fs_init(&fs);
+	if (fs_init(&fs)) {
+		display_init();
+		display_printf("There was an error opening the disk image\n");
+		halt();
+	}
 	sleep(1000);
 	splash_screen();
 	display_printf("Disk content:\n");

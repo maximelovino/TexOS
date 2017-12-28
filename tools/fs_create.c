@@ -1,3 +1,11 @@
+/**
+ * FS create source file
+ * @file 	fs_create.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,24 +64,23 @@ int main(int argc, char* argv[]) {
 	superblock.inode_count = max_file_count;
 
 
-	uint32_t block_count_block_map = (uint32_t) (superblock.block_count / superblock.block_size +
-												 (superblock.block_count % superblock.block_size != 0));
+	uint32_t block_count_block_map = size_to_blocks(superblock.block_count, superblock.block_size);
+
 	uint8_t block_map[superblock.block_count];
 	memset(block_map, 0, superblock.block_count);
 
 	superblock.inode_bitmap = superblock.block_map + block_count_block_map;
 
-	uint32_t block_count_inode_map = (uint32_t) (superblock.inode_count / superblock.block_size +
-												 (superblock.inode_count % superblock.block_size != 0));
+	uint32_t block_count_inode_map = size_to_blocks(superblock.inode_count, superblock.block_size);
+
 	uint8_t inode_map[superblock.inode_count];
 	memset(inode_map, 0, superblock.inode_count);
 
 	superblock.inode_list = superblock.inode_bitmap + block_count_inode_map;
 
 
-	uint32_t block_count_inode_list = (uint32_t) (
-			(superblock.inode_count * sizeof(tex_fs_inode_t)) / superblock.block_size +
-			((superblock.inode_count * sizeof(tex_fs_inode_t)) % superblock.block_size != 0));
+	uint32_t block_count_inode_list = size_to_blocks(superblock.inode_count * sizeof(tex_fs_inode_t),
+													 superblock.block_size);
 
 	tex_fs_inode_t inodes[superblock.inode_count];
 	memset(inodes, 0, superblock.inode_count * sizeof(tex_fs_inode_t));

@@ -1,3 +1,11 @@
+/**
+ * FS del source file
+ * @file 	fs_del.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include "tex_fs_tools.h"
 
 void print_usage() {
@@ -19,6 +27,10 @@ int main(int argc, char* argv[]) {
 	}
 	tex_fs_metadata_t fs;
 	read_image(image, &fs);
+	if (!valid_magic(fs.superblock->magic)) {
+		printf("Magic is wrong, this is not a TexFS image\n");
+		return EXIT_FAILURE;
+	}
 
 	int inode_index_to_del = find_inode_number_of_file(filename, &fs);
 

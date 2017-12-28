@@ -1,3 +1,11 @@
+/**
+ * FS info source file
+ * @file 	fs_info.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +28,7 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 	read_image(image, &fs);
-	if (!valid_magic(&fs)) {
+	if (!valid_magic(fs.superblock->magic)) {
 		printf("Magic is wrong, this is not a TexFS image\n");
 		return EXIT_FAILURE;
 	}

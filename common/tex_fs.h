@@ -1,9 +1,17 @@
+/**
+ * Tex FS header file
+ * @file 	tex_fs.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #ifndef _TEX_FS_H_
 #define _TEX_FS_H_
 
 #include "types.h"
 
-#define TEX_FS_MAGIC ((u_int16_t) 0xD0D0)
+#define TEX_FS_MAGIC ((uint16_t) 0xD0D0)
 #define TEX_FS_VERSION 1
 #define SECTOR_SIZE 512
 #define DIRECT_BLOCKS 8
@@ -39,5 +47,19 @@ typedef struct tex_fs_metadata_st {
 	tex_fs_inode_t* inode_list;
 } __attribute__((packed)) tex_fs_metadata_t;
 
+/**
+ * Function to convert a size in bytes to a number of blocks required for the size
+ * @param size	The size in bytes
+ * @param block_size	The block size in bytes
+ * @return	The number of blocks required
+ */
+extern uint32_t size_to_blocks(uint32_t size, uint16_t block_size);
+
+/**
+ * Function to check the validity of the magic
+ * @param magic The magic to test
+ * @return If the magic is valid or not
+ */
+bool valid_magic(uint16_t magic);
 
 #endif //_TEX_FS_H_

@@ -100,10 +100,6 @@ bool does_file_exist(char* filename, tex_fs_metadata_t* fs) {
 	return find_inode_number_of_file(filename, fs) != -1;
 }
 
-bool valid_magic(tex_fs_metadata_t* fs) {
-	return fs->superblock->magic == TEX_FS_MAGIC;
-}
-
 int find_inode_number_of_file(char* filename, tex_fs_metadata_t* fs) {
 	for (uint32_t i = 0; i < fs->superblock->inode_count; i++) {
 		if (fs->inode_map[i] && strcmp(fs->inode_list[i].name, filename) == 0) {
@@ -181,15 +177,14 @@ uint32_t get_size_of_file(FILE* file) {
 	return file_size;
 }
 
-void write_bitmap_to_file(FILE* file, uint8_t* bitmap, uint32_t block_number, uint32_t size, uint16_t block_size) {
+void write_bitmap(FILE* file, uint8_t* bitmap, uint32_t block_number, uint32_t size, uint16_t block_size) {
 	seek_to_block(file, block_number, block_size);
 	fwrite(bitmap, 1, size, file);
 }
 
-uint32_t
-find_blocks_for_file(uint32_t* blocks, uint8_t* block_map, uint32_t fs_block_count, uint32_t total_blocks_needed) {
+uint32_t find_blocks(uint32_t* blocks, uint8_t* block_map, uint32_t fs_blk_count, uint32_t blocks_needed) {
 	uint32_t block_index = 0;
-	for (uint32_t j = 0; j < fs_block_count && block_index < total_blocks_needed; j++) {
+	for (uint32_t j = 0; j < fs_blk_count && block_index < blocks_needed; j++) {
 		if (!block_map[j]) {
 			blocks[block_index++] = j;
 		}

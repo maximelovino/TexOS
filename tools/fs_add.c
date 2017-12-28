@@ -1,3 +1,11 @@
+/**
+ * FS add source file
+ * @file 	fs_add.c
+ * @project	TexOS
+ * @author	Maxime Lovino, Loic Willy
+ * @date	December 21, 2017
+ */
+
 #include "tex_fs_tools.h"
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +42,7 @@ int main(int argc, char* argv[]) {
 	tex_fs_metadata_t fs;
 	read_image(image_file, &fs);
 
-	if (!valid_magic(&fs)) {
+	if (!valid_magic(fs.superblock->magic)) {
 		printf("Magic is wrong, this is not a TexFS image\n");
 		return EXIT_FAILURE;
 	}
@@ -73,23 +81,22 @@ int main(int argc, char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	uint32_t data_blocks_needed = file_size / fs.superblock->block_size + (file_size % fs.superblock->block_size != 0);
+	uint32_t data_blocks_needed = size_to_blocks(file_size, fs.superblock->block_size);
 
 	printf("You need %d blocks for the data of the file of size %d bytes\n", data_blocks_needed, file_size);
 
 	uint32_t indirect_blocks_needed = 0;
 	if (data_blocks_needed > DIRECT_BLOCKS) {
-		indirect_blocks_needed =
-				((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) / fs.superblock->block_size +
-				(((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS) % fs.superblock->block_size != 0);
+		indirect_blocks_needed = size_to_blocks((data_blocks_needed - DIRECT_BLOCKS) * BYTES_BLOCK_ADDRESS,
+												fs.superblock->block_size);
 	}
 
 	printf("For storing these blocks, you will need %d indirect blocks\n", indirect_blocks_needed);
 
 	uint32_t blocks_to_write[data_blocks_needed + indirect_blocks_needed];
 
-	uint32_t blocks_found = find_blocks_for_file(blocks_to_write, fs.block_map, fs.superblock->block_count,
-												 data_blocks_needed + indirect_blocks_needed);
+	uint32_t blocks_found = find_blocks(blocks_to_write, fs.block_map, fs.superblock->block_count,
+										data_blocks_needed + indirect_blocks_needed);
 
 	if (blocks_found < (data_blocks_needed + indirect_blocks_needed)) {
 		printf("Not enough free blocks to allocate the file\n");
@@ -131,8 +138,8 @@ int main(int argc, char* argv[]) {
 	fwrite(file_inode, sizeof(tex_fs_inode_t), 1, image_file);
 
 	fs.inode_map[free_inode_index] = 1;
-	write_bitmap_to_file(image_file, fs.inode_map, fs.superblock->inode_bitmap, fs.superblock->inode_count,
-						 fs.superblock->block_size);
+	write_bitmap(image_file, fs.inode_map, fs.superblock->inode_bitmap, fs.superblock->inode_count,
+				 fs.superblock->block_size);
 
 	uint8_t block[fs.superblock->block_size];
 	uint32_t remaining_file_size = file_size;
@@ -148,8 +155,8 @@ int main(int argc, char* argv[]) {
 		fs.block_map[direct_data_blocks_indices[k]] = 1;
 	}
 
-	write_bitmap_to_file(image_file, fs.block_map, fs.superblock->block_map, fs.superblock->block_count,
-						 fs.superblock->block_size);
+	write_bitmap(image_file, fs.block_map, fs.superblock->block_map, fs.superblock->block_count,
+				 fs.superblock->block_size);
 
 	printf("The inode of the newly created file is:\n");
 	print_inode(file_inode);

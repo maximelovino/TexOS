@@ -8,7 +8,7 @@ NASM=nasm -g -f elf32
 
 BUILD_FOLDER=../build/kernel/
 SRCS=$(wildcard *.c *.s)
-OBJS=$(patsubst %.c,$(BUILD_FOLDER)%.o,$(patsubst %.s,$(BUILD_FOLDER)%.o,$(SRCS)))
+OBJS=$(patsubst %.c,$(BUILD_FOLDER)%.o,$(patsubst %.s,$(BUILD_FOLDER)%.o,$(SRCS))) $(BUILD_FOLDER)tex_fs.o
 DEPS=$(OBJS:.o=.d)
 KERNEL_ELF_FILE=$(BUILD_FOLDER)kernel.elf
 
@@ -24,6 +24,9 @@ $(BUILD_FOLDER)%.o:%.s
 	$(NASM) $< -o $@
 
 $(BUILD_FOLDER)%.o:%.c
+	$(COMPILE) -MMD $< -o $@
+
+$(BUILD_FOLDER)%.o:../common/%.c
 	$(COMPILE) -MMD $< -o $@
 
 clean:
