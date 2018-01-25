@@ -56,6 +56,20 @@ typedef struct tex_fs_metadata_st {
 extern uint32_t size_to_blocks(uint32_t size, uint16_t block_size);
 
 /**
+ * The file iterator structure, contains the number of the current inode (-1 if no inode)
+ */
+typedef struct file_iterator_st {
+	int inode_number;
+} file_iterator_t;
+
+/**
+ * The stat structure, contains only the size
+ */
+typedef struct stat_st {
+	uint32_t size;
+} stat_t;
+
+/**
  * Function to check the validity of the magic
  * @param magic The magic to test
  * @return If the magic is valid or not

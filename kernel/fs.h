@@ -15,19 +15,6 @@
 #include "display.h"
 
 #define FILE_DESCRIPTOR_TABLE_COUNT 128
-/**
- * The stat structure, contains only the size
- */
-typedef struct stat_st {
-	uint32_t size;
-} stat_t;
-
-/**
- * The file iterator structure, contains the number of the current inode (-1 if no inode)
- */
-typedef struct file_iterator_st {
-	int inode_number;
-} file_iterator_t;
 
 /**
  * The file descriptor structure, contains a bool stating if open, a pointer to the file inode and a current offset

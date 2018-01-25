@@ -210,7 +210,9 @@ void idt_init() {
 									(uint32_t) &irq_15, TYPE_INTERRUPT_GATE,
 									DPL_KERNEL);
 
-	for (int i = 48; i < 256; ++i) {
+	idt_table[48] = idt_build_entry(GDT_KERNEL_CODE_SELECTOR, (uint32_t) &_syscall_handler, TYPE_TRAP_GATE, DPL_USER);
+
+	for (int i = 49; i < 256; ++i) {
 		memset(&idt_table[i], 0, sizeof(idt_entry_t));
 	}
 

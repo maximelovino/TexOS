@@ -16,6 +16,7 @@
 #include "pic.h"
 #include "keyboard.h"
 #include "timer.h"
+#include "syscall_asm.h"
 
 #define KEYBOARD_IRQ 1
 #define TIMER_IRQ 0

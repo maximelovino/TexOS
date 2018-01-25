@@ -1,4 +1,4 @@
-#include "ulibc.h"
+#include "tex_lib.h"
 
 static void cat(char* filename) {
 	int fd = file_open(filename);
