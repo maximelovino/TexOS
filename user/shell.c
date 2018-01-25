@@ -1,5 +1,7 @@
 #include "tex_lib.h"
 
+#define CMD_BUFFER_SIZE 512
+
 static void cat(char* filename) {
 	int fd = file_open(filename);
 	if (fd == -1) {
@@ -39,10 +41,22 @@ static void help() {
 	puts("exit      : exit the shell\n");
 }
 
+static void read_string(char* buf) {
+	char c = 0;
+	while ((c = getc()) != '\n') {
+		putc(c);
+		*buf++ = c;
+	}
+}
+
+static void rm_file(char* filename) {
+
+}
+
 static void run() {
 	puts("I'm grumpy today so you'd better change this code sooner rather than later!\n");
 
-	char buf[512];
+	char buf[CMD_BUFFER_SIZE];
 
 	while (1) {
 		puts(">");

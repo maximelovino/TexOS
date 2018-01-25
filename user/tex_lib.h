@@ -3,6 +3,7 @@
 
 #include "../common/types.h"
 #include "../common/tex_fs.h"
+#include "../common/min_std_lib.h"
 
 extern int file_open(char* filename);
 
