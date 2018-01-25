@@ -26,8 +26,8 @@ set(SOURCE_FILES
         kernel/kernel.c
         kernel/kernel.ld
         kernel/makefile
-        kernel/min_std_lib.c
-        kernel/min_std_lib.h
+        common/min_std_lib.c
+        common/min_std_lib.h
         kernel/multiboot.h
         kernel/pio_asm.s
         kernel/ide.h
