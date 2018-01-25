@@ -11,7 +11,7 @@
 
 #include "../common/tex_fs.h"
 #include "ide.h"
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "display.h"
 
 #define FILE_DESCRIPTOR_TABLE_COUNT 128

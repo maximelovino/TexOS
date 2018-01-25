@@ -12,7 +12,7 @@
 #include "../common/types.h"
 #include "../common/const.h"
 #include "x86.h"
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "../common/vga_colors.h"
 #include "cursor.h"
 

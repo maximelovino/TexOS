@@ -8,7 +8,7 @@
  */
 
 #include "multiboot.h"
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "gdt.h"
 #include "display.h"
 #include "idt.h"

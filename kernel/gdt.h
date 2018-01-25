@@ -9,7 +9,7 @@
 #ifndef _GDT_H_
 #define _GDT_H_
 
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "x86.h"
 
 /**

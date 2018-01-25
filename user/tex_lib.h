@@ -40,14 +40,8 @@ extern void sleep(uint ms);
 
 extern uint get_ticks();
 
-int starts_with(char* pattern, char* string);
+extern bool starts_with(char* pattern, char* string);
 
-int strcmp(char* a, char* b);
-
-int strlen(char* a);
-
-int atoi(char* string);
-
-char* trim(char* string);
+extern char* trim(char* string);
 
 #endif

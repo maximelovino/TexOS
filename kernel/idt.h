@@ -11,7 +11,7 @@
 
 #include "../common/types.h"
 #include "x86.h"
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "display.h"
 #include "pic.h"
 #include "keyboard.h"

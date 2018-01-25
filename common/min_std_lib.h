@@ -8,7 +8,7 @@
 
 #ifndef _MIN_STD_LIB_H_
 #define _MIN_STD_LIB_H_
-#include "../common/types.h"
+#include "types.h"
 
 #define ITOA_BUFFER_SIZE 16
 

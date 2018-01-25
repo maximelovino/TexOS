@@ -9,7 +9,7 @@
 #ifndef _TEST_H_
 #define _TEST_H_
 
-#include "min_std_lib.h"
+#include "../common/min_std_lib.h"
 #include "display.h"
 #include "timer.h"
 

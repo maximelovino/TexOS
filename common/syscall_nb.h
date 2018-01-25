@@ -14,6 +14,7 @@ typedef enum {
 	SYSCALL_FILE_ITERATOR,
 	SYSCALL_FILE_NEXT,
 	SYSCALL_GET_TICKS,
+    SYSCALL_SLEEP
 } syscall_t;
 
 #endif
