@@ -22,13 +22,13 @@ static int syscall_file_stat(char* filename, stat_t* stat);
 
 static int syscall_file_open(char* filename);
 
-static int syscall_file_close();
+static int syscall_file_close(int fd);
 
-static int syscall_file_read();
+static int syscall_file_read(int fd, uint count, char* buf);
 
-static int syscall_file_seek();
+static int syscall_file_seek(int fd, uint count);
 
-static int syscall_file_iterator();
+static int syscall_file_iterator(file_iterator_t* iterator);
 
 static int syscall_file_next();
 
