@@ -191,6 +191,13 @@ void gdt_init() {
     gdt_load(&gdt_ptr);
 
     static tss_t initial_tss;
+    initial_tss.ss0 = GDT_KERNEL_DATA_SELECTOR;
+    initial_tss.esp0 = 0;
 
     gdt_table[3] = gdt_make_tss(&initial_tss, DPL_KERNEL);
+
+    task_ltr(gdt_entry_to_selector(&gdt_table[3]));
+    for (uint i = 0; i < MAX_TASKS; ++i) {
+        task_init(i);
+    }
 }
