@@ -66,4 +66,11 @@ extern int strlen(char* string);
  */
 extern int strcmp(char* p, char* q);
 
+/**
+ * Return int value from a string, string can contain spaces before numbers and other characters after
+ * @param string string to be evaluate
+ * @return int value
+ */
+extern int atoi(char *string);
+
 #endif /* end of include guard: _MIN_STD_LIB_H_ */

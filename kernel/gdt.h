@@ -56,4 +56,6 @@ extern void gdt_init();
  */
 extern void gdt_load(gdt_ptr_t *gdt_ptr);
 
+extern int task_exec(char *filename);
+
 #endif

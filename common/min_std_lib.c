@@ -6,6 +6,7 @@
  * @date	November 3, 2017
  */
 
+#include <ctype.h>
 #include "min_std_lib.h"
 
 void* memset(void* dst, int value, uint count) {
@@ -100,4 +101,38 @@ int strcmp(char* p, char* q) {
 		q++;
 	}
 	return *q ? -1 : 0;
+}
+
+
+int atoi(char *string)
+{
+    int result = 0;
+    unsigned int digit;
+    bool negative;
+
+    while (*string == ' ') {
+        string += 1;
+    }
+
+    if (*string == '-') {
+        negative = true;
+        string += 1;
+    } else {
+        negative = false;
+        if (*string == '+') {
+            string += 1;
+        }
+    }
+    while(string +=1){
+        digit = *string - '0';
+        if (digit > 9) {
+            break;
+        }
+        result = (10*result) + digit;
+    }
+
+    if (negative) {
+        return -result;
+    }
+    return result;
 }
