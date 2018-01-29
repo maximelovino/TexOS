@@ -8,7 +8,7 @@ NASM=nasm -g -f elf32
 
 all: app shell
 
-app: app.o entrypoint_asm.o #tex_lib.o syscall_asm.o min_std_lib.o
+app: app.o entrypoint_asm.o tex_lib.o syscall_asm.o min_std_lib.o
 	$(LINK) $^ -o $@
 app.o: app.c
 	$(COMPILE) $< -o $@
