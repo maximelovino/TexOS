@@ -43,9 +43,19 @@ static void help() {
 
 static void read_string(char* buf) {
 	char c = 0;
+	int counter = 0;
 	while ((c = getc()) != '\n') {
-		putc(c);
-		*buf++ = c;
+		if (c == '\b') {
+			if (counter > 0) {
+				buf--;
+				counter--;
+				putc(c);
+			}
+		} else {
+			putc(c);
+			*buf++ = c;
+			counter++;
+		}
 	}
 	*buf = 0;
 }
