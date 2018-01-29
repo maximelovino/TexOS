@@ -45,7 +45,10 @@ void exit(){
 }
 
 void putc(char c){
-    syscall(SYSCALL_PUTS, (uint32_t)c, 0, 0, 0);
+	char buffer[2];
+	buffer[0] = c;
+	buffer[1] = 0;
+	syscall(SYSCALL_PUTS, (uint32_t) buffer, 0, 0, 0);
 }
 
 void puts(char* str){

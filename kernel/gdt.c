@@ -177,6 +177,7 @@ int task_exec(char *filename){
     tasks[id].task_tss.eip = 0;
     tasks[id].task_tss.esp = tasks->task_tss.ebp = tasks[id].limit;
     task_switch(tasks[id].gdt_tss_sel);
+	tasks[id].free = true;
     return 0;
 }
 

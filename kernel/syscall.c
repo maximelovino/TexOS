@@ -41,18 +41,11 @@ static int syscall_get_ticks();
 
 static int syscall_sleep(uint ms);
 
-
-
-
-
 // System call handler: call the appropriate system call according to the nb argument.
 // Called by the assembly code _syscall_handler
 int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4,
 					uint32_t caller_tss_selector) {
-    print_string("handler mdr\n");
 	void *address = (void*)(TASK_ADDR_SPACE * (SELECTOR_TO_GDT_INDEX(caller_tss_selector) - GDT_KERNEL_SIZE) / 2 + 0x800000);
-	display_printf("%x\n", address + arg1);
-	display_printf("%s\n", address + arg1);
 	switch (nb){
 		case SYSCALL_PUTS:
 			UNUSED(arg2);
@@ -89,14 +82,14 @@ int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, u
 			UNUSED(arg2);
 			UNUSED(arg3);
 			UNUSED(arg4);
-			return syscall_file_close(*(int*)(address + arg1));
+			return syscall_file_close(arg1);
 		case SYSCALL_FILE_READ:
 			UNUSED(arg4);
-			return syscall_file_read(*(int*)(address + arg1), address + arg2, *(uint*)(address + arg3));
+			return syscall_file_read(arg1, address + arg2, arg3);
 		case SYSCALL_FILE_SEEK:
 			UNUSED(arg3);
 			UNUSED(arg4);
-			return syscall_file_seek(*(int*)(address + arg1), *(uint*)(address + arg2));
+			return syscall_file_seek(arg1, arg2);
 		case SYSCALL_FILE_ITERATOR:
 			UNUSED(arg1);
 			UNUSED(arg2);
@@ -117,7 +110,7 @@ int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, u
 			UNUSED(arg2);
 			UNUSED(arg3);
 			UNUSED(arg4);
-			return syscall_sleep(*(uint*)(address + arg1));
+			return syscall_sleep(arg1);
 	}
     return -1;
 }
@@ -177,7 +170,6 @@ int syscall_sleep(uint ms) {
 }
 
 int syscall_puts(char* string){
-	print_string("coucou");
     print_string(string);
     return 0;
 }

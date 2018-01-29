@@ -47,6 +47,7 @@ static void read_string(char* buf) {
 		putc(c);
 		*buf++ = c;
 	}
+	*buf = 0;
 }
 
 static void rm_file(char* filename) {

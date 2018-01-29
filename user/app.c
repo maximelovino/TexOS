@@ -3,44 +3,29 @@
 void main() {
     puts("coucou depuis main\n");
     putc('a');
-    /*file_open(char* filename);
+	putc('\n');
+	stat_t stat;
+	int fd = file_open("test");
+	file_stat("test", &stat);
+	char content[stat.size + 1];
+	content[stat.size] = 0;
+	file_read(fd, content, stat.size);
+	file_close(fd);
+	printf("%d -> %d\n", fd, stat.size);
+	puts(content);
+	char c = getc();
+	putc(c);
+	exec("shell");
+	file_iterator_t it = file_iterator();
+	char buffer[1024];
+	while (file_has_next(&it)) {
+		file_next(buffer, &it);
+		printf("%s\n", buffer);
+	}
 
-    file_close(int fd);
+	printf("ticks %d", get_ticks());
 
-    file_read(int fd, void* buf, uint count);
-
-    file_stat(char* filename, stat_t* stat);
-
-    file_iterator();
-
-    file_has_next(file_iterator_t* it);
-
-    file_next(char* filename, file_iterator_t* it);
-
-    exec(char* filename);
-
-    exit();
-
-    putc(char c);
-
-    puts(char* str);
-
-    printf(char* fmt, ...);
-
-    getc();
-
-    keypressed();
-
-    srand(uint seed);
-
-    rand();
-
-    sleep(uint ms);
-
-    get_ticks();
-
-    starts_with(char* pattern, char* string);
-
-    trim(char* string);*/
-    while(1);
+	while (getc() != 'q');
+	printf("Exiting app...\n");
+	exit();
 }

@@ -134,7 +134,7 @@ int file_read(int fd, void* buf, uint count) {
 		return -1;
 	file_descriptor_t* desc = &descriptors[fd];
 	tex_fs_inode_t* inode = desc->inode;
-	int bytes = read_bytes(inode, buf, desc->offset, count);
+	int bytes = read_bytes(inode, buf, desc->offset, MIN(desc->inode->size - desc->offset, count));
 	if (bytes > 0) {
 		file_seek(fd, desc->offset + (uint) bytes);
 	}
