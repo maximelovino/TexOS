@@ -139,8 +139,8 @@ void task_init(uint id) {
     tasks[id].ldt_code_idx = 0;  // Index of code segment descriptor in the LDT
     tasks[id].ldt_data_idx = 1;  // Index of data segment descriptor in the LDT
     tasks[id].limit = TASK_ADDR_SPACE;  // Limit for both code and data segments
-    tasks[id].task_ldt[tasks[id].ldt_code_idx] = gdt_make_code_segment(TASK_ADDR_SPACE, tasks[id].limit / 4096, DPL_USER);
-    tasks[id].task_ldt[tasks[id].ldt_data_idx] = gdt_make_data_segment(TASK_ADDR_SPACE, tasks[id].limit / 4096, DPL_USER);
+    tasks[id].task_ldt[tasks[id].ldt_code_idx] = gdt_make_code_segment(tasks[id].address, tasks[id].limit / 4096, DPL_USER);
+    tasks[id].task_ldt[tasks[id].ldt_data_idx] = gdt_make_data_segment(tasks[id].address, tasks[id].limit / 4096, DPL_USER);
 
     // Initialize the TSS fields
     // The LDT selector must point to the task's LDT
