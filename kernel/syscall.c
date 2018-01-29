@@ -49,7 +49,10 @@ static int syscall_sleep(uint ms);
 // Called by the assembly code _syscall_handler
 int syscall_handler(syscall_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4,
 					uint32_t caller_tss_selector) {
-	void *address = (void*)(TASK_ADDR_SPACE * (SELECTOR_TO_GDT_INDEX(caller_tss_selector) - GDT_KERNEL_SIZE) / 2 + GDT_MEMORY_MAX);
+    print_string("handler mdr\n");
+	void *address = (void*)(TASK_ADDR_SPACE * (SELECTOR_TO_GDT_INDEX(caller_tss_selector) - GDT_KERNEL_SIZE) / 2 + 0x800000);
+	display_printf("%x\n", address + arg1);
+	display_printf("%s\n", address + arg1);
 	switch (nb){
 		case SYSCALL_PUTS:
 			UNUSED(arg2);
@@ -174,6 +177,7 @@ int syscall_sleep(uint ms) {
 }
 
 int syscall_puts(char* string){
+	print_string("coucou");
     print_string(string);
     return 0;
 }
