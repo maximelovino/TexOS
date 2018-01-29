@@ -103,7 +103,7 @@ static void run() {
 	while (1) {
 		puts("$ ");
 		read_command(buf);
-		char* line = trim(buf);  // remove heading and trailing spaces
+		char* line = trim(buf);  // remove leading and trailing spaces
 		if (line[0] == 0) {
 			putc('\n');
 			continue;
@@ -119,7 +119,6 @@ static void run() {
 			putc('\n');
 			cat(trim(line + strlen("cat ")));
 		} else if (starts_with("sleep ", line)) {
-			printf("debug'%s'", line + strlen("sleep "));
 			uint ms = atoi(trim(line + strlen("sleep ")));
 			putc('\n');
 			printf("Sleeping for %dms...\n", ms);
