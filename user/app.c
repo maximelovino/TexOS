@@ -1,7 +1,7 @@
 #include "tex_lib.h"
 
 void main() {
-	puts("coucou depuis main\n");
+	puts("This is just a demo app, that does all the syscalls...\n");
 	putc('a');
 	putc('\n');
 	stat_t stat;

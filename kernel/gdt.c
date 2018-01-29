@@ -16,6 +16,10 @@ static gdt_entry_t gdt_table[GDT_KERNEL_ENTRIES + MAX_TASKS * 2];
 
 static gdt_ptr_t gdt_ptr;
 
+static tss_t initial_tss;
+
+static uint8_t initial_tss_kernel_stack[TASK_STACK_SIZE];
+
 typedef struct task_t {
 	tss_t task_tss;
 	gdt_entry_t task_ldt[2];
@@ -24,7 +28,7 @@ typedef struct task_t {
 	uint limit;
 	int ldt_code_idx;
 	int ldt_data_idx;
-	uint8_t task_kernel_stack[65536];
+	uint8_t task_kernel_stack[TASK_STACK_SIZE];
 	void* address;
 	bool free;
 } task_t;
@@ -193,6 +197,9 @@ int task_exec(char* filename) {
 			break;
 		}
 	}
+	if (id >= MAX_TASKS) {
+		return -1;
+	}
 	int fd = file_open(filename);
 	if (fd == -1)
 		return -1;
@@ -219,10 +226,7 @@ void gdt_init() {
 
 	// Load the GDT
 	gdt_load(&gdt_ptr);
-	static tss_t initial_tss;
-	static uint8_t initial_tss_kernel_stack[65536];
 	gdt_table[3] = gdt_make_tss(&initial_tss, DPL_KERNEL);
-	memset(&initial_tss, 0, sizeof(tss_t));
 	initial_tss.ss0 = GDT_KERNEL_DATA_SELECTOR;
 	initial_tss.esp0 = ((uint32_t) initial_tss_kernel_stack) + sizeof(initial_tss_kernel_stack);
 

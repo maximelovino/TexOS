@@ -16,7 +16,7 @@ char* quotes[] = {"\"Vous ecrivez une ligne de python vous avez deja 800k\" \n--
 				  "\"Dans Windows 98 une application pouvait encore faire torcher la machine\" \n--F. Gluck",
 				  "\"Tu peux pas avoir 90% d'un jeu... Tu peux avoir 90% d'un systeme d'exploitation, Windows par exemple\" \n--Y. Rekik",
 				  "\"Rappelez vous, c'est pas ca la programmation\" \n--M. Hoerdt en parlant de python",
-				  "\"Python c’est fait pour planter\" \n--M. Hoerdt",
+				  "\"Python c'est fait pour planter\" \n--M. Hoerdt",
 				  "En pointant du doigt la console python: \"Ca...ca c'est de la MERDE\" \n--M. Hoerdt",
 				  "\"Touchez plus votre code, ca marche !\" \n--M. Hoerdt",
 				  "\"Est-ce qu'un zombie peut sortir de son sleep()?\" \n--M. Hoerdt",
@@ -85,7 +85,7 @@ static void read_command(char* buf) {
 				counter--;
 				putc(c);
 			}
-		} else {
+		} else if (c != '\t') {
 			putc(c);
 			*buf++ = c;
 			counter++;

@@ -20,6 +20,7 @@
 #define GDT_KERNEL_ENTRIES 4
 
 #define TASK_START_ADDRESS 0x400000
+#define TASK_STACK_SIZE 65536
 /**
  * Structure of a GDT descriptor. There are 2 types of descriptors: segments and TSS.
  * Section 3.4.5 of Intel 64 & IA32 architectures software developer's manual describes

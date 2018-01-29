@@ -10,8 +10,8 @@ TEST_FLAGS=
 FS_TOOLS=fs_add fs_create fs_del fs_list fs_info
 TOOLS=$(addprefix $(BUILD_TOOLS_FOLDER),$(FS_TOOLS))
 USER_FOLDER=user/
-USER_APPS=shell app taptouch
-USER_APPS_PATHS=$(addprefix $(USER_FOLDER),$(USER_APPS))
+BUILD_USER_FOLDER=build/user/
+USER_APPS=$(BUILD_USER_FOLDER)shell $(BUILD_USER_FOLDER)app $(BUILD_USER_FOLDER)taptouch $(USER_FOLDER)taptouch.ss
 IMAGE_CREATE=$(BUILD_TOOLS_FOLDER)fs_create
 IMAGE_LABEL=tex
 BLOCK_SIZE=2048
@@ -31,15 +31,15 @@ debug:elf_file $(KERNEL_ISO) tools_build users_build $(FS_IMAGE)
 test:TEST_FLAGS+=-DTEST
 test:run
 
-$(FS_IMAGE):$(TOOLS) $(USER_APPS_PATHS) common/splash common/splash2
+$(FS_IMAGE):$(TOOLS) $(USER_APPS) common/splash common/splash2
 	$(IMAGE_CREATE) $(IMAGE_LABEL) $(BLOCK_SIZE) $(BLOCK_COUNT) $(INODE_COUNT) $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash2 $(FS_IMAGE)
 	$(IMAGE_ADD) common/test $(FS_IMAGE)
-	$(IMAGE_ADD) user/app $(FS_IMAGE)
-	$(IMAGE_ADD) user/shell $(FS_IMAGE)
-	$(IMAGE_ADD) user/taptouch $(FS_IMAGE)
-	$(IMAGE_ADD) user/taptouch.ss $(FS_IMAGE)
+	$(IMAGE_ADD) $(BUILD_USER_FOLDER)app $(FS_IMAGE)
+	$(IMAGE_ADD) $(BUILD_USER_FOLDER)shell $(FS_IMAGE)
+	$(IMAGE_ADD) $(BUILD_USER_FOLDER)taptouch $(FS_IMAGE)
+	$(IMAGE_ADD) $(USER_FOLDER)taptouch.ss $(FS_IMAGE)
 
 users_build:
 	$(MAKE) -C user/ all
@@ -60,7 +60,6 @@ tools_build:
 .PHONY=run test elf_file tools_build users_build debug
 
 clean:
-	$(MAKE) -C user/ clean
 	@-rm -rf $(BUILD_FOLDER)
 
 help:

@@ -1,29 +1,36 @@
 CC=gcc
 TEST_FLAGS=
-COMPILE_FLAGS=-m32 -g -nostdlib -ffreestanding -Wall -Wextra $(TEST_FLAGS) -fno-pie
+COMPILE_FLAGS=-m32 -MMD -g -nostdlib -ffreestanding -Wall -Wextra $(TEST_FLAGS) -fno-pie
 LINKER_FLAGS=-Tapp.ld
 COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -g -f elf32
 
-all: app shell taptouch
+BUILD_FOLDER=../build/user/
+SRCS=$(wildcard *.c)
+OBJS=$(patsubst %.c,$(BUILD_FOLDER)%.o,$(SRCS))
+DEPS=$(OBJS:.o=.d)
 
-app: app.o entrypoint_asm.o tex_lib.o syscall_asm.o min_std_lib.o
+APP_LIBS=$(BUILD_FOLDER)entrypoint_asm.o $(BUILD_FOLDER)tex_lib.o $(BUILD_FOLDER)syscall_asm.o $(BUILD_FOLDER)min_std_lib.o
+
+$(shell mkdir -p $(BUILD_FOLDER))
+
+
+
+all: $(BUILD_FOLDER)app $(BUILD_FOLDER)shell $(BUILD_FOLDER)taptouch
+
+$(BUILD_FOLDER)%: $(BUILD_FOLDER)%.o $(APP_LIBS)
 	$(LINK) $^ -o $@
-taptouch: taptouch.o entrypoint_asm.o tex_lib.o syscall_asm.o min_std_lib.o
-	$(LINK) $^ -o $@
-shell: shell.o tex_lib.o syscall_asm.o entrypoint_asm.o min_std_lib.o
-	$(LINK) $^ -o $@
-tex_lib.o: tex_lib.c tex_lib.h
+
+$(BUILD_FOLDER)%.o: %.c
 	$(COMPILE) $< -o $@
-%.o: %.c
+
+$(BUILD_FOLDER)%.o: %.s
+	$(NASM) $^ -o $@
+
+$(BUILD_FOLDER)min_std_lib.o: ../common/min_std_lib.c ../common/min_std_lib.h
 	$(COMPILE) $< -o $@
-syscall_asm.o: syscall_asm.s
-	$(NASM) $^
-entrypoint_asm.o: entrypoint_asm.s
-	$(NASM) $^
-min_std_lib.o: ../common/min_std_lib.c ../common/min_std_lib.h
-	$(COMPILE) $< -o $@
+
 clean:
 	@-rm *.o shell app taptouch
 
