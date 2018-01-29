@@ -6,17 +6,17 @@ COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -g -f elf32
 
-all: app shell
+all: app shell taptouch
 
 app: app.o entrypoint_asm.o tex_lib.o syscall_asm.o min_std_lib.o
 	$(LINK) $^ -o $@
-app.o: app.c
-	$(COMPILE) $< -o $@
+taptouch: taptouch.o entrypoint_asm.o tex_lib.o syscall_asm.o min_std_lib.o
+	$(LINK) $^ -o $@
 shell: shell.o tex_lib.o syscall_asm.o entrypoint_asm.o min_std_lib.o
 	$(LINK) $^ -o $@
 tex_lib.o: tex_lib.c tex_lib.h
 	$(COMPILE) $< -o $@
-shell.o: shell.c
+%.o: %.c
 	$(COMPILE) $< -o $@
 syscall_asm.o: syscall_asm.s
 	$(NASM) $^

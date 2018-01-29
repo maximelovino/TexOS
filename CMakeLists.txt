@@ -43,10 +43,10 @@ set(SOURCE_FILES
         user/app.ld
         kernel/syscall.c
         kernel/syscall_asm.s
-        kernel/task.c
         kernel/task.h
         kernel/task_asm.s
-        makefile kernel/cursor.c kernel/cursor.h common/const.h kernel/pio_asm.h kernel/test.c kernel/test.h tools/fs_create.c tools/tex_fs_tools.c tools/tex_fs_tools.h common/tex_fs.h tools/fs_add.c tools/fs_info.c tools/fs_list.c tools/fs_del.c kernel/fs.c kernel/fs.h kernel/syscall_asm.h user/tex_lib.c user/tex_lib.h)
+        makefile kernel/cursor.c kernel/cursor.h common/const.h kernel/pio_asm.h kernel/test.c kernel/test.h tools/fs_create.c tools/tex_fs_tools.c tools/tex_fs_tools.h common/tex_fs.h tools/fs_add.c tools/fs_info.c tools/fs_list.c tools/fs_del.c kernel/fs.c kernel/fs.h kernel/syscall_asm.h user/tex_lib.c user/tex_lib.h
+        user/taptouch.c)
 
 
 set(FS_CREATE_DEPS common/tex_fs.h tools/fs_create.c tools/tex_fs_tools.h tools/tex_fs_tools.c)

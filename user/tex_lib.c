@@ -115,14 +115,14 @@ uint random[] = {35615, 51965, 51296, 28625, 22181, 29834, 41933, 35022, 24714, 
 #define RANDOM_LENGTH (sizeof(random)/sizeof(random[0]))
 
 void srand(uint seed){
-    for (int i = 0; i < seed; ++i) {
+    for (uint i = 0; i < seed; ++i) {
         rand();
     }
 }
 
 uint rand(){
     uint val = random[0] ^ random[147];
-    for (int i = 0; i < RANDOM_LENGTH-1; ++i) {
+    for (uint i = 0; i < RANDOM_LENGTH-1; ++i) {
         random[i] = random[i+1];
     }
     random[RANDOM_LENGTH-1] = val;

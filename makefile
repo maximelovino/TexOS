@@ -10,7 +10,7 @@ TEST_FLAGS=
 FS_TOOLS=fs_add fs_create fs_del fs_list fs_info
 TOOLS=$(addprefix $(BUILD_TOOLS_FOLDER),$(FS_TOOLS))
 USER_FOLDER=user/
-USER_APPS=shell app
+USER_APPS=shell app taptouch
 USER_APPS_PATHS=$(addprefix $(USER_FOLDER),$(USER_APPS))
 IMAGE_CREATE=$(BUILD_TOOLS_FOLDER)fs_create
 IMAGE_LABEL=tex
@@ -38,6 +38,8 @@ $(FS_IMAGE):$(TOOLS) $(USER_APPS_PATHS) common/splash common/splash2
 	$(IMAGE_ADD) common/test $(FS_IMAGE)
 	$(IMAGE_ADD) user/app $(FS_IMAGE)
 	$(IMAGE_ADD) user/shell $(FS_IMAGE)
+	$(IMAGE_ADD) user/taptouch $(FS_IMAGE)
+	$(IMAGE_ADD) user/taptouch.ss $(FS_IMAGE)
 
 users_build:
 	$(MAKE) -C user/ all

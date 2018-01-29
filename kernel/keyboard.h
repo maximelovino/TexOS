@@ -24,7 +24,6 @@
 #define LAST_SUPPORTED_CHAR_MAKE_CODE 86
 
 #define UNKNOWN_KEY (-1)
-#define ESCAPE_CHAR 27
 #define APOSTROPHE_CHAR 39
 #define E_ACUTE_CHAR 130
 #define E_GRAVE_CHAR 138
@@ -44,7 +43,7 @@
 #define DOWN_ARROW_KEY 80
 #define RIGHT_ARROW_KEY 77
 
-#define KEYBOARD_BUFFER_SIZE 10
+#define KEYBOARD_BUFFER_SIZE 100
 
 /**
  * Function called when a key is pressed, dispatched from irq_handler
