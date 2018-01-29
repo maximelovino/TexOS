@@ -1,6 +1,17 @@
+/**
+ * Syscall numbers header file
+ * @file 	syscall_nb.h
+ * @project	TexOS
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
+ * @date	January 29, 2018
+ */
+
 #ifndef _SYSCALL_NB_H_
 #define _SYSCALL_NB_H_
 
+/**
+ * Enum containing the available syscalls
+ */
 typedef enum {
 	SYSCALL_PUTS,
 	SYSCALL_EXEC,
@@ -14,7 +25,7 @@ typedef enum {
 	SYSCALL_FILE_ITERATOR,
 	SYSCALL_FILE_NEXT,
 	SYSCALL_GET_TICKS,
-    SYSCALL_SLEEP
+	SYSCALL_SLEEP
 } syscall_t;
 
 #endif

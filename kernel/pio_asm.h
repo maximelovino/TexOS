@@ -4,7 +4,7 @@
  * @brief	This file contains the declarations of the functions defined in pio_asm.s
  * @file 	pio_asm.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 21, 2017
  */
 

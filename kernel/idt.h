@@ -2,7 +2,7 @@
  * IDT header file
  * @file 	idt.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 21, 2017
  */
 

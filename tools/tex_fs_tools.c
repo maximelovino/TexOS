@@ -2,7 +2,7 @@
  * Tex FS tools header file
  * @file 	tex_fs_tools.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	December 21, 2017
  */
 
@@ -69,7 +69,7 @@ void free_tex_fs_metadata(tex_fs_metadata_t* fs) {
 
 uint32_t compute_max_file_size(tex_fs_superblock_t* superblock) {
 	return superblock->block_size * DIRECT_BLOCKS +
-			INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
+		   INDIRECT_BLOCKS * superblock->block_size / BYTES_BLOCK_ADDRESS * superblock->block_size;
 }
 
 uint32_t compute_free_blocks_count(tex_fs_metadata_t* fs) {

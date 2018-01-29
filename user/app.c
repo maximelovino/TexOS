@@ -1,8 +1,8 @@
 #include "tex_lib.h"
 
 void main() {
-    puts("coucou depuis main\n");
-    putc('a');
+	puts("coucou depuis main\n");
+	putc('a');
 	putc('\n');
 	stat_t stat;
 	int fd = file_open("test");
@@ -27,10 +27,10 @@ void main() {
 
 	while (getc() != 'q');
 	printf("Exiting app...\n");
-    uint val;
-    while((val = rand()) > 1000){
-        printf("%d\n", val);
-    }
-    printf("end %d\n", val);
+	uint val;
+	while ((val = rand()) > 1000) {
+		printf("%d\n", val);
+	}
+	printf("end %d\n", val);
 	exit();
 }

@@ -2,7 +2,7 @@
  * Tex FS tools header file
  * @file 	tex_fs_tools.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	December 21, 2017
  */
 
@@ -139,4 +139,5 @@ extern void write_bitmap(FILE* file, uint8_t* bitmap, uint32_t block_number, uin
  * @return	The number of blocks found
  */
 extern uint32_t find_blocks(uint32_t* blocks, uint8_t* block_map, uint32_t fs_blk_count, uint32_t blocks_needed);
+
 #endif //_TEX_FS_TOOLS_H_

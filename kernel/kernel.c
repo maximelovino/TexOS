@@ -3,7 +3,7 @@
  * @brief	Entry point of our OS
  * @file 	kernel.c
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 3, 2017
  */
 
@@ -74,27 +74,16 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 		display_printf("There was an error opening the disk image\n");
 		halt();
 	}
-	//sleep(1000);
-	//splash_screen();
+	sleep(1000);
+	splash_screen();
 	display_printf("Disk content:\n");
 	files_list();
-	display_printf("You can use the Escape key to clear the screen, and press on Q to quit the kernel\n");
+	sleep(2000);
+	display_init();
 	task_exec("shell");
 #ifdef TEST
 	demo_mode();
 #endif
-	int toPrint;
-	while (1) {
-		toPrint = getc();
-		if (toPrint == 'Q') {
-			display_init();
-			display_printf("System shutting down NOW");
-			halt();
-		} else if (toPrint == ESCAPE_CHAR) {
-			display_init();
-		} else if (toPrint != UNKNOWN_KEY) {
-			display_printf("%c", toPrint);
-
-		}
-	}
+	display_printf("Halting...\n");
+	halt();
 }

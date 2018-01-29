@@ -2,7 +2,7 @@
  * FS list source file
  * @file 	fs_list.c
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	December 21, 2017
  */
 

@@ -2,7 +2,7 @@
  * GDT header file
  * @file 	gdt.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 3, 2017
  */
 
@@ -11,11 +11,15 @@
 
 #include "../common/min_std_lib.h"
 #include "x86.h"
+
 #define TASK_ADDR_SPACE 0x100000// 1MB of address space
 #define GDT_KERNEL_SIZE 4 // null, code, data, tss
 #define SELECTOR_TO_GDT_INDEX(idx) ((idx) >> 3)
-#define GDT_MEMORY_MAX 0x100000 //(2^20 in hex)
+#define GDT_INDEX_TO_SELECTOR(idx) ((idx) << 3)
+#define MAX_TASKS 8
+#define GDT_KERNEL_ENTRIES 4
 
+#define TASK_START_ADDRESS 0x400000
 /**
  * Structure of a GDT descriptor. There are 2 types of descriptors: segments and TSS.
  * Section 3.4.5 of Intel 64 & IA32 architectures software developer's manual describes
@@ -58,8 +62,13 @@ extern void gdt_init();
  * Function to load the GDT in memory, written in assembly, definition in gdt_asm.s
  * @param gdt_ptr A pointer structure for the GDT descriptor table
  */
-extern void gdt_load(gdt_ptr_t *gdt_ptr);
+extern void gdt_load(gdt_ptr_t* gdt_ptr);
 
-extern int task_exec(char *filename);
+/**
+ * Executes a program specified by the filename
+ * @param filename The filename of the program
+ * @return A status code
+ */
+extern int task_exec(char* filename);
 
 #endif

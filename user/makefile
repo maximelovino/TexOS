@@ -25,6 +25,6 @@ entrypoint_asm.o: entrypoint_asm.s
 min_std_lib.o: ../common/min_std_lib.c ../common/min_std_lib.h
 	$(COMPILE) $< -o $@
 clean:
-	@-rm *.o shell app
+	@-rm *.o shell app taptouch
 
 -include $(DEPS)

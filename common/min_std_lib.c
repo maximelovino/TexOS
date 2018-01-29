@@ -2,7 +2,7 @@
  * Minimal stdlib source file
  * @file 	min_std_lib.c
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 3, 2017
  */
 
@@ -104,31 +104,30 @@ int strcmp(char* p, char* q) {
 }
 
 
-int atoi(char *string)
-{
-    int result = 0;
-    unsigned int digit;
-    bool negative;
+int atoi(char* string) {
+	int result = 0;
+	unsigned int digit;
+	bool negative;
 
-    if (*string == '-') {
-        negative = true;
-        string += 1;
-    } else {
-        negative = false;
-        if (*string == '+') {
-            string += 1;
-        }
-    }
-    do{
-        digit = *string - '0';
-        if (digit > 9) {
-            break;
-        }
-        result = (10*result) + digit;
-    }while(string +=1);
+	if (*string == '-') {
+		negative = true;
+		string += 1;
+	} else {
+		negative = false;
+		if (*string == '+') {
+			string += 1;
+		}
+	}
+	do {
+		digit = *string - '0';
+		if (digit > 9) {
+			break;
+		}
+		result = (10 * result) + digit;
+	} while (string += 1);
 
-    if (negative) {
-        return -result;
-    }
-    return result;
+	if (negative) {
+		return -result;
+	}
+	return result;
 }

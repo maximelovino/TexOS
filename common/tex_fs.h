@@ -2,7 +2,7 @@
  * Tex FS header file
  * @file 	tex_fs.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	December 21, 2017
  */
 

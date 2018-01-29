@@ -2,12 +2,13 @@
  * Minimal stdlib header file
  * @file 	min_std_lib.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 3, 2017
  */
 
 #ifndef _MIN_STD_LIB_H_
 #define _MIN_STD_LIB_H_
+
 #include "types.h"
 
 #define ITOA_BUFFER_SIZE 16
@@ -71,6 +72,6 @@ extern int strcmp(char* p, char* q);
  * @param string string to be evaluate
  * @return int value
  */
-extern int atoi(char *string);
+extern int atoi(char* string);
 
 #endif /* end of include guard: _MIN_STD_LIB_H_ */

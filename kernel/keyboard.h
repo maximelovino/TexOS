@@ -2,7 +2,7 @@
  * Keyboard header file
  * @file 	keyboard.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 21, 2017
  */
 

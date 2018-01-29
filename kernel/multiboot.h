@@ -3,9 +3,9 @@
 
 // From https://www.gnu.org/software/grub/manual/multiboot/html_node/multiboot_002eh.html
 
-typedef unsigned short          multiboot_uint16_t;
-typedef unsigned int            multiboot_uint32_t;
-typedef unsigned long long      multiboot_uint64_t;
+typedef unsigned short multiboot_uint16_t;
+typedef unsigned int multiboot_uint32_t;
+typedef unsigned long long multiboot_uint64_t;
 
 /* The symbol table for a.out. */
 struct multiboot_aout_symbol_table {

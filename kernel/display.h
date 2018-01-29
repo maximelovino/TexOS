@@ -2,7 +2,7 @@
  * Display header file
  * @file 	display.h
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 3, 2017
  */
 

@@ -2,11 +2,12 @@
  * PIC source file
  * @file 	pic.c
  * @project	TexOS
- * @author	Maxime Lovino, Loic Willy
+ * @author	Maxime Lovino, Marco Lopes, Loic Willy
  * @date	November 21, 2017
  */
 
 #include "pic.h"
+
 #define PIC1_CMD        0x20
 #define PIC1_DATA       0x21
 #define PIC2_CMD        0xA0
