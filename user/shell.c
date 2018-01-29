@@ -60,10 +60,6 @@ static void read_string(char* buf) {
 	*buf = 0;
 }
 
-static void rm_file(char* filename) {
-
-}
-
 static void run() {
 	puts("I'm grumpy today so you'd better change this code sooner rather than later!\n");
 
@@ -88,6 +84,7 @@ static void run() {
 			putc('\n');
 			cat(trim(line + strlen("cat ")));
 		} else if (starts_with("sleep ", line)) {
+            printf("debug'%s'", line + strlen("sleep "));
 			uint ms = atoi(trim(line + strlen("sleep ")));
 			putc('\n');
 			printf("Sleeping for %dms...\n", ms);
@@ -95,13 +92,12 @@ static void run() {
 		} else if (strcmp("ls", line) == 0) {
 			putc('\n');
 			list_files();
-		} else if (starts_with("rm ", line)) {
-			putc('\n');
-			rm_file(trim(line + strlen("rm ")));
 		} else if (strcmp("exit", line) == 0) {
 			puts("\nBye.\n");
 			exit();
-		} else {
+		} else if (strcmp("rand", line) == 0) {
+            printf("\n%d\n", rand());
+        } else {
 			putc('\n');
 			printf("%s: command not found\n", line);
 		}

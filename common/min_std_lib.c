@@ -110,10 +110,6 @@ int atoi(char *string)
     unsigned int digit;
     bool negative;
 
-    while (*string == ' ') {
-        string += 1;
-    }
-
     if (*string == '-') {
         negative = true;
         string += 1;
@@ -123,13 +119,13 @@ int atoi(char *string)
             string += 1;
         }
     }
-    while(string +=1){
+    do{
         digit = *string - '0';
         if (digit > 9) {
             break;
         }
         result = (10*result) + digit;
-    }
+    }while(string +=1);
 
     if (negative) {
         return -result;

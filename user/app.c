@@ -27,5 +27,10 @@ void main() {
 
 	while (getc() != 'q');
 	printf("Exiting app...\n");
+    uint val;
+    while((val = rand()) > 1000){
+        printf("%d\n", val);
+    }
+    printf("end %d\n", val);
 	exit();
 }
