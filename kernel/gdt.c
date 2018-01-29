@@ -170,12 +170,15 @@ int task_exec(char *filename){
         }
     }
     int fd = file_open(filename);
+    if(fd == -1)
+        return -1;
     stat_t stat;
     file_stat(filename, &stat);
-    file_read(fd, tasks[id].address, stat.size);
+    if(file_read(fd, tasks[id].address, stat.size) == -1)
+        return -1;
     tasks[id].free = false;
     tasks[id].task_tss.eip = 0;
-    tasks[id].task_tss.esp = tasks->task_tss.ebp = tasks[id].limit;
+    tasks[id].task_tss.esp = tasks[id].task_tss.ebp = tasks[id].limit;
     task_switch(tasks[id].gdt_tss_sel);
 	tasks[id].free = true;
     return 0;
