@@ -74,12 +74,12 @@ void kernel_entry(multiboot_info_t* multiboot_infos) {
 		display_printf("There was an error opening the disk image\n");
 		halt();
 	}
-	sleep(1000);
-	splash_screen();
+	/*sleep(1000);
+	splash_screen();*/
 	display_printf("Disk content:\n");
 	files_list();
 	display_printf("You can use the Escape key to clear the screen, and press on Q to quit the kernel\n");
-	task_exec("shell");
+	task_exec("app");
 #ifdef TEST
 	demo_mode();
 #endif

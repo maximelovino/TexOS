@@ -11,6 +11,10 @@
 
 #include "../common/min_std_lib.h"
 #include "x86.h"
+#define TASK_ADDR_SPACE 0x100000// 1MB of address space
+#define GDT_KERNEL_SIZE 4 // null, code, data, tss
+#define SELECTOR_TO_GDT_INDEX(idx) ((idx) >> 3)
+#define GDT_MEMORY_MAX 0x100000 //(2^20 in hex)
 
 /**
  * Structure of a GDT descriptor. There are 2 types of descriptors: segments and TSS.

@@ -41,10 +41,7 @@ static int syscall_get_ticks();
 
 static int syscall_sleep(uint ms);
 
-#define TASK_ADDR_SPACE 0x100000// 1MB of address space
-#define GDT_KERNEL_SIZE 4 // null, code, data, tss
-#define SELECTOR_TO_GDT_INDEX(idx) ((idx) >> 3)
-#define GDT_MEMORY_MAX 0x100000 //(2^20 in hex)
+
 
 
 

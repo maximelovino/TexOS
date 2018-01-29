@@ -33,6 +33,7 @@ $(FS_IMAGE):$(TOOLS) common/splash common/splash2
 	$(IMAGE_ADD) common/splash $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash2 $(FS_IMAGE)
 	$(IMAGE_ADD) common/test $(FS_IMAGE)
+	$(IMAGE_ADD) user/app $(FS_IMAGE)
 
 $(KERNEL_ISO):$(KERNEL_ELF_FILE)
 	mkdir -p $(OS_FOLDER)boot

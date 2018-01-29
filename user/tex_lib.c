@@ -7,7 +7,7 @@ extern int syscall(uint32_t nb, uint32_t arg1, uint32_t arg2, uint32_t arg3, uin
 extern void exitpoint();
 
 int file_open(char* filename){
-    return syscall(SYSCALL_FILE_OPEN, filename, 0, 0, 0);
+    return syscall(SYSCALL_FILE_OPEN, (uint32_t)filename, 0, 0, 0);
 }
 
 void file_close(int fd){
@@ -15,16 +15,16 @@ void file_close(int fd){
 }
 
 int file_read(int fd, void* buf, uint count){
-    return syscall(SYSCALL_FILE_READ, fd, buf, count, 0);
+    return syscall(SYSCALL_FILE_READ, (uint32_t)fd, (uint32_t)buf, count, 0);
 }
 
 int file_stat(char* filename, stat_t* stat){
-    return syscall(SYSCALL_FILE_STAT, filename, stat, 0, 0);
+    return syscall(SYSCALL_FILE_STAT, (uint32_t)filename, (uint32_t)stat, 0, 0);
 }
 
 file_iterator_t file_iterator(){
     file_iterator_t iterator;
-    syscall(SYSCALL_FILE_ITERATOR, &iterator, 0, 0, 0);
+    syscall(SYSCALL_FILE_ITERATOR, (uint32_t)&iterator, 0, 0, 0);
     return iterator;
 }
 
@@ -33,11 +33,11 @@ bool file_has_next(file_iterator_t* it){
 }
 
 void file_next(char* filename, file_iterator_t* it){
-    syscall(SYSCALL_FILE_NEXT, filename, it, 0, 0);
+    syscall(SYSCALL_FILE_NEXT, (uint32_t)filename, (uint32_t)it, 0, 0);
 }
 
 int exec(char* filename){
-    return syscall(SYSCALL_EXEC, filename, 0, 0, 0);
+    return syscall(SYSCALL_EXEC, (uint32_t)filename, 0, 0, 0);
 }
 
 void exit(){
@@ -45,11 +45,11 @@ void exit(){
 }
 
 void putc(char c){
-    syscall(SYSCALL_PUTS, &c, 0, 0, 0);
+    syscall(SYSCALL_PUTS, (uint32_t)c, 0, 0, 0);
 }
 
 void puts(char* str){
-    syscall(SYSCALL_PUTS, str, 0, 0, 0);
+    syscall(SYSCALL_PUTS, (uint32_t)str, 0, 0, 0);
 }
 
 //TODO Refactor code
@@ -79,11 +79,11 @@ void printf(char* fmt, ...){
             current_char++;
         } else if (strncmp(current_char, "%c", 2) == 0) {
             char* character = (void*) &fmt + next_param_shift * STACK_JUMP;
-            puts(*character);
+            putc(*character);
             next_param_shift++;
             current_char++;
         } else {
-            puts(*current_char);
+            putc(*current_char);
         }
         current_char++;
     }

@@ -15,7 +15,9 @@
 
 #define MAX_TASKS 8
 
-static gdt_entry_t gdt_table[3 + MAX_TASKS * 2];
+#define GDT_KERNEL_ENTRIES 4
+
+static gdt_entry_t gdt_table[GDT_KERNEL_ENTRIES + MAX_TASKS * 2];
 
 static gdt_ptr_t gdt_ptr;
 
@@ -27,7 +29,7 @@ typedef struct task_t {
     uint limit;
     int ldt_code_idx;
     int ldt_data_idx;
-    uint8_t task_kernel_stack[8192];
+    uint8_t task_kernel_stack[65536];
     void *address;
     bool free;
 }task_t;
@@ -127,18 +129,18 @@ void task_init(uint id) {
     memset(&tasks[id].task_tss, 0, sizeof(tss_t));
 
     // Add the task's TSS and LDT to the GDT
-    gdt_table[3 + id * 2] = gdt_make_tss(&tasks[id].task_tss, DPL_KERNEL);
-    gdt_table[3 + id * 2 + 1] = gdt_make_ldt((uint32_t) tasks[id].task_ldt, sizeof(tasks[id].task_ldt) - 1, DPL_KERNEL);
-    tasks[id].gdt_tss_sel = gdt_entry_to_selector(&gdt_table[3 + id * 2]);
-    tasks[id].gdt_ldt_sel = gdt_entry_to_selector(&gdt_table[3 + id * 2 + 1]);
+    gdt_table[GDT_KERNEL_ENTRIES + id * 2] = gdt_make_tss(&tasks[id].task_tss, DPL_KERNEL);
+    gdt_table[GDT_KERNEL_ENTRIES + id * 2 + 1] = gdt_make_ldt((uint32_t) tasks[id].task_ldt, sizeof(tasks[id].task_ldt) - 1, DPL_KERNEL);
+    tasks[id].gdt_tss_sel = gdt_entry_to_selector(&gdt_table[GDT_KERNEL_ENTRIES + id * 2]);
+    tasks[id].gdt_ldt_sel = gdt_entry_to_selector(&gdt_table[GDT_KERNEL_ENTRIES + id * 2 + 1]);
 
     // Define code and data segments in the LDT; both segments are overlapping
-    static uint8_t addr_space[32768] __attribute__((aligned(4096)));  // 32KB of address space
+    tasks[id].address = id * TASK_ADDR_SPACE + 0x800000;
     tasks[id].ldt_code_idx = 0;  // Index of code segment descriptor in the LDT
     tasks[id].ldt_data_idx = 1;  // Index of data segment descriptor in the LDT
-    tasks[id].limit = sizeof(addr_space);  // Limit for both code and data segments
-    tasks[id].task_ldt[tasks[id].ldt_code_idx] = gdt_make_code_segment(addr_space, tasks[id].limit / 4096, DPL_USER);
-    tasks[id].task_ldt[tasks[id].ldt_data_idx] = gdt_make_data_segment(addr_space, tasks[id].limit / 4096, DPL_USER);
+    tasks[id].limit = TASK_ADDR_SPACE;  // Limit for both code and data segments
+    tasks[id].task_ldt[tasks[id].ldt_code_idx] = gdt_make_code_segment(TASK_ADDR_SPACE, tasks[id].limit / 4096, DPL_USER);
+    tasks[id].task_ldt[tasks[id].ldt_data_idx] = gdt_make_data_segment(TASK_ADDR_SPACE, tasks[id].limit / 4096, DPL_USER);
 
     // Initialize the TSS fields
     // The LDT selector must point to the task's LDT
@@ -189,12 +191,13 @@ void gdt_init() {
 
     // Load the GDT
     gdt_load(&gdt_ptr);
-
     static tss_t initial_tss;
-    initial_tss.ss0 = GDT_KERNEL_DATA_SELECTOR;
-    initial_tss.esp0 = 0;
-
+    static uint8_t initial_tss_kernel_stack[65536];
     gdt_table[3] = gdt_make_tss(&initial_tss, DPL_KERNEL);
+    memset(&initial_tss, 0, sizeof(tss_t));
+    initial_tss.ss0 = GDT_KERNEL_DATA_SELECTOR;
+    initial_tss.esp0 = ((uint32_t)initial_tss_kernel_stack) + sizeof(initial_tss_kernel_stack);
+
 
     task_ltr(gdt_entry_to_selector(&gdt_table[3]));
     for (uint i = 0; i < MAX_TASKS; ++i) {
