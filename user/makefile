@@ -6,6 +6,8 @@ COMPILE=$(CC) -c $(COMPILE_FLAGS)
 LINK=$(CC) $(COMPILE_FLAGS) $(LINKER_FLAGS)
 NASM=nasm -g -f elf32
 
+all: app shell
+
 app: app.o entrypoint_asm.o #tex_lib.o syscall_asm.o min_std_lib.o
 	$(LINK) $^ -o $@
 app.o: app.c
@@ -23,6 +25,6 @@ entrypoint_asm.o: entrypoint_asm.s
 min_std_lib.o: ../common/min_std_lib.c ../common/min_std_lib.h
 	$(COMPILE) $< -o $@
 clean:
-	@-rm *.o
+	@-rm *.o shell app
 
 -include $(DEPS)

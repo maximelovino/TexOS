@@ -9,6 +9,9 @@ STAGE2=boot/grub/stage2_eltorito
 TEST_FLAGS=
 FS_TOOLS=fs_add fs_create fs_del fs_list fs_info
 TOOLS=$(addprefix $(BUILD_TOOLS_FOLDER),$(FS_TOOLS))
+USER_FOLDER=user/
+USER_APPS=shell app
+USER_APPS_PATHS=$(addprefix $(USER_FOLDER),$(USER_APPS))
 IMAGE_CREATE=$(BUILD_TOOLS_FOLDER)fs_create
 IMAGE_LABEL=tex
 BLOCK_SIZE=2048
@@ -19,21 +22,25 @@ FS_IMAGE=$(BUILD_FOLDER)fs.img
 
 $(shell mkdir -p $(BUILD_FOLDER))
 
-run:elf_file $(KERNEL_ISO) tools_build $(FS_IMAGE)
+run:elf_file $(KERNEL_ISO) tools_build users_build $(FS_IMAGE)
 	qemu-system-i386 -cdrom $(KERNEL_ISO) -hda $(FS_IMAGE)
 
-debug:elf_file $(KERNEL_ISO) tools_build $(FS_IMAGE)
+debug:elf_file $(KERNEL_ISO) tools_build users_build $(FS_IMAGE)
 	qemu-system-i386 -s -S -cdrom $(KERNEL_ISO) -hda $(FS_IMAGE)
 
 test:TEST_FLAGS+=-DTEST
 test:run
 
-$(FS_IMAGE):$(TOOLS) common/splash common/splash2
+$(FS_IMAGE):$(TOOLS) $(USER_APPS_PATHS) common/splash common/splash2
 	$(IMAGE_CREATE) $(IMAGE_LABEL) $(BLOCK_SIZE) $(BLOCK_COUNT) $(INODE_COUNT) $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash $(FS_IMAGE)
 	$(IMAGE_ADD) common/splash2 $(FS_IMAGE)
 	$(IMAGE_ADD) common/test $(FS_IMAGE)
 	$(IMAGE_ADD) user/app $(FS_IMAGE)
+	$(IMAGE_ADD) user/shell $(FS_IMAGE)
+
+users_build:
+	$(MAKE) -C user/ all
 
 $(KERNEL_ISO):$(KERNEL_ELF_FILE)
 	mkdir -p $(OS_FOLDER)boot
@@ -48,9 +55,10 @@ elf_file:
 tools_build:
 	$(MAKE) -C tools/ all
 
-.PHONY=run test elf_file tools_build debug
+.PHONY=run test elf_file tools_build users_build debug
 
 clean:
+	$(MAKE) -C user/ clean
 	@-rm -rf $(BUILD_FOLDER)
 
 help:
